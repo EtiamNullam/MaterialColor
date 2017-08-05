@@ -1,0 +1,98 @@
+{
+  "Katairite": {
+    "ColorMultiplier": {
+      "Red": 0.3,
+      "Green": 1.0,
+      "Blue": 0.8
+    },
+    "Brightness": 0.6
+  },
+  "IgneousRock": {
+    "ColorMultiplier": {
+      "Red": 1.0,
+      "Green": 1.0,
+      "Blue": 1.0
+    },
+    "Brightness": 0.5
+  },
+  "SedimentaryRock": {
+    "ColorMultiplier": {
+      "Red": 1.0,
+      "Green": 1.0,
+      "Blue": 1.0
+    },
+    "Brightness": 0.7
+  },
+  "Granite": {
+    "ColorMultiplier": {
+      "Red": 1.0,
+      "Green": 1.0,
+      "Blue": 1.0
+    },
+    "Brightness": 1.0
+  },
+  "SandStone": {
+    "ColorMultiplier": {
+      "Red": 1.0,
+      "Green": 0.7,
+      "Blue": 0.3
+    },
+    "Brightness": 1.0
+  },
+  "Obsidian": {
+    "ColorMultiplier": {
+      "Red": 0.85,
+      "Green": 1.0,
+      "Blue": 0.85
+    },
+    "Brightness": 0.3
+  },
+  "Cuprite": {
+    "ColorMultiplier": {
+      "Red": 1.0,
+      "Green": 0.5,
+      "Blue": 0.05
+    },
+    "Brightness": 1.0
+  },
+  "IronOre": {
+    "ColorMultiplier": {
+      "Red": 1.0,
+      "Green": 0.8,
+      "Blue": 0.5
+    },
+    "Brightness": 0.8
+  },
+  "GoldAmalgam": {
+    "ColorMultiplier": {
+      "Red": 0.75,
+      "Green": 1.0,
+      "Blue": 0.3
+    },
+    "Brightness": 0.8
+  },
+  "Wolframite": {
+    "ColorMultiplier": {
+      "Red": 0.4,
+      "Green": 0.3,
+      "Blue": 1.0
+    },
+    "Brightness": 0.8
+  },
+  "Steel": {
+    "ColorMultiplier": {
+      "Red": 0.9,
+      "Green": 0.9,
+      "Blue": 1.0
+    },
+    "Brightness": 1.0
+  },
+  "Iron": {
+    "ColorMultiplier": {
+      "Red": 1.0,
+      "Green": 1.0,
+      "Blue": 1.0
+    },
+    "Brightness": 0.7
+  }
+}

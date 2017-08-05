@@ -1,0 +1,33 @@
+﻿<Window x:Class="Injector.WPF.Views.InjectorView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Injector.WPF.Views"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns:viewModels="clr-namespace:Injector.WPF.ViewModels"
+        mc:Ignorable="d"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        Title="Patcher" Height="200" Width="300" MinWidth="300" MinHeight="155" MaxWidth="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Margin="5" Grid.ColumnSpan="2">
+            <CheckBox Content="Enable _debug log (change requires patching)" Margin="5" IsChecked="{Binding EnableDebugConsole, Mode=TwoWay}"/>
+        </StackPanel>
+        
+        <Button Command="{Binding PatchCommand}" Grid.Row="1" Content="_Patch" Margin="10"/>
+        <Button Command="{Binding RestoreBackupCommand}" Grid.Row="1" Grid.Column="1" Content="_Restore Backup" Margin="10"/>
+
+        <!--scroll to newest on status change-->
+        <TextBox Grid.Row="2" Grid.ColumnSpan="2" TextWrapping="Wrap" Text="{Binding Status}" VerticalScrollBarVisibility="Visible" IsReadOnly="True" />
+    </Grid>
+</Window>
