@@ -1,0 +1,419 @@
+{
+  "Ladder": {
+    "r": 100,
+    "g": 50,
+    "b": 0,
+    "a": 255
+  },
+  "Outhouse": {
+    "r": 120,
+    "g": 70,
+    "b": 0,
+    "a": 255
+  },
+  "FlowerVase": {
+    "r": 30,
+    "g": 30,
+    "b": 0,
+    "a": 255
+  },
+  "ManualPressureDoor": {
+    "r": 90,
+    "g": 50,
+    "b": 0,
+    "a": 255
+  },
+  "StorageLocker": {
+    "r": 80,
+    "g": 90,
+    "b": 0,
+    "a": 255
+  },
+  "Bed": {
+    "r": 80,
+    "g": 50,
+    "b": 0,
+    "a": 255
+  },
+  "Headquarters": {
+    "r": 70,
+    "g": 70,
+    "b": 0,
+    "a": 255
+  },
+  "RationBox": {
+    "r": 140,
+    "g": 130,
+    "b": 0,
+    "a": 255
+  },
+  "Grave": {
+    "r": 0,
+    "g": 0,
+    "b": 0,
+    "a": 255
+  },
+  "GasValve": {
+    "r": 0,
+    "g": 70,
+    "b": 0,
+    "a": 255
+  },
+  "TemperatureControlledSwitch": {
+    "r": 40,
+    "g": 0,
+    "b": 0,
+    "a": 255
+  },
+  "PressureSwitchGas": {
+    "r": 40,
+    "g": 0,
+    "b": 0,
+    "a": 255
+  },
+  "MineralDeoxidizer": {
+    "r": 70,
+    "g": 80,
+    "b": 0,
+    "a": 255
+  },
+  "Shower": {
+    "r": 30,
+    "g": 50,
+    "b": 0,
+    "a": 255
+  },
+  "InsulatedGasConduit": {
+    "r": 0,
+    "g": 0,
+    "b": 0,
+    "a": 255
+  },
+  "Refrigerator": {
+    "r": 40,
+    "g": 90,
+    "b": 0,
+    "a": 255
+  },
+  "MedicalCot": {
+    "r": 0,
+    "g": 0,
+    "b": 0,
+    "a": 255
+  },
+  "Tile": {
+    "r": 255,
+    "g": 255,
+    "b": 0,
+    "a": 255
+  },
+
+
+
+  "GasConduitBridge": {
+	"r": 30,
+    "g": 30,
+    "b": 0,
+    "a": 255
+  },
+  "AirConditioner": {
+	"r": 40,
+    "g": 30,
+    "b": 0,
+    "a": 255
+  },
+  "LiquidValve": {
+	"r": 50,
+    "g": 70,
+    "b": 0,
+    "a": 255
+  },
+  "WireBridge": {
+	"r": 80,
+    "g": 80,
+    "b": 0,
+    "a": 255
+  },
+  "InsulatedLiquidConduit": {
+	"r": 30,
+    "g": 30,
+    "b": 0,
+    "a": 255
+  },
+  "CO2Scrubber": {
+	"r": 40,
+    "g": 0,
+    "b": 0,
+    "a": 255
+  },
+  "LiquidConduitBridge": {
+	"r": 30,
+    "g": 30,
+    "b": 0,
+    "a": 255
+  },
+  "PowerTransformer": {
+	"r": 70,
+    "g": 80,
+    "b": 0,
+    "a": 255
+  },
+  "AlgaeDistillery": {
+	"r": 90,
+    "g": 110,
+    "b": 0,
+    "a": 255
+  },
+  "Generator": {
+	"r": 140,
+    "g": 0,
+    "b": 0,
+    "a": 255
+  },
+  "WaterPurifier": {
+	"r": 0,
+    "g": 0,
+    "b": 0,
+    "a": 255
+  },
+  "MethaneGenerator": {
+	"r": 70,
+    "g": 40,
+    "b": 0,
+    "a": 255
+  },
+  "HydrogenGenerator": {
+	"r": 70,
+    "g": 60,
+    "b": 0,
+    "a": 255
+  },
+  "ClothingFabricator": {
+	"r": 0,
+    "g": 0,
+    "b": 0,
+    "a": 255
+  },
+  "GasFilter": {
+	"r": 30,
+    "g": 40,
+    "b": 0,
+    "a": 255
+  },
+  "GasPump": {
+	"r": 40,
+    "g": 70,
+    "b": 0,
+    "a": 255
+  },
+  "GasConduit": {
+	"r": 30,
+    "g": 30,
+    "b": 0,
+    "a": 255
+  },
+  "LiquidVent": {
+	"r": 60,
+    "g": 80,
+    "b": 0,
+    "a": 255
+  },
+  "Electrolyzer": {
+	"r": 100,
+    "g": 40,
+    "b": 0,
+    "a": 255
+  },
+  "Switch": {
+	"r": 40,
+    "g": 40,
+    "b": 0,
+    "a": 255
+  },
+  "PressureDoor": {
+	"r": 40,
+    "g": 40,
+    "b": 0,
+    "a": 255
+  },
+  "GasVent": {
+	"r": 0,
+    "g": 0,
+    "b": 0,
+    "a": 255
+  },
+  "FlushToilet": {
+	"r": 80,
+    "g": 40,
+    "b": 0,
+    "a": 255
+  },
+  "Apothecary": {
+	"r": 40,
+    "g": 40,
+    "b": 0,
+    "a": 255
+  },
+  "CeilingLight": {
+	"r": 30,
+    "g": 40,
+    "b": 0,
+    "a": 255
+  },
+  "BatteryMedium": {
+	"r": 120,
+    "g": 100,
+    "b": 0,
+    "a": 255
+  },
+  "DiningTable": {
+	"r": 50,
+    "g": 50,
+    "b": 0,
+    "a": 255
+  },
+  "Canvas": {
+	"r": 100,
+    "g": 80,
+    "b": 0,
+    "a": 255
+  },
+  "Sculpture": {
+	"r": 60,
+    "g": 50,
+    "b": 0,
+    "a": 255
+  },
+  "LiquidPump": {
+	"r": 70,
+    "g": 90,
+    "b": 0,
+    "a": 255
+  },
+  "CookingStation": {
+	"r": 40,
+    "g": 50,
+    "b": 0,
+    "a": 255
+  },
+  "LiquidConduit": {
+	"r": 30,
+    "g": 30,
+    "b": 0,
+    "a": 255
+  },
+  "MassageTable": {
+	"r": 50,
+    "g": 70,
+    "b": 0,
+    "a": 255
+  },
+  "ManualGenerator": {
+	"r": 140,
+    "g": 115,
+    "b": 0,
+    "a": 255
+  },
+  "MicrobeMusher": {
+	"r": 40,
+    "g": 40,
+    "b": 0,
+    "a": 255
+  },
+  "Wire": {
+	"r": 90,
+    "g": 40,
+    "b": 0,
+    "a": 255
+  },
+  "HydroponicFarm": {
+	"r": 50,
+    "g": 50,
+    "b": 0,
+    "a": 255
+  },
+  "AirFilter": {
+	"r": 100,
+    "g": 110,
+    "b": 0,
+    "a": 255
+  },
+  "Door": {
+	"r": 90,
+    "g": 70,
+    "b": 0,
+    "a": 255
+  },
+  "HighWattageWire": {
+	"r": 70,
+    "g": 90,
+    "b": 0,
+    "a": 255
+  },
+  "Battery": {
+	"r": 120,
+    "g": 100,
+    "b": 0,
+    "a": 255
+  },
+  "Aquafarm": {
+	"r": 80,
+    "g": 60,
+    "b": 0,
+    "a": 255
+  },
+  "LiquidHeater": {
+	"r": 120,
+    "g": 100,
+    "b": 0,
+    "a": 255
+  },
+  "Compost": {
+	"r": 90,
+    "g": 80,
+    "b": 0,
+    "a": 255
+  },
+  "LiquidCooledFan": {
+	"r": 60,
+    "g": 40,
+    "b": 0,
+    "a": 255
+  },
+  "MedicalBed": {
+	"r": 80,
+    "g": 100,
+    "b": 0,
+    "a": 255
+  },
+  "HandSanitizer": {
+	"r": 30,
+    "g": 40,
+    "b": 0,
+    "a": 255
+  },
+  "FertilizerMaker": {
+	"r": 90,
+    "g": 50,
+    "b": 0,
+    "a": 255
+  },
+  "ResearchCenter": {
+	"r": 50,
+    "g": 50,
+    "b": 0,
+    "a": 255
+  },
+  "AdvancedResearchCenter": {
+	"r": 60,
+    "g": 60,
+    "b": 0,
+    "a": 255
+  },
+  "FloorLamp": {
+	"r": 90,
+    "g": 70,
+    "b": 0,
+    "a": 255
+  }
+}
