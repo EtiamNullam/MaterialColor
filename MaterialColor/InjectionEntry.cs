@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -7,54 +8,121 @@ namespace MaterialColor
 {
     public static class InjectionEntry
     {
-        public static void Enter()
+        public static void EnterOnce()
         {
             //Debug.LogError("Injected");
             //return;
             try
             {
-                var elementColorInfosJsonManager = new Common.Json.ElementColorInfosManager();
+                TryLoadElementColorInfos();
+                TryLoadTypeColorOffsets();
 
-                try
-                {
-                    MaterialColorGuard.ElementColorInfos = elementColorInfosJsonManager.LoadElementColorInfos();
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError("Can't load ElementColorInfos\n"
-                        + e.Message + '\n'
-                        + e.StackTrace
-                        );
-                }
-                //MaterialColorGuard.TypesStandardColor = jsonManager.LoadTypesColors();
-                // test - result: in same directory as main exe
-                //Debug.LogError(new System.IO.FileInfo("test").FullName);
-                //return;
-                //
-
+                // unsubscribe?
                 Components.BuildingCompletes.OnAdd += OnBuildingsCompletesAdd;
 
-                foreach (var building in Components.BuildingCompletes)
-                {
-                    OnBuildingsCompletesAdd(building);
-                }
+                ElementColorInfosChanged = TypeColorOffsetsChanged = true;
+
+                TryLoadInjectorState();
+
+                StartFileChangeNotifier();
             }
             catch (Exception e)
             {
-                Debug.LogError("Injection failed\n" 
+                Debug.LogError("Injection failed\n"
                     + e.Message + '\n'
                     + e.StackTrace
                     );
             }
         }
 
-        // doesnt work on world reload
+        private static void StartFileChangeNotifier()
+        {
+            // convert to instance class and dispose properly of events and FileChangeNotifier
+            _fileChangeNotifier = _fileChangeNotifier ?? new FileChangeNotifier();
+
+            _fileChangeNotifier.ElementColorInfosChanged += OnElementColorsInfosUpdated;
+            _fileChangeNotifier.TypeColorsChanged += OnTypeColorOffsetsUpdated;
+            _fileChangeNotifier.InjectorStateChanged += OnInjectorStateChanged;
+        }
+
+        private static void OnInjectorStateChanged(object sender, FileSystemEventArgs e)
+        {
+            TryLoadInjectorState();
+        }
+
+        private static void TryLoadInjectorState()
+        {
+            var injectorStateManager = new Common.Json.InjectorStateManager();
+
+            List<bool> state;
+
+            try
+            {
+                state = injectorStateManager.LoadState();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("Can't load injector state\n"
+                    + ex.Message + '\n'
+                    + ex.StackTrace
+                    );
+
+                return;
+            }
+
+            if (state.Count >= 5)
+            {
+                MaterialColorGuard.ShowMissingElements = state[1];
+                MaterialColorGuard.ShowMissingTypes = state[2];
+                SkipTiles = state[3];
+                MaterialColorGuard.SetColorableObjectsAsWhite = state[4];
+            }
+            else
+            {
+                Debug.LogError("Invalid injector state.");
+            }
+        }
+
+        private static void TryLoadElementColorInfos()
+        {
+            var elementColorInfosJsonManager = new Common.Json.ElementColorInfosManager();
+
+            try
+            {
+                MaterialColorGuard.ElementColorInfos = elementColorInfosJsonManager.LoadElementColorInfos();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Can't load ElementColorInfos\n"
+                    + e.Message + '\n'
+                    + e.StackTrace
+                    );
+            }
+        }
+
+        private static void TryLoadTypeColorOffsets()
+        {
+            var typeColorOffsetsJsonManager = new Common.Json.TypeColorOffsetsManager();
+
+            try
+            {
+                MaterialColorGuard.TypeColorOffsets = typeColorOffsetsJsonManager.LoadTypeColorOffsets();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Can't load TypeColorOffests\n"
+                    + e.Message + '\n'
+                    + e.StackTrace
+                    );
+            }
+        }
+
         public static void EnterEveryUpdate()
         {
             if (ElementColorInfosChanged || TypeColorOffsetsChanged)
             {
-                //TryLoadElementColorInfos();
-                //TryLoadTypeColorOffsets();
+                TryLoadElementColorInfos();
+                TryLoadTypeColorOffsets();
 
                 UpdateBuildingsColors();
 
@@ -74,30 +142,34 @@ namespace MaterialColor
             }
         }
 
-        //private static void OnElementColorsInfosUpdated(object sender, FileSystemEventArgs e)
-        //{
-        //    Debug.LogError("Element color infos updated");
-        //    //UpdateBuildingsColors();
+        private static void OnElementColorsInfosUpdated(object sender, FileSystemEventArgs e)
+        {
+            Debug.LogError("Element color infos updated");
+            //UpdateBuildingsColors();
 
-        //    ElementColorInfosChanged = true;
-        //}
+            ElementColorInfosChanged = true;
+        }
 
-        //private static void OnTypeColorOffsetsUpdated(object sender, FileSystemEventArgs e)
-        //{
-        //    Debug.LogError("Type colors updated");
-        //    //UpdateBuildingsColors();
+        private static void OnTypeColorOffsetsUpdated(object sender, FileSystemEventArgs e)
+        {
+            Debug.LogError("Type colors updated");
+            //UpdateBuildingsColors();
 
-        //    TypeColorOffsetsChanged = true;
-        //}
+            TypeColorOffsetsChanged = true;
+        }
 
-        //private static FileChangeNotifier _fileChangeNotifier;
+        private static FileChangeNotifier _fileChangeNotifier;
 
         // refrigerator, storagelocker, bed, medicalcot and others needs special case
-        // also all pipes
         // (ownable class)
         // tile doesnt have KAnimControllerBase, find another way to tint it
         // TODO: refactor
         private static void OnBuildingsCompletesAdd(BuildingComplete building)
+        {
+            UpdateBuildingColor(building);
+        }
+
+        private static void UpdateBuildingColor(BuildingComplete building)
         {
             var buildingName = building.name.Replace("Complete", string.Empty);
 
@@ -139,16 +211,10 @@ namespace MaterialColor
                     rationBox.filterTint = color;
                     rationBox.noFilterTint = dimmedColor; 
                 }
-
-
             }
-            else
+            else if (!SkipTiles || SkipTiles && buildingName != "Tile" && buildingName !=  "MeshTile" && buildingName != "InsulationTile" && buildingName != "GasPermeableMembrane")
             {
-                // skip for tile
-                if (buildingName != "Tile")
-                {
-                    Debug.LogError($"Can't find KAnimControllerBase component in {buildingName}");
-                }
+                Debug.LogError($"Can't find KAnimControllerBase component in {buildingName}");
             }
         }
 

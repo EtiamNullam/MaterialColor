@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Common.Json
 {
-    public class TypeColorsManager
+    public class TypeColorOffsetsManager
     {
         // inject instead of creating?
         private JsonManager _manager = new JsonManager();
@@ -17,7 +17,7 @@ namespace Common.Json
             _manager.Serialize(dictionary, DefaultPaths.TypeColorsPath);
         }
 
-        public Dictionary<string, Color32> LoadTypesColors()
+        public Dictionary<string, Color32> LoadTypeColorOffsets()
         {
             return _manager.Deserialize<Dictionary<string, Color32>>(DefaultPaths.TypeColorsPath);
         }

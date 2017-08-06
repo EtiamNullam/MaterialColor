@@ -48,7 +48,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -59,7 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Color32Extensions.cs" />
-    <Compile Include="WCF\ColorReloaderHost.cs" />
+    <Compile Include="FileChangeNotifier.cs" />
     <Compile Include="InjectionEntry.cs" />
     <Compile Include="MaterialColorGuard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -69,16 +68,14 @@
     <None Include="ElementColorInfos.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="TypeColorOffsets.json" />
+    <None Include="TypeColorOffsets.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{eda0cd77-3605-4c5a-aca6-6bbda16a24af}</Project>
       <Name>Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MaterialColor.WCF\MaterialColor.WCF.csproj">
-      <Project>{96e53470-5817-4688-945f-708e59804d99}</Project>
-      <Name>MaterialColor.WCF</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

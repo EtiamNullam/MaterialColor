@@ -1,4 +1,4 @@
-﻿using Injector.WPF.DAL;
+﻿using Common.Json;
 using Prism.Commands;
 using Prism.Logging;
 using Prism.Mvvm;
@@ -12,21 +12,29 @@ namespace Injector.WPF.ViewModels
 {
     public class InjectorViewModel : BindableBase
     {
-        public InjectorViewModel(JsonManagerProxy jsonManager, FileManager fileManager, DefaultInjector injector)
+        public InjectorViewModel(InjectorStateManager stateManager, FileManager fileManager, DefaultInjector injector)
         {
             PatchCommand = new DelegateCommand(Patch);
             RestoreBackupCommand = new DelegateCommand(RestoreBackup, CanRestoreBackup);
 
-            _jsonManager = jsonManager;
+            _stateManager = stateManager;
             _fileManager = fileManager;
             _injector = injector;
 
-            EnableDebugConsole = TryLoadLastAppState();
+            ApplyState(TryLoadLastAppState());
         }
 
         ~InjectorViewModel()
         {
-            _jsonManager.SaveState(EnableDebugConsole);
+            _stateManager.SaveState(
+                new List<bool>
+                {
+                    EnableDebugConsole,
+                    ShowMissingElementColorInfos,
+                    ShowMissingTypeColorOffsets,
+                    SkipTiles,
+                    ShowWhite
+                });
         }
 
         public DelegateCommand PatchCommand { get; private set; }
@@ -53,12 +61,64 @@ namespace Injector.WPF.ViewModels
             }
         }
 
-        private JsonManagerProxy _jsonManager;
+        public bool ShowMissingElementColorInfos
+        {
+            get
+            {
+                return _showMissingElementColorInfos;
+            }
+            set
+            {
+                SetProperty(ref _showMissingElementColorInfos, value);
+            }
+        }
+
+        public bool ShowMissingTypeColorOffsets
+        {
+            get
+            {
+                return _showMissingTypeColorOffsets;
+            }
+            set
+            {
+                SetProperty(ref _showMissingTypeColorOffsets, value);
+            }
+        }
+
+        public bool SkipTiles
+        {
+            get
+            {
+                return _skipTiles;
+            }
+            set
+            {
+                SetProperty(ref _skipTiles, value);
+            }
+        }
+        
+        public bool ShowWhite
+        {
+            get
+            {
+                return _showWhite;
+            }
+            set
+            {
+                SetProperty(ref _showWhite, value);
+            }
+        }
+
+        private InjectorStateManager _stateManager;
         private FileManager _fileManager;
         private DefaultInjector _injector;
 
         private string _status;
         private bool _enableDebugConsole;
+        private bool _showMissingElementColorInfos;
+        private bool _showMissingTypeColorOffsets;
+        private bool _skipTiles;
+        private bool _showWhite;
 
         public bool CanRestoreBackup()
             => _fileManager.BackupForFileExists(DefaultPaths.DefaultTargetAssemblyPath);
@@ -75,12 +135,21 @@ namespace Injector.WPF.ViewModels
                 }
                 else
                 {
-                    resultInfo.Append("\tBackup Failed.\n\tPatch cancelled.\n");
+                    resultInfo.Append("\tBackup failed.\n\tPatch cancelled.\n");
                     return;
                 }
             }
 
-            _injector.InjectDefaultAndBackup(EnableDebugConsole);
+            try
+            {
+                _injector.InjectDefaultAndBackup(EnableDebugConsole);
+            }
+            catch (Exception e)
+            {
+                resultInfo.Append("\tInjection failed.\n" + e.Message + "\n" + e.StackTrace);
+                Status += resultInfo.ToString();
+                return;
+            }
 
             RestoreBackupCommand.RaiseCanExecuteChanged();
 
@@ -110,21 +179,38 @@ namespace Injector.WPF.ViewModels
             return result;
         }
 
-        private bool TryLoadLastAppState()
+        private List<bool> TryLoadLastAppState()
         {
-            var lastEnableDebugConsole = false;
+            var lastState = new List<bool> { true, false, false, true, false };
 
             try
             {
-                lastEnableDebugConsole = _jsonManager.LoadLastState();
+                lastState = _stateManager.LoadState();
             }
             catch
             {
                 Status += "Can't load last state";
             }
 
-            return lastEnableDebugConsole;
+            return lastState;
         }
 
+        private void ApplyState(List<bool> state)
+        {
+            if (state.Count < 1) return;
+            EnableDebugConsole = state[0];
+
+            if (state.Count < 2) return;
+            ShowMissingElementColorInfos = state[1];
+
+            if (state.Count < 3) return;
+            ShowMissingTypeColorOffsets = state[2];
+
+            if (state.Count < 4) return;
+            SkipTiles = state[3];
+
+            if (state.Count < 5) return;
+            ShowWhite = state[4];
+        }
     }
 }

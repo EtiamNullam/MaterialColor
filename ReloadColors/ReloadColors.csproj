@@ -129,10 +129,6 @@
       <Project>{eda0cd77-3605-4c5a-aca6-6bbda16a24af}</Project>
       <Name>Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MaterialColor.WCF\MaterialColor.WCF.csproj">
-      <Project>{96E53470-5817-4688-945F-708E59804D99}</Project>
-      <Name>MaterialColor.WCF</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

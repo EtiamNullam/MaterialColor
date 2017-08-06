@@ -39,8 +39,16 @@ namespace Injector
             targetModule = MethodInjectorHelper.InjectAsFirstInstruction(
                 sourceModule,
                 targetModule,
-                "InjectionEntry", "Enter", 
+                "InjectionEntry", "EnterOnce", 
                 "Game", "OnPrefabInit");
+
+            // inject before instruction #5
+            targetModule = MethodInjectorHelper.InjectBefore(
+                sourceModule,
+                targetModule,
+                "InjectionEntry", "EnterEveryUpdate",
+                "Game", "Update",
+                5);
 
             targetModule = FieldPublishHelper.MakeFieldPublic(targetModule, "Ownable", "unownedTint");
             targetModule = FieldPublishHelper.MakeFieldPublic(targetModule, "Ownable", "ownedTint");
@@ -58,10 +66,10 @@ namespace Injector
          */
         private ModuleDefinition EnableConsole(ModuleDefinition module)
         {
-            module = InstructionRemoveHelper.RemoveInstructionAt(module, "Game", "Update", 8);
-            module = InstructionRemoveHelper.RemoveInstructionAt(module, "Game", "Update", 8);
-            module = InstructionRemoveHelper.RemoveInstructionAt(module, "Game", "Update", 8);
-            module = InstructionRemoveHelper.RemoveInstructionAt(module, "Game", "Update", 8);
+            module = InstructionRemoveHelper.RemoveInstructionAt(module, "Game", "Update", 9);
+            module = InstructionRemoveHelper.RemoveInstructionAt(module, "Game", "Update", 9);
+            module = InstructionRemoveHelper.RemoveInstructionAt(module, "Game", "Update", 9);
+            module = InstructionRemoveHelper.RemoveInstructionAt(module, "Game", "Update", 9);
 
             return module;
         }

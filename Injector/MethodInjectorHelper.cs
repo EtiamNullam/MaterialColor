@@ -47,5 +47,20 @@ namespace Injector
 
             return targetModule;
         }
+
+        public static ModuleDefinition InjectBefore(ModuleDefinition sourceModule, ModuleDefinition targetModule, string sourceTypeName, string sourceMethodName, string targetTypeName, string targetMethodName, int instructionIndex)
+        {
+            var sourceMethod = CecilHelper.GetMethodDefinition(sourceModule, sourceTypeName, sourceMethodName);
+            var sourceMethodReference = CecilHelper.GetMethodReference(targetModule, sourceMethod);
+
+            var targetMethod = CecilHelper.GetMethodDefinition(targetModule, targetTypeName, targetMethodName);
+            var targetMethodBody = targetMethod.Body;
+
+            var instruction = targetMethodBody.Instructions[instructionIndex];
+
+            targetMethodBody.GetILProcessor().InsertBefore(instruction, Instruction.Create(OpCodes.Call, sourceMethodReference));
+
+            return targetModule;
+        }
     }
 }

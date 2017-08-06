@@ -25,10 +25,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorEditor", "ColorEditor\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorEditor.WPF", "ColorEditor.WPF\ColorEditor.WPF.csproj", "{7833A3C1-2306-4A30-A8E3-CC6FF94CC77D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReloadColors", "ReloadColors\ReloadColors.csproj", "{BDFDAC97-4A0E-4417-B7A4-375A0A4F52BF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterialColor.WCF", "MaterialColor.WCF\MaterialColor.WCF.csproj", "{96E53470-5817-4688-945F-708E59804D99}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,14 +75,6 @@ Global
 		{7833A3C1-2306-4A30-A8E3-CC6FF94CC77D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7833A3C1-2306-4A30-A8E3-CC6FF94CC77D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7833A3C1-2306-4A30-A8E3-CC6FF94CC77D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BDFDAC97-4A0E-4417-B7A4-375A0A4F52BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BDFDAC97-4A0E-4417-B7A4-375A0A4F52BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BDFDAC97-4A0E-4417-B7A4-375A0A4F52BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BDFDAC97-4A0E-4417-B7A4-375A0A4F52BF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{96E53470-5817-4688-945F-708E59804D99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{96E53470-5817-4688-945F-708E59804D99}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{96E53470-5817-4688-945F-708E59804D99}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{96E53470-5817-4688-945F-708E59804D99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

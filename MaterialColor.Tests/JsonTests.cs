@@ -93,5 +93,11 @@ namespace MaterialColor.Tests
                 textReader.Close();
             }
         }
+
+        //[TestCase("D:\\Downloads\\Games\\Oxygen Not Included\\221865\\modding\\MaterialColor\\TypeColors.json")]
+        //public void ExportTypeColors(string path)
+        //{
+        //    MaterialColorGuard.ExportTypeColorsDictionaryToJson(path);
+        //}
     }
 }
