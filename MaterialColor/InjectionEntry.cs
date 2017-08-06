@@ -48,7 +48,52 @@ namespace MaterialColor
             }
         }
 
+        // doesnt work on world reload
+        public static void EnterEveryUpdate()
+        {
+            if (ElementColorInfosChanged || TypeColorOffsetsChanged)
+            {
+                //TryLoadElementColorInfos();
+                //TryLoadTypeColorOffsets();
+
+                UpdateBuildingsColors();
+
+                ElementColorInfosChanged = TypeColorOffsetsChanged = false;
+            }
+        }
+
+        private static bool ElementColorInfosChanged = false;
+        private static bool TypeColorOffsetsChanged = false;
+        private static bool SkipTiles = false;
+
+        private static void UpdateBuildingsColors()
+        {
+            foreach (var building in Components.BuildingCompletes)
+            {
+                OnBuildingsCompletesAdd(building);
+            }
+        }
+
+        //private static void OnElementColorsInfosUpdated(object sender, FileSystemEventArgs e)
+        //{
+        //    Debug.LogError("Element color infos updated");
+        //    //UpdateBuildingsColors();
+
+        //    ElementColorInfosChanged = true;
+        //}
+
+        //private static void OnTypeColorOffsetsUpdated(object sender, FileSystemEventArgs e)
+        //{
+        //    Debug.LogError("Type colors updated");
+        //    //UpdateBuildingsColors();
+
+        //    TypeColorOffsetsChanged = true;
+        //}
+
+        //private static FileChangeNotifier _fileChangeNotifier;
+
         // refrigerator, storagelocker, bed, medicalcot and others needs special case
+        // also all pipes
         // (ownable class)
         // tile doesnt have KAnimControllerBase, find another way to tint it
         // TODO: refactor
