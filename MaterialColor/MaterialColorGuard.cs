@@ -12,46 +12,12 @@ namespace MaterialColor
     {
         public static Dictionary<KAnimControllerBase, Color32> AssociatedColors = new Dictionary<KAnimControllerBase, Color32>();
 
-        public static Dictionary<string, Color32> TypesStandardColor = new Dictionary<string, Color32>
-        {
-            // new, tested
-            { "Ladder",                     new Color32(110, 50, 0, 0xFF) },
-            { "Outhouse",                   new Color32(70, 40, 0, 0xFF) },
-            { "FlowerVase",                 new Color32(0, 0, 0, 0xFF) },
-            { "ManualPressureDoor",         new Color32(50, 50, 0, 0xFF) },
-            { "StorageLocker",              new Color32(40, 60, 0, 0xFF) },
-            // verify with color
-            { "Bed",                        new Color32(40, 30, 0, 0xFF) }, // hint: ownable
-            { "Headquarters",               new Color32(30, 50, 0, 0xFF) }, // spawn portal
-            { "RationBox",                  new Color32(110, 110, 0, 0xFF) },
-            { "Grave",                new Color32(0, 0, 0, 0xFF) },
-            { "GasValve",                new Color32(0, 70, 0, 0xFF) },
-
-            // proper name, probably wrong color
-            { "TemperatureControlledSwitch",                new Color32(40, 0, 0, 0xFF) },
-            { "PressureSwitchGas",                new Color32(40, 0, 0, 0xFF) },
-            { "MineralDeoxidizer",                new Color32(0, 70, 0, 0xFF) },
-            { "Shower",              new Color32(0, 0, 0, 0xFF) },
-            { "InsulatedGasConduit",              new Color32(0, 0, 0, 0xFF) }, // probably changes on overlay change
-
-            // old
-            { "Battery",            new Color32(90, 100, 0, 0xFF) },
-            { "Door",               new Color32(50, 50, 0, 0xFF) }, // obsolete
-            { "Conditioner",        new Color32(0, 0, 0, 0xFF) },
-            { "Pump",               new Color32(0, 40, 15, 0xFF) },
-            { "Refrigerator",       new Color32(40, 80, 0, 0xFF) },
-            { "MedicalCot",         new Color32(0, 0, 0, 0xFF) },
-            { "Lavatory",           new Color32(0, 0, 0, 0xFF) },
-
-            // in progress (old)
-            { "Tile",              new Color32(0xFF, 0xFF, 0, 0xFF) },
-
-            // future
-        };
+        public static Dictionary<string, Color32> TypeColorOffsets = new Dictionary<string, Color32>();
 
         // set at injector
         public static bool ShowMissingTypes = false;
         public static bool ShowMissingElements = false;
+        public static bool SetColorableObjectsAsWhite = false;
 
         // is saved to json
         public static Dictionary<SimHashes, ElementColorInfo> ElementColorInfos = new Dictionary<SimHashes, ElementColorInfo>();
@@ -190,7 +156,7 @@ namespace MaterialColor
                 return new Color32(0xFF, 0, 0xFF, 0xFF);
             }
 
-            if (!TypesStandardColor.TryGetValue(objectTypeName, out Color32 typeStandardColor))
+            if (!TypeColorOffsets.TryGetValue(objectTypeName, out Color32 typeStandardColor))
             {
                 if (ShowMissingTypes)
                 {
@@ -201,15 +167,13 @@ namespace MaterialColor
 
             var whiteColorForObject = typeStandardColor.TintToWhite();
 
-            // use to set object color offset (dark wont dim here)
-            kAnimController.TintColour = whiteColorForObject;
-            return whiteColorForObject;
-            //
+            if (SetColorableObjectsAsWhite)
+            {
+                kAnimController.TintColour = whiteColorForObject;
+                return whiteColorForObject;
+            }
 
             var materialColor = whiteColorForObject.Multiply(elementColorInfo.ColorMultiplier).SetBrightness(elementColorInfo.Brightness);
-
-            // test - everything should be gray
-            //kAnimController.TintColour = TintToWhite(TypeStandardColor[objectTypeName]);
 
             return materialColor;
         }
@@ -268,39 +232,35 @@ namespace MaterialColor
         }
 
         // do it once
-        public static void ExportDictionaryToJson()
-        {
-            var serializer = Newtonsoft.Json.JsonSerializer.Create(new Newtonsoft.Json.JsonSerializerSettings { Formatting = Newtonsoft.Json.Formatting.Indented });
-
-            using (var textWriter = new System.IO.StreamWriter("ElementsColorInfo.json"))
-            {
-                using (var jsonWriter = new Newtonsoft.Json.JsonTextWriter(textWriter))
-                {
-                    serializer.Serialize(jsonWriter, ElementColorInfos);
-                    jsonWriter.Close();
-                }
-                textWriter.Close();
-            }
-
-
-            // test - correct (local path)
-            //var info = new System.IO.FileInfo("test");
-        }
-
-        // using WCF (servicemodel) breaks everything
-        // convert to instance and clear on finalize/dispose
-        //public static void StartListenForColorReload()
+        //public static void ExportDictionaryToJson()
         //{
-        //    _serviceHost = new WCF.ColorReloaderHost();
+        //    var serializer = Newtonsoft.Json.JsonSerializer.Create(new Newtonsoft.Json.JsonSerializerSettings { Formatting = Newtonsoft.Json.Formatting.Indented });
 
-        //    WCF.ColorReloaderService.OnColorsReload += OnServiceColorsReload;
+        //    using (var textWriter = new System.IO.StreamWriter("ElementsColorInfo.json"))
+        //    {
+        //        using (var jsonWriter = new Newtonsoft.Json.JsonTextWriter(textWriter))
+        //        {
+        //            serializer.Serialize(jsonWriter, ElementColorInfos);
+        //            jsonWriter.Close();
+        //        }
+        //        textWriter.Close();
+        //    }
         //}
 
-        //private static WCF.ColorReloaderHost _serviceHost;
+        // do it once
+        //public static void ExportTypeColorsDictionaryToJson(string path)
+        //{
+        //    var serializer = Newtonsoft.Json.JsonSerializer.Create(new Newtonsoft.Json.JsonSerializerSettings { Formatting = Newtonsoft.Json.Formatting.Indented });
 
-        public static void OnServiceColorsReload(object sender, EventArgs e)
-        {
-            Debug.LogError("OnServiceColorsReload");
-        }
+        //    using (var textWriter = new System.IO.StreamWriter(path))
+        //    {
+        //        using (var jsonWriter = new Newtonsoft.Json.JsonTextWriter(textWriter))
+        //        {
+        //            serializer.Serialize(jsonWriter, TypeColorOffsets);
+        //            jsonWriter.Close();
+        //        }
+        //        textWriter.Close();
+        //    }
+        //}
     }
 }

@@ -55,7 +55,8 @@
     <Compile Include="ElementColorInfo.cs" />
     <Compile Include="Json\ElementColorInfosManager.cs" />
     <Compile Include="Json\JsonManager.cs" />
-    <Compile Include="Json\TypeColorsManager.cs" />
+    <Compile Include="Json\InjectorStateManager.cs" />
+    <Compile Include="Json\TypeColorOffsetsManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
