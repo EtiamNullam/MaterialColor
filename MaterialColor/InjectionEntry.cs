@@ -130,6 +130,7 @@ namespace MaterialColor
             }
         }
 
+        // doesnt work after 2nd world load
         private static bool ElementColorInfosChanged = false;
         private static bool TypeColorOffsetsChanged = false;
         private static bool SkipTiles = false;

@@ -50,10 +50,10 @@
   "Cuprite": {
     "ColorMultiplier": {
       "Red": 1.0,
-      "Green": 0.5,
-      "Blue": 0.05
+      "Green": 0.3,
+      "Blue": 0.1
     },
-    "Brightness": 1.0
+    "Brightness": 0.85
   },
   "IronOre": {
     "ColorMultiplier": {
@@ -67,7 +67,7 @@
     "ColorMultiplier": {
       "Red": 0.75,
       "Green": 1.0,
-      "Blue": 0.3
+      "Blue": 0.5
     },
     "Brightness": 0.8
   },
@@ -94,5 +94,21 @@
       "Blue": 1.0
     },
     "Brightness": 0.7
+  },
+  "Clay": {
+    "ColorMultiplier": {
+      "Red": 0.3,
+      "Green": 0.8,
+      "Blue": 0.2
+    },
+    "Brightness": 0.7
+  },
+  "Dirt": {
+    "ColorMultiplier": {
+      "Red": 0.6,
+      "Green": 0.3,
+      "Blue": 0.2
+    },
+    "Brightness": 0.5
   }
 }
