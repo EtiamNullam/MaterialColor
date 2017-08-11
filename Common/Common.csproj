@@ -50,14 +50,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Color32Multiplier.cs" />
+    <Compile Include="DataModels\Color32Multiplier.cs" />
+    <Compile Include="DataModels\ConfiguratorState.cs" />
     <Compile Include="DefaultPaths.cs" />
-    <Compile Include="ElementColorInfo.cs" />
+    <Compile Include="DataModels\ElementColorInfo.cs" />
+    <Compile Include="IOHelper.cs" />
+    <Compile Include="Json\ConfiguratorStateManager.cs" />
     <Compile Include="Json\ElementColorInfosManager.cs" />
     <Compile Include="Json\JsonManager.cs" />
     <Compile Include="Json\InjectorStateManager.cs" />
     <Compile Include="Json\TypeColorOffsetsManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

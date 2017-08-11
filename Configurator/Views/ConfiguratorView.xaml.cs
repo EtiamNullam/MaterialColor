@@ -13,21 +13,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Injector.WPF.Views
+namespace Configurator.Views
 {
-    public partial class InjectorView : Window
+    public partial class ConfiguratorView : Window
     {
-        public InjectorView()
+        public ConfiguratorView()
         {
             InitializeComponent();
-        }
-
-        private void OnStatusChanged(object sender, TextChangedEventArgs e)
-        {
-            if (sender is TextBox statusTextBox)
-            {
-                statusTextBox.ScrollToEnd();
-            }
         }
     }
 }
