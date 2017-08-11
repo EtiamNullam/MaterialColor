@@ -48,10 +48,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DummyInjectionSource\DummyInjectionSource.csproj">
-      <Project>{3d11857e-2f0e-47dc-9655-b6f7c6d873ac}</Project>
-      <Name>DummyInjectionSource</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Injector\Injector.csproj">
       <Project>{f991ba84-4ff5-4e77-a8a1-44c52ac4ab85}</Project>
       <Name>Injector</Name>

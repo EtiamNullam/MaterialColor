@@ -10,7 +10,7 @@ namespace MaterialColor
     {
         public static void EnterOnce()
         {
-            //Debug.LogError("Injected");
+            Debug.LogError("Enter Once");
             //return;
             try
             {
@@ -22,7 +22,10 @@ namespace MaterialColor
 
                 ElementColorInfosChanged = TypeColorOffsetsChanged = true;
 
-                TryLoadInjectorState();
+                //TryLoadInjectorState();
+                TryLoadConfiguratorState();
+
+                OverlayScreen.OnOverlayChanged += OnOverlayChanged;
 
                 StartFileChangeNotifier();
             }
@@ -35,6 +38,102 @@ namespace MaterialColor
             }
         }
 
+        public static void EnterEveryUpdate()
+        {
+            var changed = false;
+
+            if (ElementColorInfosChanged)
+            {
+                TryLoadElementColorInfos();
+                changed = true;
+
+                //temp
+                TryLoadTypeColorOffsets();
+            }
+
+            if (TypeColorOffsetsChanged)
+            {
+                TryLoadTypeColorOffsets();
+                changed = true;
+
+                //temp
+                TryLoadElementColorInfos();
+            }
+
+            if (changed)
+            {
+                UpdateBuildingsColors();
+                ElementColorInfosChanged = TypeColorOffsetsChanged = false;
+            }
+        }
+
+        // TODO: find a way to show mesh and gas permeable tiles' material color
+        public static UnityEngine.Color EnterCell(Rendering.BlockTileRenderer blockRenderer, int cellIndex)
+        {
+            // doesnt work for gas permeable tiles (shows gas element)
+            // changed color of white blueprint when building new tiles
+            var cellElementIndex = Grid.Cell[cellIndex].elementIdx;
+
+            // test
+
+            //try
+            //{
+            //    var cellOnTile = Grid.Objects[cellIndex, (int)Grid.SceneLayer.TileMain];
+
+            //    if (cellOnTile != null)
+            //    {
+            //        Debug.LogError(cellOnTile.GetType().ToString());
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    Debug.LogError("Can't get cell " + cellIndex + '\n' + e.Message);
+            //}
+
+            // grid elements indexer test
+            // WIP
+
+            //var cellOnTile = Grid.
+
+            // temporarily disabled
+            var elementHash = ElementLoader.elements[cellElementIndex].id;
+
+            var materialColor = MaterialColorGuard.GetCellMaterialColor(elementHash);
+
+            if (blockRenderer.highlightCell == cellIndex)
+            {
+                return materialColor * 1.25f;
+            }
+            else if (blockRenderer.selectedCell == cellIndex)
+            {
+                return materialColor * 1.5f;
+            }
+            return materialColor;
+
+            // old handling
+
+            //if (blockRenderer.highlightCell == cellIndex)
+            //{
+            //    return new UnityEngine.Color(1, 1, 1) * 1.5f;
+            //}
+            //else if (blockRenderer.selectedCell == cellIndex)
+            //{
+            //    return new UnityEngine.Color(1, 1, 1) * 1.25f;
+            //}
+            //else return new UnityEngine.Color(1, 1, 1);
+            //
+
+        }
+
+        private static void OnOverlayChanged(SimViewMode obj)
+        {
+            //Debug.LogError(obj.ToString());
+            if (obj == SimViewMode.None)
+            {
+                UpdateBuildingsColors();
+            }
+        }
+
         private static void StartFileChangeNotifier()
         {
             // convert to instance class and dispose properly of events and FileChangeNotifier
@@ -42,44 +141,36 @@ namespace MaterialColor
 
             _fileChangeNotifier.ElementColorInfosChanged += OnElementColorsInfosUpdated;
             _fileChangeNotifier.TypeColorsChanged += OnTypeColorOffsetsUpdated;
-            _fileChangeNotifier.InjectorStateChanged += OnInjectorStateChanged;
+            _fileChangeNotifier.ConfiguratorStateChanged += OnConfiguratorStateChanged;
         }
 
-        private static void OnInjectorStateChanged(object sender, FileSystemEventArgs e)
+        //
+        //
+        // load configurator state instead
+        //
+        //
+        private static void OnConfiguratorStateChanged(object sender, FileSystemEventArgs e)
         {
-            TryLoadInjectorState();
+            //TryLoadInjectorState();
+            TryLoadConfiguratorState();
         }
 
-        private static void TryLoadInjectorState()
+        private static void TryLoadConfiguratorState()
         {
-            var injectorStateManager = new Common.Json.InjectorStateManager();
-
-            List<bool> state;
+            var configuratorStateManager = new Common.Json.ConfiguratorStateManager();
 
             try
             {
-                state = injectorStateManager.LoadState();
+                MaterialColorGuard.ConfiguratorState = configuratorStateManager.LoadState();
             }
             catch (Exception ex)
             {
-                Debug.LogError("Can't load injector state\n"
+                Debug.LogError("Can't load configurator state.\n"
                     + ex.Message + '\n'
                     + ex.StackTrace
                     );
 
                 return;
-            }
-
-            if (state.Count >= 5)
-            {
-                MaterialColorGuard.ShowMissingElements = state[1];
-                MaterialColorGuard.ShowMissingTypes = state[2];
-                SkipTiles = state[3];
-                MaterialColorGuard.SetColorableObjectsAsWhite = state[4];
-            }
-            else
-            {
-                Debug.LogError("Invalid injector state.");
             }
         }
 
@@ -110,30 +201,17 @@ namespace MaterialColor
             }
             catch (Exception e)
             {
-                Debug.LogError("Can't load TypeColorOffests\n"
+                Debug.LogError("Can't load TypeColorOffsets\n"
                     + e.Message + '\n'
                     + e.StackTrace
                     );
             }
         }
 
-        public static void EnterEveryUpdate()
-        {
-            if (ElementColorInfosChanged || TypeColorOffsetsChanged)
-            {
-                TryLoadElementColorInfos();
-                TryLoadTypeColorOffsets();
-
-                UpdateBuildingsColors();
-
-                ElementColorInfosChanged = TypeColorOffsetsChanged = false;
-            }
-        }
-
         // doesnt work after 2nd world load
         private static bool ElementColorInfosChanged = false;
         private static bool TypeColorOffsetsChanged = false;
-        private static bool SkipTiles = false;
+        //private static bool SkipTiles = false;
 
         private static void UpdateBuildingsColors()
         {
@@ -145,16 +223,14 @@ namespace MaterialColor
 
         private static void OnElementColorsInfosUpdated(object sender, FileSystemEventArgs e)
         {
-            Debug.LogError("Element color infos updated");
-            //UpdateBuildingsColors();
+            Debug.LogError("Element color infos changed");
 
             ElementColorInfosChanged = true;
         }
 
         private static void OnTypeColorOffsetsUpdated(object sender, FileSystemEventArgs e)
         {
-            Debug.LogError("Type colors updated");
-            //UpdateBuildingsColors();
+            Debug.LogError("Type colors changed");
 
             TypeColorOffsetsChanged = true;
         }
@@ -173,7 +249,6 @@ namespace MaterialColor
         private static void UpdateBuildingColor(BuildingComplete building)
         {
             var buildingName = building.name.Replace("Complete", string.Empty);
-
             var kAnimControllerBase = building.GetComponent<KAnimControllerBase>();
 
             if (kAnimControllerBase != null)
@@ -193,38 +268,36 @@ namespace MaterialColor
                     storageLocker.filterTint = color;
                     storageLocker.noFilterTint = dimmedColor;
                 }
-
-                // ownable
-                var ownable = building.GetComponent<Ownable>();
-
-                if (ownable != null)
+                else // ownable
                 {
-                    // temporarily disabled for build
-                    ownable.ownedTint = color;
-                    ownable.unownedTint = dimmedColor;
-                }
+                    var ownable = building.GetComponent<Ownable>();
 
-                // rationbox
-                var rationBox = building.GetComponent<RationBox>();
+                    if (ownable != null)
+                    {
+                        ownable.ownedTint = color;
+                        ownable.unownedTint = dimmedColor;
+                    }
+                    else // rationbox
+                    {
+                        var rationBox = building.GetComponent<RationBox>();
 
-                if (rationBox != null)
-                {
-                    rationBox.filterTint = color;
-                    rationBox.noFilterTint = dimmedColor; 
+                        if (rationBox != null)
+                        {
+                            rationBox.filterTint = color;
+                            rationBox.noFilterTint = dimmedColor;
+                        }
+                    }
                 }
             }
-            else if (!SkipTiles || SkipTiles && buildingName != "Tile" && buildingName !=  "MeshTile" && buildingName != "InsulationTile" && buildingName != "GasPermeableMembrane")
+            else if (!TileNames.Contains(buildingName))
             {
                 Debug.LogError($"Can't find KAnimControllerBase component in {buildingName}");
             }
         }
 
-        // not subscribed or used yet
-        private static void OnBuildingsCompletesRemove(BuildingComplete building)
+        private static List<string> TileNames = new List<string>
         {
-            //var storageLocker = building.GetComponent<StorageLocker>();
-
-            //storageLocker.
-        }
+            "Tile", "MeshTile", "InsulationTile", "GasPermeableMembrane"
+        };
     }
 }

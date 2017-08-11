@@ -5,33 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Injector.WPF.Views"
         xmlns:prism="http://prismlibrary.com/"
-        xmlns:viewModels="clr-namespace:Injector.WPF.ViewModels"
         mc:Ignorable="d"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="Patcher" Height="280" Width="300" MinWidth="300" MinHeight="240" MaxWidth="300">
+        Title="Patcher" Height="230" Width="280" MinWidth="280" MinHeight="230">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="130"/>
+            <RowDefinition Height="25"/>
             <RowDefinition Height="50"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <StackPanel Margin="5" Grid.ColumnSpan="2">
-            <CheckBox Content="Enable _debug log (change requires patching)" Margin="5" IsChecked="{Binding EnableDebugConsole, Mode=TwoWay}"/>
-            <CheckBox Content="Show missing element color infos" Margin="5" IsChecked="{Binding ShowMissingElementColorInfos, Mode=TwoWay}"/>
-            <CheckBox Content="Show missing type color offsets" Margin="5" IsChecked="{Binding ShowMissingTypeColorOffsets, Mode=TwoWay}"/>
-            <CheckBox Content="Skip tiles" Margin="30,5" IsChecked="{Binding SkipTiles, Mode=TwoWay}" IsEnabled="{Binding ShowMissingTypeColorOffsets}"/>
-            <CheckBox Content="Apply white to colorable objects" Margin="5" IsChecked="{Binding ShowWhite, Mode=TwoWay}"/>
-        </StackPanel>
-        
+        <CheckBox Content="Enable _debug log (change requires patching)" Margin="5" Grid.ColumnSpan="2" IsChecked="{Binding EnableDebugConsole, Mode=TwoWay}"/>
+
         <Button Command="{Binding PatchCommand}" Grid.Row="1" Content="_Patch" Margin="10"/>
         <Button Command="{Binding RestoreBackupCommand}" Grid.Row="1" Grid.Column="1" Content="_Restore Backup" Margin="10"/>
 
-        <!--scroll to newest on status change-->
-        <TextBox Grid.Row="2" Grid.ColumnSpan="2" TextWrapping="Wrap" Text="{Binding Status}" VerticalScrollBarVisibility="Visible" IsReadOnly="True" />
+        <TextBox Grid.Row="2" Grid.ColumnSpan="2" TextWrapping="Wrap" Text="{Binding Status}" VerticalScrollBarVisibility="Visible" IsReadOnly="True" TextChanged="OnStatusChanged" />
     </Grid>
 </Window>

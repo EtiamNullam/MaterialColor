@@ -1,0 +1,32 @@
+﻿<Window x:Class="Configurator.Views.ConfiguratorView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Configurator.Views"
+        xmlns:prism="http://prismlibrary.com/"
+        mc:Ignorable="d"
+        Title="MaterialColor configurator" Height="200" Width="300"
+        prism:ViewModelLocator.AutoWireViewModel="True" ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="100"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Margin="5" Grid.ColumnSpan="2">
+            <CheckBox Content="Show missing _element color infos" Margin="5" IsChecked="{Binding State.ShowMissingElementColorInfos}"/>
+            <CheckBox Content="Show missing _type color offsets" Margin="5" IsChecked="{Binding State.ShowMissingTypeColorOffsets}"/>
+            <CheckBox Content="Apply _white to colorable objects" Margin="5" IsChecked="{Binding State.ShowBuildingsAsWhite}"/>
+        </StackPanel>
+
+        <Button IsDefault="True" Grid.Row="1" Grid.Column="1" Content="_Apply" Margin="10" Command="{Binding ApplyCommand}"/>
+
+        <TextBox Margin="12.5" Grid.Row="1" Text="{Binding Status}" IsReadOnly="True"/>
+    </Grid>
+</Window>

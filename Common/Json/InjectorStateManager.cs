@@ -11,12 +11,12 @@ namespace Common.Json
     {
         private JsonManager _manager = new JsonManager();
 
-        public List<bool> LoadState()
+        public bool LoadState()
         {
-            return _manager.Deserialize<List<bool>>(DefaultPaths.InjectorStatePath);
+            return _manager.Deserialize<bool>(DefaultPaths.InjectorStatePath);
         }
 
-        public void SaveState(List<bool> state)
+        public void SaveState(bool state)
         {
             _manager.Serialize(state, DefaultPaths.InjectorStatePath);
         }

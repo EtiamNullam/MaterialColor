@@ -50,6 +50,22 @@ namespace Injector
                 "Game", "Update",
                 5);
 
+            // GetCellColor test - correct
+            targetModule = InstructionRemoveHelper.ClearAllButLast(
+                targetModule,
+                "BlockTileRenderer", "GetCellColor");
+
+            targetModule = MethodInjectorHelper.InjectAsFirstInstruction(
+                sourceModule,
+                targetModule,
+                "InjectionEntry", "EnterCell",
+                "BlockTileRenderer", "GetCellColor",
+                true, 1);
+
+            targetModule = FieldPublishHelper.MakeFieldPublic(targetModule, "BlockTileRenderer", "selectedCell");
+            targetModule = FieldPublishHelper.MakeFieldPublic(targetModule, "BlockTileRenderer", "highlightCell");
+            //
+
             targetModule = FieldPublishHelper.MakeFieldPublic(targetModule, "Ownable", "unownedTint");
             targetModule = FieldPublishHelper.MakeFieldPublic(targetModule, "Ownable", "ownedTint");
 
