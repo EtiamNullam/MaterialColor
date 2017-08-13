@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace Injector.WPF.ViewModels
 {
-    // TODO: only save state after patch
     public class InjectorViewModel : BindableBase
     {
         public InjectorViewModel(InjectorStateManager stateManager, FileManager fileManager, DefaultInjector injector)
@@ -31,7 +30,7 @@ namespace Injector.WPF.ViewModels
         public string Status
         {
             get => _status;
-            set => SetProperty(ref _status, value);
+            set => SetProperty(ref _status, $"{_status}\n{value}".Trim());
         }
 
         public bool EnableDebugConsole
@@ -52,20 +51,17 @@ namespace Injector.WPF.ViewModels
 
         public void Patch()
         {
-            //StringBuilder resultInfo = new StringBuilder($"Patch result [{DateTime.Now.TimeOfDay}]:\n");
-            Status += $"Patching started [{DateTime.Now.TimeOfDay}]\n";
+            Status = $"[{DateTime.Now.TimeOfDay}] Patching started.";
 
             if (CanRestoreBackup())
             {
                 if (TryRestoreBackup())
                 {
-                    //resultInfo.Append("\tBackup restored.\n");
-                    Status += "\tBackup restored.\n";
+                    Status = "\tBackup restored.";
                 }
                 else
                 {
-                    //resultInfo.Append("\tBackup failed.\n\tPatch cancelled.\n");
-                    Status += "\tBackup failed.\n\tPatch cancelled.\n";
+                    Status = "\tBackup failed.\n\tPatch cancelled.";
                     return;
                 }
             }
@@ -76,18 +72,13 @@ namespace Injector.WPF.ViewModels
             }
             catch (Exception e)
             {
-                //resultInfo.Append("\tInjection failed.\n" + e.Message + "\n" + e.StackTrace);
-                //Status += resultInfo.ToString();
-                Status += "\tInjection failed.\n" + e.Message + "\n" + e.StackTrace + "\n";
+                Status = "\tInjection failed.\n" + e.Message + "\n" + e.StackTrace;
                 return;
             }
 
             RestoreBackupCommand.RaiseCanExecuteChanged();
 
-            //resultInfo.Append("\tOriginal backed up.\n\tOriginal patched.\n\tPatch successful.\n");
-            Status += "\tOriginal backed up.\n\tOriginal patched.\n\tPatch successful.\n";
-
-            //Status += resultInfo.ToString();
+            Status = "\tOriginal backed up.\n\tOriginal patched.\n\tPatch successful.";
 
             try
             {
@@ -95,9 +86,7 @@ namespace Injector.WPF.ViewModels
             }
             catch (Exception e)
             {
-                Status += "Can't create or access directory for state to save.\n" + e.Message + "\n" + e.StackTrace + "\n";
-                //resultInfo.Append("Can't create or access directory for state to save.\n" + e.Message + "\n" + e.StackTrace);
-                //Status += resultInfo.ToString();
+                Status = "Can't create or access directory for state to save.\n" + e.Message + "\n" + e.StackTrace;
                 return;
             }
 
@@ -107,9 +96,7 @@ namespace Injector.WPF.ViewModels
             }
             catch (Exception e)
             {
-                Status += "Can't save app state.\n" + e.Message + "\n" + e.StackTrace + "\n";
-                //resultInfo.Append("Can't save app state.\n" + e.Message + "\n" + e.StackTrace);
-                //Status += resultInfo.ToString();
+                Status = "Can't save app state.\n" + e.Message + "\n" + e.StackTrace;
                 return;
             }
         }
@@ -118,11 +105,11 @@ namespace Injector.WPF.ViewModels
         {
             if (TryRestoreBackup())
             {
-                Status += $"Backup restore successful ({DateTime.Now}).\n";
+                Status = $"[{DateTime.Now.TimeOfDay}] Backup restore successful.";
             }
             else
             {
-                Status += $"Backup restore failed ({DateTime.Now}).\n";
+                Status = $"[{DateTime.Now.TimeOfDay}]Backup restore failed.";
             }
         }
 
@@ -143,7 +130,7 @@ namespace Injector.WPF.ViewModels
             }
             catch
             {
-                Status += "Can't load last state";
+                Status = "Can't load last state.";
             }
         }
     }

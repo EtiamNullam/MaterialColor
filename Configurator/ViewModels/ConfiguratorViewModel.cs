@@ -40,7 +40,7 @@ namespace Configurator.ViewModels
         public string Status
         {
             get => _status;
-            set => SetProperty(ref _status, $"[{DateTime.Now.TimeOfDay}]:\n{value}");
+            set => SetProperty(ref _status, $"{_status}\n[{DateTime.Now.TimeOfDay}]: {value}".Trim());
         }
 
         private string _status;
@@ -89,7 +89,7 @@ namespace Configurator.ViewModels
                 return;
             }
 
-            Status = "State applied";
+            Status = "State applied.";
         }
     }
 }
