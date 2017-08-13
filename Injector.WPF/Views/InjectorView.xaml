@@ -7,23 +7,25 @@
         xmlns:prism="http://prismlibrary.com/"
         mc:Ignorable="d"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="Patcher" Height="230" Width="280" MinWidth="280" MinHeight="230">
+        Title="Patcher" Height="300" Width="300" MinWidth="300" MinHeight="220" ResizeMode="CanResizeWithGrip">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="28"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <CheckBox Content="Enable _debug log (change requires patching)" Margin="5" Grid.ColumnSpan="2" IsChecked="{Binding EnableDebugConsole, Mode=TwoWay}"/>
+        <CheckBox Content="Enable _debug log (change requires patching)" Margin="10" Grid.ColumnSpan="2" IsChecked="{Binding EnableDebugConsole, Mode=TwoWay}"/>
 
-        <Button Command="{Binding PatchCommand}" Grid.Row="1" Content="_Patch" Margin="10"/>
-        <Button Command="{Binding RestoreBackupCommand}" Grid.Row="1" Grid.Column="1" Content="_Restore Backup" Margin="10"/>
+        <Button Command="{Binding PatchCommand}" Grid.Row="1" Content="_Patch" Margin="10" MaxWidth="400"/>
+        <Button Command="{Binding RestoreBackupCommand}" Grid.Row="1" Grid.Column="1" Content="_Restore Backup" MaxWidth="400" Margin="10"/>
 
-        <TextBox Grid.Row="2" Grid.ColumnSpan="2" TextWrapping="Wrap" Text="{Binding Status}" VerticalScrollBarVisibility="Visible" IsReadOnly="True" TextChanged="OnStatusChanged" />
+        <Label Content="Log:" Grid.Row="2" Grid.ColumnSpan="2" Margin="10,0"/>
+        <TextBox Grid.Row="3" Grid.ColumnSpan="2" TextWrapping="Wrap" Text="{Binding Status}" VerticalScrollBarVisibility="Visible" IsReadOnly="True" TextChanged="OnStatusChanged" Margin="5"/>
     </Grid>
 </Window>

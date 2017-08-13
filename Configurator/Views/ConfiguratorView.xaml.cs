@@ -21,5 +21,13 @@ namespace Configurator.Views
         {
             InitializeComponent();
         }
+
+        private void OnStatusChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is TextBox statusTextBox)
+            {
+                statusTextBox.ScrollToEnd();
+            }
+        }
     }
 }

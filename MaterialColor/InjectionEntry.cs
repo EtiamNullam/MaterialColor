@@ -48,7 +48,7 @@ namespace MaterialColor
                 changed = true;
 
                 //temp
-                TryLoadTypeColorOffsets();
+                //TryLoadTypeColorOffsets();
             }
 
             if (TypeColorOffsetsChanged)
@@ -57,7 +57,7 @@ namespace MaterialColor
                 changed = true;
 
                 //temp
-                TryLoadElementColorInfos();
+                //TryLoadElementColorInfos();
             }
 
             if (changed)
@@ -94,8 +94,7 @@ namespace MaterialColor
             // WIP
 
             //var cellOnTile = Grid.
-
-            // temporarily disabled
+            //
             var elementHash = ElementLoader.elements[cellElementIndex].id;
 
             var materialColor = MaterialColorGuard.GetCellMaterialColor(elementHash);
@@ -109,20 +108,6 @@ namespace MaterialColor
                 return materialColor * 1.5f;
             }
             return materialColor;
-
-            // old handling
-
-            //if (blockRenderer.highlightCell == cellIndex)
-            //{
-            //    return new UnityEngine.Color(1, 1, 1) * 1.5f;
-            //}
-            //else if (blockRenderer.selectedCell == cellIndex)
-            //{
-            //    return new UnityEngine.Color(1, 1, 1) * 1.25f;
-            //}
-            //else return new UnityEngine.Color(1, 1, 1);
-            //
-
         }
 
         private static void OnOverlayChanged(SimViewMode obj)
@@ -144,14 +129,8 @@ namespace MaterialColor
             _fileChangeNotifier.ConfiguratorStateChanged += OnConfiguratorStateChanged;
         }
 
-        //
-        //
-        // load configurator state instead
-        //
-        //
         private static void OnConfiguratorStateChanged(object sender, FileSystemEventArgs e)
         {
-            //TryLoadInjectorState();
             TryLoadConfiguratorState();
         }
 
@@ -211,7 +190,6 @@ namespace MaterialColor
         // doesnt work after 2nd world load
         private static bool ElementColorInfosChanged = false;
         private static bool TypeColorOffsetsChanged = false;
-        //private static bool SkipTiles = false;
 
         private static void UpdateBuildingsColors()
         {
@@ -223,14 +201,14 @@ namespace MaterialColor
 
         private static void OnElementColorsInfosUpdated(object sender, FileSystemEventArgs e)
         {
-            Debug.LogError("Element color infos changed");
+            Debug.LogError("Element color infos changed.");
 
             ElementColorInfosChanged = true;
         }
 
         private static void OnTypeColorOffsetsUpdated(object sender, FileSystemEventArgs e)
         {
-            Debug.LogError("Type colors changed");
+            Debug.LogError("Type colors changed.");
 
             TypeColorOffsetsChanged = true;
         }
@@ -253,7 +231,6 @@ namespace MaterialColor
 
             if (kAnimControllerBase != null)
             {
-
                 var color = MaterialColorGuard.GetMaterialColor(kAnimControllerBase, buildingName);
 
                 kAnimControllerBase.TintColour = color;
@@ -291,7 +268,7 @@ namespace MaterialColor
             }
             else if (!TileNames.Contains(buildingName))
             {
-                Debug.LogError($"Can't find KAnimControllerBase component in {buildingName}");
+                Debug.LogError($"Can't find KAnimControllerBase component in <{buildingName}>.");
             }
         }
 

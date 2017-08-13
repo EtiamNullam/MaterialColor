@@ -6,12 +6,12 @@
         xmlns:local="clr-namespace:Configurator.Views"
         xmlns:prism="http://prismlibrary.com/"
         mc:Ignorable="d"
-        Title="MaterialColor configurator" Height="200" Width="300"
-        prism:ViewModelLocator.AutoWireViewModel="True" ResizeMode="NoResize">
+        Title="MaterialColor configurator" Height="200" Width="360" MinHeight="200" MinWidth="280"
+        prism:ViewModelLocator.AutoWireViewModel="True">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition Height="60"/>
+            <RowDefinition Height="95"/>
+            <RowDefinition />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -25,8 +25,8 @@
             <CheckBox Content="Apply _white to colorable objects" Margin="5" IsChecked="{Binding State.ShowBuildingsAsWhite}"/>
         </StackPanel>
 
-        <Button IsDefault="True" Grid.Row="1" Grid.Column="1" Content="_Apply" Margin="10" Command="{Binding ApplyCommand}"/>
+        <Button IsDefault="True" Grid.Row="1" Grid.Column="1" Content="_Apply" Height="40" Margin="10" Command="{Binding ApplyCommand}" VerticalAlignment="Bottom"/>
 
-        <TextBox Margin="12.5" Grid.Row="1" Text="{Binding Status}" IsReadOnly="True"/>
+        <TextBox Margin="12.5" Grid.Row="1" Text="{Binding Status}" IsReadOnly="True" TextWrapping="Wrap" TextChanged="OnStatusChanged" VerticalScrollBarVisibility="Visible"/>
     </Grid>
 </Window>
