@@ -62,12 +62,24 @@ namespace Injector
                 "BlockTileRenderer", "GetCellColor",
                 true, 1);
 
-            targetModule = FieldPublishHelper.MakeFieldPublic(targetModule, "BlockTileRenderer", "selectedCell");
-            targetModule = FieldPublishHelper.MakeFieldPublic(targetModule, "BlockTileRenderer", "highlightCell");
+            targetModule = PublishHelper.MakeFieldPublic(targetModule, "BlockTileRenderer", "selectedCell");
+            targetModule = PublishHelper.MakeFieldPublic(targetModule, "BlockTileRenderer", "highlightCell");
             //
 
-            targetModule = FieldPublishHelper.MakeFieldPublic(targetModule, "Ownable", "unownedTint");
-            targetModule = FieldPublishHelper.MakeFieldPublic(targetModule, "Ownable", "ownedTint");
+            targetModule = PublishHelper.MakeFieldPublic(targetModule, "Ownable", "unownedTint");
+            targetModule = PublishHelper.MakeFieldPublic(targetModule, "Ownable", "ownedTint");
+
+            // storagelocker dim on load test - not really needed but should be left
+            targetModule = PublishHelper.MakeFieldPublic(targetModule, "StorageLocker", "filterable");
+            targetModule = PublishHelper.MakeMethodPublic(targetModule, "StorageLocker", "OnFilterChanged");
+            // ownable dim properly test - correct
+            targetModule = PublishHelper.MakeMethodPublic(targetModule, "Ownable", "UpdateTint");
+            // fridge/rationbox dim properly test- not really needed but should be left
+            targetModule = PublishHelper.MakeFieldPublic(targetModule, "Refrigerator", "filterable");
+            targetModule = PublishHelper.MakeMethodPublic(targetModule, "Refrigerator", "OnFilterChanged");
+            targetModule = PublishHelper.MakeFieldPublic(targetModule, "RationBox", "filterable");
+            targetModule = PublishHelper.MakeMethodPublic(targetModule, "RationBox", "OnFilterChanged");
+            //
 
             return targetModule;
         }

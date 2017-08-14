@@ -1,4 +1,4 @@
-﻿using Common.DataModels;
+﻿using Common.Data;
 
 namespace Common.Json
 {

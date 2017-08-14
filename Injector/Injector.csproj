@@ -60,7 +60,7 @@
     <Compile Include="CecilHelper.cs" />
     <Compile Include="DefaultPaths.cs" />
     <Compile Include="InstructionRemoveHelper.cs" />
-    <Compile Include="FieldPublishHelper.cs" />
+    <Compile Include="PublishHelper.cs" />
     <Compile Include="FileManager.cs" />
     <Compile Include="MethodInjectorHelper.cs" />
     <Compile Include="DefaultInjector.cs" />

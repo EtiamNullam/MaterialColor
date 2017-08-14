@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MaterialColor.Extensions;
+using MaterialColor.Helpers;
+using MaterialColor.IO;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,26 +11,17 @@ namespace MaterialColor
 {
     public static class InjectionEntry
     {
+        private static bool Initialized = false;
+
         public static void EnterOnce()
         {
             Debug.LogError("Enter Once");
-            //return;
+
             try
             {
-                TryLoadElementColorInfos();
-                TryLoadTypeColorOffsets();
+                if (!Initialized) Initialize();
 
-                // unsubscribe?
-                Components.BuildingCompletes.OnAdd += OnBuildingsCompletesAdd;
-
-                ElementColorInfosChanged = TypeColorOffsetsChanged = true;
-
-                //TryLoadInjectorState();
-                TryLoadConfiguratorState();
-
-                OverlayScreen.OnOverlayChanged += OnOverlayChanged;
-
-                StartFileChangeNotifier();
+                ReloadAll();
             }
             catch (Exception e)
             {
@@ -36,6 +30,26 @@ namespace MaterialColor
                     + e.StackTrace
                     );
             }
+        }
+
+        private static void Initialize()
+        {
+            Components.BuildingCompletes.OnAdd += OnBuildingsCompletesAdd;
+
+            // unsubscribe?
+            ElementColorInfosChanged = TypeColorOffsetsChanged = true;
+
+            OverlayScreen.OnOverlayChanged += OnOverlayChanged;
+
+            StartFileChangeNotifier();
+            Initialized = true;
+        }
+
+        private static void ReloadAll()
+        {
+            TryLoadElementColorInfos();
+            TryLoadTypeColorOffsets();
+            TryLoadConfiguratorState();
         }
 
         public static void EnterEveryUpdate()
@@ -48,7 +62,7 @@ namespace MaterialColor
                 changed = true;
 
                 //temp
-                //TryLoadTypeColorOffsets();
+                TryLoadTypeColorOffsets();
             }
 
             if (TypeColorOffsetsChanged)
@@ -57,7 +71,7 @@ namespace MaterialColor
                 changed = true;
 
                 //temp
-                //TryLoadElementColorInfos();
+                TryLoadElementColorInfos();
             }
 
             if (changed)
@@ -68,36 +82,14 @@ namespace MaterialColor
         }
 
         // TODO: find a way to show mesh and gas permeable tiles' material color
+        // maybe not possible?
         public static UnityEngine.Color EnterCell(Rendering.BlockTileRenderer blockRenderer, int cellIndex)
         {
             // doesnt work for gas permeable tiles (shows gas element)
             // changed color of white blueprint when building new tiles
-            var cellElementIndex = Grid.Cell[cellIndex].elementIdx;
 
-            // test
-
-            //try
-            //{
-            //    var cellOnTile = Grid.Objects[cellIndex, (int)Grid.SceneLayer.TileMain];
-
-            //    if (cellOnTile != null)
-            //    {
-            //        Debug.LogError(cellOnTile.GetType().ToString());
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    Debug.LogError("Can't get cell " + cellIndex + '\n' + e.Message);
-            //}
-
-            // grid elements indexer test
-            // WIP
-
-            //var cellOnTile = Grid.
-            //
-            var elementHash = ElementLoader.elements[cellElementIndex].id;
-
-            var materialColor = MaterialColorGuard.GetCellMaterialColor(elementHash);
+            var material = GetMaterialFromCell(cellIndex);
+            var materialColor = material.ToCellMaterialColor();
 
             if (blockRenderer.highlightCell == cellIndex)
             {
@@ -110,9 +102,16 @@ namespace MaterialColor
             return materialColor;
         }
 
+        private static SimHashes GetMaterialFromCell(int cellIndex)
+        {
+            var cellElementIndex = Grid.Cell[cellIndex].elementIdx;
+            var element = ElementLoader.elements[cellElementIndex];
+
+            return element.id;
+        }
+
         private static void OnOverlayChanged(SimViewMode obj)
         {
-            //Debug.LogError(obj.ToString());
             if (obj == SimViewMode.None)
             {
                 UpdateBuildingsColors();
@@ -121,12 +120,15 @@ namespace MaterialColor
 
         private static void StartFileChangeNotifier()
         {
+            if (_fileChangeNotifier == null)
+            {
+                //_fileChangeNotifier = new FileChangeNotifier();
+                _fileChangeNotifier = _fileChangeNotifier ?? new FileChangeNotifier();
+                _fileChangeNotifier.ElementColorInfosChanged += OnElementColorsInfosUpdated;
+                _fileChangeNotifier.TypeColorsChanged += OnTypeColorOffsetsUpdated;
+                _fileChangeNotifier.ConfiguratorStateChanged += OnConfiguratorStateChanged;
+            }
             // convert to instance class and dispose properly of events and FileChangeNotifier
-            _fileChangeNotifier = _fileChangeNotifier ?? new FileChangeNotifier();
-
-            _fileChangeNotifier.ElementColorInfosChanged += OnElementColorsInfosUpdated;
-            _fileChangeNotifier.TypeColorsChanged += OnTypeColorOffsetsUpdated;
-            _fileChangeNotifier.ConfiguratorStateChanged += OnConfiguratorStateChanged;
         }
 
         private static void OnConfiguratorStateChanged(object sender, FileSystemEventArgs e)
@@ -140,7 +142,7 @@ namespace MaterialColor
 
             try
             {
-                MaterialColorGuard.ConfiguratorState = configuratorStateManager.LoadState();
+                State.ConfiguratorState = configuratorStateManager.LoadState();
             }
             catch (Exception ex)
             {
@@ -159,7 +161,7 @@ namespace MaterialColor
 
             try
             {
-                MaterialColorGuard.ElementColorInfos = elementColorInfosJsonManager.LoadElementColorInfos();
+                State.ElementColorInfos = elementColorInfosJsonManager.LoadElementColorInfos();
             }
             catch (Exception e)
             {
@@ -176,7 +178,7 @@ namespace MaterialColor
 
             try
             {
-                MaterialColorGuard.TypeColorOffsets = typeColorOffsetsJsonManager.LoadTypeColorOffsets();
+                State.TypeColorOffsets = typeColorOffsetsJsonManager.LoadTypeColorOffsets();
             }
             catch (Exception e)
             {
@@ -215,66 +217,8 @@ namespace MaterialColor
 
         private static FileChangeNotifier _fileChangeNotifier;
 
-        // refrigerator, storagelocker, bed, medicalcot and others needs special case
-        // (ownable class)
-        // tile doesnt have KAnimControllerBase, find another way to tint it
-        // TODO: refactor
         private static void OnBuildingsCompletesAdd(BuildingComplete building)
-        {
-            UpdateBuildingColor(building);
-        }
+            => ColorHelper.UpdateBuildingColor(building);
 
-        private static void UpdateBuildingColor(BuildingComplete building)
-        {
-            var buildingName = building.name.Replace("Complete", string.Empty);
-            var kAnimControllerBase = building.GetComponent<KAnimControllerBase>();
-
-            if (kAnimControllerBase != null)
-            {
-                var color = MaterialColorGuard.GetMaterialColor(kAnimControllerBase, buildingName);
-
-                kAnimControllerBase.TintColour = color;
-
-                var dimmedColor = color.SetBrightness(color.GetBrightness() / 2);
-
-                // storagelocker
-                var storageLocker = building.GetComponent<StorageLocker>();
-
-                if (storageLocker != null)
-                {
-                    storageLocker.filterTint = color;
-                    storageLocker.noFilterTint = dimmedColor;
-                }
-                else // ownable
-                {
-                    var ownable = building.GetComponent<Ownable>();
-
-                    if (ownable != null)
-                    {
-                        ownable.ownedTint = color;
-                        ownable.unownedTint = dimmedColor;
-                    }
-                    else // rationbox
-                    {
-                        var rationBox = building.GetComponent<RationBox>();
-
-                        if (rationBox != null)
-                        {
-                            rationBox.filterTint = color;
-                            rationBox.noFilterTint = dimmedColor;
-                        }
-                    }
-                }
-            }
-            else if (!TileNames.Contains(buildingName))
-            {
-                Debug.LogError($"Can't find KAnimControllerBase component in <{buildingName}>.");
-            }
-        }
-
-        private static List<string> TileNames = new List<string>
-        {
-            "Tile", "MeshTile", "InsulationTile", "GasPermeableMembrane"
-        };
     }
 }

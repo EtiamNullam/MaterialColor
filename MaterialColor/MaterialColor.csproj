@@ -57,11 +57,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Color32Extensions.cs" />
-    <Compile Include="FileChangeNotifier.cs" />
+    <Compile Include="Helpers\ColorHelper.cs" />
+    <Compile Include="Extensions\Color32Extensions.cs" />
+    <Compile Include="State.cs" />
+    <Compile Include="IO\FileChangeNotifier.cs" />
     <Compile Include="InjectionEntry.cs" />
-    <Compile Include="MaterialColorGuard.cs" />
+    <Compile Include="Helpers\MaterialHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Extensions\SimHashesExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
