@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MaterialColor
+namespace MaterialColor.IO
 {
     public class FileChangeNotifier : IDisposable
     {

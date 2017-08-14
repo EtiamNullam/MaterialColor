@@ -1,5 +1,4 @@
-﻿using Common;
-using Common.DataModels;
+﻿using Common.Data;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -25,7 +24,7 @@ namespace MaterialColor.Tests
         {
             var serializer = Newtonsoft.Json.JsonSerializer.Create();
 
-            using (var textWriter = new System.IO.StreamWriter("C:\\JsonTests\\result.json"))
+            using (var textWriter = new StreamWriter("C:\\JsonTests\\result.json"))
             {
                 using (var jsonWriter = new Newtonsoft.Json.JsonTextWriter(textWriter))
                 {
@@ -47,7 +46,7 @@ namespace MaterialColor.Tests
                 { SimHashes.Aerogel, new ElementColorInfo(new Color32Multiplier(0.6f, 0.5f, 0.4f), 0.3f) },
             };
 
-            using (var textWriter = new System.IO.StreamWriter("C:\\JsonTests\\result_dictionary.json"))
+            using (var textWriter = new StreamWriter("C:\\JsonTests\\result_dictionary.json"))
             {
                 using (var jsonWriter = new Newtonsoft.Json.JsonTextWriter(textWriter))
                 {

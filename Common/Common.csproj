@@ -50,10 +50,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataModels\Color32Multiplier.cs" />
-    <Compile Include="DataModels\ConfiguratorState.cs" />
+    <Compile Include="Data\Color32Multiplier.cs" />
+    <Compile Include="Data\ConfiguratorState.cs" />
     <Compile Include="DefaultPaths.cs" />
-    <Compile Include="DataModels\ElementColorInfo.cs" />
+    <Compile Include="Data\ElementColorInfo.cs" />
     <Compile Include="IOHelper.cs" />
     <Compile Include="Json\ConfiguratorStateManager.cs" />
     <Compile Include="Json\ElementColorInfosManager.cs" />

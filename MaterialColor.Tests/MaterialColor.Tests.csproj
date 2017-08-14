@@ -64,7 +64,6 @@
   <ItemGroup>
     <Compile Include="Color32ExtensionsTests.cs" />
     <Compile Include="JsonTests.cs" />
-    <Compile Include="MaterialColorGuardTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
