@@ -43,7 +43,6 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
       <HintPath>..\libs\original\UnityEngine.dll</HintPath>
@@ -52,7 +51,7 @@
   <ItemGroup>
     <Compile Include="Data\Color32Multiplier.cs" />
     <Compile Include="Data\ConfiguratorState.cs" />
-    <Compile Include="DefaultPaths.cs" />
+    <Compile Include="Paths.cs" />
     <Compile Include="Data\ElementColorInfo.cs" />
     <Compile Include="IOHelper.cs" />
     <Compile Include="Json\ConfiguratorStateManager.cs" />

@@ -12,9 +12,7 @@ namespace MaterialColor.Helpers
 {
     public static class MaterialHelper
     {
-        // TODO: move
         public static SimHashes ExtractMaterial(KAnimControllerBase kAnimController)
             => kAnimController.GetComponent<PrimaryElement>().ElementID;
-
     }
 }

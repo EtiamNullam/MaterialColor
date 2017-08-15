@@ -42,7 +42,6 @@ namespace MaterialColor.Extensions
             return elementColorInfo;
         }
 
-        // TODO: refactor
         public static Color ToCellMaterialColor(this SimHashes material)
         {
             var colorInfo = material.GetMaterialColorInfo();

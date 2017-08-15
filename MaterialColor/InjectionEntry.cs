@@ -25,10 +25,14 @@ namespace MaterialColor
             }
             catch (Exception e)
             {
-                Debug.LogError("Injection failed\n"
-                    + e.Message + '\n'
-                    + e.StackTrace
-                    );
+                var message = "Injection failed\n" + e.Message + '\n';
+
+                if (State.ConfiguratorState.ShowDetailedErrorInfo)
+                {
+                    message += '\n' + e.StackTrace;
+                }
+
+                Debug.LogError(message);
             }
         }
 
@@ -146,10 +150,13 @@ namespace MaterialColor
             }
             catch (Exception ex)
             {
-                Debug.LogError("Can't load configurator state.\n"
-                    + ex.Message + '\n'
-                    + ex.StackTrace
-                    );
+                var message = "Can't load configurator state.\n" + ex.Message + '\n';
+
+                if (State.ConfiguratorState.ShowDetailedErrorInfo)
+                {
+                    message += '\n' + ex.StackTrace;
+                }
+                Debug.LogError(message);
 
                 return;
             }
@@ -165,10 +172,13 @@ namespace MaterialColor
             }
             catch (Exception e)
             {
-                Debug.LogError("Can't load ElementColorInfos\n"
-                    + e.Message + '\n'
-                    + e.StackTrace
-                    );
+                var message = "Can't load ElementColorInfos\n" + e.Message + '\n';
+
+                if (State.ConfiguratorState.ShowDetailedErrorInfo)
+                {
+                    message += '\n' + e.StackTrace;
+                }
+                Debug.LogError(message);
             }
         }
 
@@ -182,10 +192,14 @@ namespace MaterialColor
             }
             catch (Exception e)
             {
-                Debug.LogError("Can't load TypeColorOffsets\n"
-                    + e.Message + '\n'
-                    + e.StackTrace
-                    );
+                var message = "Can't load TypeColorOffsets\n" + e.Message + '\n';
+
+                if (State.ConfiguratorState.ShowDetailedErrorInfo)
+                {
+                    message += '\n' + e.StackTrace;
+                }
+
+                Debug.LogError(message);
             }
         }
 

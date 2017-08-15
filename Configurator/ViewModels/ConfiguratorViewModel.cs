@@ -53,7 +53,8 @@ namespace Configurator.ViewModels
             }
             catch (Exception e)
             {
-                _logger.Log($"Can't load last state.\n{e.Message}\n{e.StackTrace}", Category.Exception, Priority.Low);
+                var message = "Can't load last state";
+                _logger.Log($"{message}\n{e.Message}\n{e.StackTrace}", Category.Exception, Priority.Low);
 
                 return new ConfiguratorState();
             }
@@ -63,7 +64,7 @@ namespace Configurator.ViewModels
         {
             try
             {
-                Common.IOHelper.EnsureDirectoryExists(Common.DefaultPaths.Directory);
+                Common.IOHelper.EnsureDirectoryExists(Common.Paths.Directory);
             }
             catch (Exception e)
             {
