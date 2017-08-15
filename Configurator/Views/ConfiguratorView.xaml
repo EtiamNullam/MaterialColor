@@ -6,11 +6,11 @@
         xmlns:local="clr-namespace:Configurator.Views"
         xmlns:prism="http://prismlibrary.com/"
         mc:Ignorable="d"
-        Title="MaterialColor configurator" Height="200" Width="360" MinHeight="200" MinWidth="280"
+        Title="MaterialColor configurator" Height="210" Width="360" MinHeight="210" MinWidth="280"
         prism:ViewModelLocator.AutoWireViewModel="True">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="95"/>
+            <RowDefinition Height="105"/>
             <RowDefinition />
         </Grid.RowDefinitions>
 
@@ -23,6 +23,7 @@
             <CheckBox Content="Show missing _element color infos" Margin="5" IsChecked="{Binding State.ShowMissingElementColorInfos}"/>
             <CheckBox Content="Show missing _type color offsets" Margin="5" IsChecked="{Binding State.ShowMissingTypeColorOffsets}"/>
             <CheckBox Content="Apply _white to colorable objects" Margin="5" IsChecked="{Binding State.ShowBuildingsAsWhite}"/>
+            <CheckBox Content="Show _detailed informations about errors" Margin="5" IsChecked="{Binding State.ShowDetailedErrorInfo}"/>
         </StackPanel>
 
         <Button IsDefault="True" Grid.Row="1" Grid.Column="1" Content="_Apply" Height="40" Margin="10" Command="{Binding ApplyCommand}" VerticalAlignment="Bottom"/>

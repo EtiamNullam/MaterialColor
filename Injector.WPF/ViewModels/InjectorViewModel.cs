@@ -82,7 +82,7 @@ namespace Injector.WPF.ViewModels
 
             try
             {
-                Common.IOHelper.EnsureDirectoryExists(Common.DefaultPaths.Directory);
+                Common.IOHelper.EnsureDirectoryExists(Common.Paths.Directory);
             }
             catch (Exception e)
             {

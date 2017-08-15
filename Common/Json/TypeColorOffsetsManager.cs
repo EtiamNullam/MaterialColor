@@ -12,14 +12,15 @@ namespace Common.Json
         // inject instead of creating?
         private JsonManager _manager = new JsonManager();
 
+        // not used
         public void SaveTypesColors(Dictionary<string, Color32> dictionary)
         {
-            _manager.Serialize(dictionary, DefaultPaths.TypeColorsPath);
+            _manager.Serialize(dictionary, Paths.TypeColorsPath);
         }
 
         public Dictionary<string, Color32> LoadTypeColorOffsets()
         {
-            return _manager.Deserialize<Dictionary<string, Color32>>(DefaultPaths.TypeColorsPath);
+            return _manager.Deserialize<Dictionary<string, Color32>>(Paths.TypeColorsPath);
         }
     }
 }

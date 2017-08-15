@@ -11,17 +11,17 @@ namespace MaterialColor.IO
     {
         public FileChangeNotifier()
         {
-            var directory = Common.DefaultPaths.Directory;
+            var directory = Common.Paths.Directory;
 
             _elementColorInfosWatcher = new FileSystemWatcher(directory);
             _typeColorOffsetsWatcher = new FileSystemWatcher(directory);
             _injectorStateWatcher = new FileSystemWatcher(directory);
             _configuratorStateWatcher = new FileSystemWatcher(directory);
 
-            _elementColorInfosWatcher.Filter = Common.DefaultPaths.ElementColorInfosFilePath;
-            _elementColorInfosWatcher.Filter = Common.DefaultPaths.TypeColorsFilePath;
-            _injectorStateWatcher.Filter = Common.DefaultPaths.InjectorStateFilePath;
-            _configuratorStateWatcher.Filter = Common.DefaultPaths.ConfiguratorStateFilePath;
+            _elementColorInfosWatcher.Filter = Common.Paths.ElementColorInfosFilePath;
+            _elementColorInfosWatcher.Filter = Common.Paths.TypeColorsFilePath;
+            _injectorStateWatcher.Filter = Common.Paths.InjectorStateFilePath;
+            _configuratorStateWatcher.Filter = Common.Paths.ConfiguratorStateFilePath;
 
             _elementColorInfosWatcher.NotifyFilter =
                 _typeColorOffsetsWatcher.NotifyFilter =

@@ -8,12 +8,12 @@ namespace Common.Json
 
         public ConfiguratorState LoadState()
         {
-            return _manager.Deserialize<ConfiguratorState>(DefaultPaths.ConfiguratorStatePath);
+            return _manager.Deserialize<ConfiguratorState>(Paths.ConfiguratorStatePath);
         }
 
         public void SaveState(ConfiguratorState state)
         {
-            _manager.Serialize(state, DefaultPaths.ConfiguratorStatePath);
+            _manager.Serialize(state, Paths.ConfiguratorStatePath);
         }
     }
 }

@@ -13,12 +13,12 @@ namespace Common.Json
 
         public bool LoadState()
         {
-            return _manager.Deserialize<bool>(DefaultPaths.InjectorStatePath);
+            return _manager.Deserialize<bool>(Paths.InjectorStatePath);
         }
 
         public void SaveState(bool state)
         {
-            _manager.Serialize(state, DefaultPaths.InjectorStatePath);
+            _manager.Serialize(state, Paths.InjectorStatePath);
         }
     }
 }

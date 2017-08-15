@@ -15,7 +15,7 @@ namespace MaterialColor
 
         public static ConfiguratorState ConfiguratorState = new ConfiguratorState();
 
-        public static List<string> TileNames = new List<string>
+        public static readonly List<string> TileNames = new List<string>
         {
             "Tile", "MeshTile", "InsulationTile", "GasPermeableMembrane"
         };
