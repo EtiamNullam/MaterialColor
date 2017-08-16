@@ -5,9 +5,15 @@ namespace Injector
 {
     public static class CecilHelper
     {
-        public static ModuleDefinition GetModule(string moduleName)
+        public static ModuleDefinition GetModule(string moduleName, string directoryPath)
         {
-            return ModuleDefinition.ReadModule(moduleName);
+            var parameters = new ReaderParameters();
+            var assemblyResolver = new DefaultAssemblyResolver();
+
+            assemblyResolver.AddSearchDirectory(directoryPath);
+            parameters.AssemblyResolver = assemblyResolver;
+
+            return ModuleDefinition.ReadModule(moduleName, parameters);
         }
 
         public static MethodReference GetMethodReference(ModuleDefinition targetModule, MethodDefinition method)

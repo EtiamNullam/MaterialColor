@@ -29,8 +29,8 @@ namespace Injector
 
         private ModuleDefinition InjectDefault()
         {
-            var sourceModule = CecilHelper.GetModule(DefaultPaths.DefaultSourceAssemblyPath);
-            var targetModule = CecilHelper.GetModule(DefaultPaths.DefaultTargetAssemblyPath);
+            var sourceModule = CecilHelper.GetModule(DefaultPaths.DefaultSourceAssemblyPath, DefaultPaths.ManagedDirectoryPath);
+            var targetModule = CecilHelper.GetModule(DefaultPaths.DefaultTargetAssemblyPath, DefaultPaths.ManagedDirectoryPath);
 
             targetModule = MethodInjectorHelper.InjectAsFirstInstruction(
                 sourceModule,
@@ -70,7 +70,7 @@ namespace Injector
             targetModule = PublishHelper.MakeMethodPublic(targetModule, "StorageLocker", "OnFilterChanged");
             // ownable dim properly test - correct
             targetModule = PublishHelper.MakeMethodPublic(targetModule, "Ownable", "UpdateTint");
-            // fridge/rationbox dim properly test- not really needed but should be left
+            // fridge/rationbox dim properly test - probably correct
             targetModule = PublishHelper.MakeFieldPublic(targetModule, "Refrigerator", "filterable");
             targetModule = PublishHelper.MakeMethodPublic(targetModule, "Refrigerator", "OnFilterChanged");
             targetModule = PublishHelper.MakeFieldPublic(targetModule, "RationBox", "filterable");
