@@ -244,3 +244,4 @@ ModelManifest.xml
 # custom
 libs/
 target structure.txt
+_output/
