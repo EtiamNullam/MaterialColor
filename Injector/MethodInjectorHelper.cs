@@ -2,7 +2,7 @@
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-namespace Injector
+namespace MaterialColor.Injector
 {
     public static class MethodInjectorHelper
     {

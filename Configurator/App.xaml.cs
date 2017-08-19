@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Configurator
+namespace MaterialColor.Configurator.WPF
 {
     /// <summary>
     /// Interaction logic for App.xaml

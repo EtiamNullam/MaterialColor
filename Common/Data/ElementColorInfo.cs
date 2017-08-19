@@ -1,4 +1,4 @@
-﻿namespace Common.Data
+﻿namespace MaterialColor.Common.Data
 {
     public class ElementColorInfo
     {

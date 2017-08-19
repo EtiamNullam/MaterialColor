@@ -33,16 +33,16 @@ namespace Injector.Tests
             }
         }
 
-        [Test]
-        public void Backup_Basic()
-        {
-            var fileManager = new FileManager();
-            var result = fileManager.MakeBackup(TestFilePaths.TestFileFullPath);
+        //[Test]
+        //public void Backup_Basic()
+        //{
+        //    var fileManager = new FileManager();
+        //    var result = fileManager.MakeBackup(TestFilePaths.TestFileFullPath);
 
-            Assert.True(result, "FileManager.MakeBackup() returned false");
-            FileAssert.DoesNotExist(TestFilePaths.TestFileFullPath, "Original file still exists");
-            FileAssert.Exists(TestFilePaths.BackupFileFullPath, "Backup file not created");
-        }
+        //    Assert.True(result, "FileManager.MakeBackup() returned false");
+        //    FileAssert.DoesNotExist(TestFilePaths.TestFileFullPath, "Original file still exists");
+        //    FileAssert.Exists(TestFilePaths.BackupFileFullPath, "Backup file not created");
+        //}
     }
 
     public class TestFilePaths

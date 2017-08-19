@@ -1,7 +1,7 @@
 ﻿using Mono.Cecil;
 using System.Linq;
 
-namespace Injector
+namespace MaterialColor.Injector
 {
     public static class InstructionRemoveHelper
     {

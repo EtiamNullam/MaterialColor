@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Mono.Cecil;
 
-namespace Injector
+namespace MaterialColor.Injector
 {
     // TODO: extract interfaces
     public class FileManager

@@ -1,7 +1,135 @@
 {
-  "Katairite": {
+  "Algae": {
+    "ColorMultiplier": {
+      "Red": 0.1,
+      "Green": 1.0,
+      "Blue": 0.3
+    },
+    "Brightness": 0.8
+  },
+  "BleachStone": {
+    "ColorMultiplier": {
+      "Red": 1.0,
+      "Green": 1.0,
+      "Blue": 0.6
+    },
+    "Brightness": 0.9
+  },
+  "Carbon": {
+    "ColorMultiplier": {
+      "Red": 1.0,
+      "Green": 1.0,
+      "Blue": 1.0
+    },
+    "Brightness": 0.2
+  },
+  "CarbonDioxide": {
+    "ColorMultiplier": {
+      "Red": 1.0,
+      "Green": 0.3,
+      "Blue": 0.2
+    },
+    "Brightness": 0.4
+  },
+  "Chlorine": {
+    "ColorMultiplier": {
+      "Red": 0.01,
+      "Green": 1.0,
+      "Blue": 0.01
+    },
+    "Brightness": 0.6
+  },
+  "ChlorineGas": {
+    "ColorMultiplier": {
+      "Red": 0.01,
+      "Green": 1.0,
+      "Blue": 0.01
+    },
+    "Brightness": 1.0
+  },
+  "Clay": {
+    "ColorMultiplier": {
+      "Red": 0.8,
+      "Green": 1.0,
+      "Blue": 0.4
+    },
+    "Brightness": 0.9
+  },
+  "ContaminatedOxygen": {
+    "ColorMultiplier": {
+      "Red": 0.3,
+      "Green": 0.8,
+      "Blue": 0.3
+    },
+    "Brightness": 0.8
+  },
+  "Cuprite": {
+    "ColorMultiplier": {
+      "Red": 1.0,
+      "Green": 0.4,
+      "Blue": 0.1
+    },
+    "Brightness": 1.0
+  },
+  "Dirt": {
+    "ColorMultiplier": {
+      "Red": 0.6,
+      "Green": 0.3,
+      "Blue": 0.2
+    },
+    "Brightness": 0.7
+  },
+  "DirtyIce": {
     "ColorMultiplier": {
       "Red": 0.5,
+      "Green": 0.8,
+      "Blue": 1.0
+    },
+    "Brightness": 0.6
+  },
+  "DirtyWater": {
+    "ColorMultiplier": {
+      "Red": 0.3,
+      "Green": 0.8,
+      "Blue": 0.3
+    },
+    "Brightness": 0.8
+  },
+  "Fertilizer": {
+    "ColorMultiplier": {
+      "Red": 0.1,
+      "Green": 0.7,
+      "Blue": 1.0
+    },
+    "Brightness": 0.8
+  },
+  "GoldAmalgam": {
+    "ColorMultiplier": {
+      "Red": 0.95,
+      "Green": 1.0,
+      "Blue": 0.3
+    },
+    "Brightness": 0.8
+  },
+  "Granite": {
+    "ColorMultiplier": {
+      "Red": 1.0,
+      "Green": 1.0,
+      "Blue": 1.0
+    },
+    "Brightness": 1.0
+  },
+  "Hydrogen": {
+    "ColorMultiplier": {
+      "Red": 1.0,
+      "Green": 0.4,
+      "Blue": 0.4
+    },
+    "Brightness": 1.0
+  },
+  "Ice": {
+    "ColorMultiplier": {
+      "Red": 0.2,
       "Green": 0.3,
       "Blue": 1.0
     },
@@ -15,45 +143,13 @@
     },
     "Brightness": 0.5
   },
-  "SedimentaryRock": {
-    "ColorMultiplier": {
-      "Red": 0.70,
-      "Green": 0.95,
-      "Blue": 0.95
-    },
-    "Brightness": 0.7
-  },
-  "Granite": {
+  "Iron": {
     "ColorMultiplier": {
       "Red": 1.0,
       "Green": 1.0,
       "Blue": 1.0
     },
-    "Brightness": 1.0
-  },
-  "SandStone": {
-    "ColorMultiplier": {
-      "Red": 1.0,
-      "Green": 0.7,
-      "Blue": 0.3
-    },
-    "Brightness": 1.0
-  },
-  "Obsidian": {
-    "ColorMultiplier": {
-      "Red": 0.85,
-      "Green": 1.0,
-      "Blue": 0.85
-    },
-    "Brightness": 0.3
-  },
-  "Cuprite": {
-    "ColorMultiplier": {
-      "Red": 1.0,
-      "Green": 0.4,
-      "Blue": 0.1
-    },
-    "Brightness": 1.0
+    "Brightness": 0.7
   },
   "IronOre": {
     "ColorMultiplier": {
@@ -63,64 +159,29 @@
     },
     "Brightness": 0.8
   },
-  "GoldAmalgam": {
+  "Katairite": {
     "ColorMultiplier": {
-      "Red": 0.75,
-      "Green": 1.0,
-      "Blue": 0.5
-    },
-    "Brightness": 0.8
-  },
-  "Wolframite": {
-    "ColorMultiplier": {
-      "Red": 0.2,
-      "Green": 0.7,
+      "Red": 0.5,
+      "Green": 0.3,
       "Blue": 1.0
     },
-    "Brightness": 0.95
+    "Brightness": 0.9
   },
-  "Steel": {
-    "ColorMultiplier": {
-      "Red": 0.9,
-      "Green": 0.9,
-      "Blue": 1.0
-    },
-    "Brightness": 1.0
-  },
-  "Iron": {
+  "LiquidCarbonDioxide": {
     "ColorMultiplier": {
       "Red": 1.0,
-      "Green": 1.0,
-      "Blue": 1.0
+      "Green": 0.5,
+      "Blue": 0.4
     },
-    "Brightness": 0.7
+    "Brightness": 0.4
   },
-  "Clay": {
+  "LiquidMethane": {
     "ColorMultiplier": {
-      "Red": 0.3,
-      "Green": 0.8,
-      "Blue": 0.2
-    },
-    "Brightness": 0.8
-  },
-  "Dirt": {
-    "ColorMultiplier": {
-      "Red": 0.6,
-      "Green": 0.3,
-      "Blue": 0.2
-    },
-    "Brightness": 0.7
-  },
-
-
-
-  "Oxygen": {
-    "ColorMultiplier": {
-      "Red": 0.2,
+      "Red": 1.0,
       "Green": 0.6,
-      "Blue": 1.0
+      "Blue": 0.01
     },
-    "Brightness": 1.0
+    "Brightness": 0.7
   },
   "LiquidOxygen": {
     "ColorMultiplier": {
@@ -130,19 +191,19 @@
     },
     "Brightness": 0.7
   },
-  "ContaminatedOxygen": {
-    "ColorMultiplier": {
-      "Red": 0.3,
-      "Green": 0.8,
-      "Blue": 0.3
-    },
-    "Brightness": 0.8
-  },
-  "CarbonDioxide": {
+  "LiquidPhosphorus": {
     "ColorMultiplier": {
       "Red": 1.0,
-      "Green": 0.05,
-      "Blue": 0.01
+      "Green": 0.4,
+      "Blue": 0.4
+    },
+    "Brightness": 0.6
+  },
+  "Magma": {
+    "ColorMultiplier": {
+      "Red": 1.0,
+      "Green": 0.3,
+      "Blue": 0.1
     },
     "Brightness": 0.5
   },
@@ -154,67 +215,51 @@
     },
     "Brightness": 1.0
   },
-  "Water": {
+  "Obsidian": {
     "ColorMultiplier": {
-      "Red": 0.1,
-      "Green": 0.3,
-      "Blue": 0.7
+      "Red": 0.85,
+      "Green": 1.0,
+      "Blue": 0.85
     },
-    "Brightness": 0.7
+    "Brightness": 0.3
   },
-  "DirtyWater": {
+  "Oxygen": {
+    "ColorMultiplier": {
+      "Red": 0.2,
+      "Green": 0.6,
+      "Blue": 1.0
+    },
+    "Brightness": 1.0
+  },
+  "OxyRock": {
     "ColorMultiplier": {
       "Red": 0.3,
-      "Green": 0.8,
-      "Blue": 0.3
+      "Green": 0.75,
+      "Blue": 1.0
     },
     "Brightness": 0.8
   },
-  "ChlorineGas": {
-    "ColorMultiplier": {
-      "Red": 0.01,
-      "Green": 1.0,
-      "Blue": 0.01
-    },
-    "Brightness": 1.0
-  },
-  "Steam": {
-    "ColorMultiplier": {
-      "Red": 0.1,
-      "Green": 0.2,
-      "Blue": 0.9
-    },
-    "Brightness": 1.0
-  },
-  "Hydrogen": {
+  "Phosphorite": {
     "ColorMultiplier": {
       "Red": 1.0,
-      "Green": 0.4,
-      "Blue": 0.4
+      "Green": 0.2,
+      "Blue": 0.7
     },
-    "Brightness": 1.0
+    "Brightness": 0.8
   },
-  "Magma": {
+  "Phosphorus": {
     "ColorMultiplier": {
       "Red": 1.0,
       "Green": 0.3,
-      "Blue": 0.1
-    },
-    "Brightness": 0.5
-  },
-  "SlimeMold": {
-    "ColorMultiplier": {
-      "Red": 0.5,
-      "Green": 1.0,
-      "Blue": 0.1
+      "Blue": 0.3
     },
     "Brightness": 0.4
   },
-  "Algae": {
+  "PhosphorusGas": {
     "ColorMultiplier": {
-      "Red": 0.1,
-      "Green": 1.0,
-      "Blue": 0.3
+      "Red": 1.0,
+      "Green": 0.5,
+      "Blue": 0.5
     },
     "Brightness": 0.8
   },
@@ -226,7 +271,55 @@
     },
     "Brightness": 0.9
   },
-  "Vacuum": {
+  "SandStone": {
+    "ColorMultiplier": {
+      "Red": 1.0,
+      "Green": 0.7,
+      "Blue": 0.3
+    },
+    "Brightness": 1.0
+  },
+  "SedimentaryRock": {
+    "ColorMultiplier": {
+      "Red": 0.7,
+      "Green": 0.95,
+      "Blue": 0.95
+    },
+    "Brightness": 0.7
+  },
+  "SlimeMold": {
+    "ColorMultiplier": {
+      "Red": 0.5,
+      "Green": 1.0,
+      "Blue": 0.1
+    },
+    "Brightness": 0.4
+  },
+  "Snow": {
+    "ColorMultiplier": {
+      "Red": 1.0,
+      "Green": 1.0,
+      "Blue": 1.0
+    },
+    "Brightness": 1.0
+  },
+  "Steam": {
+    "ColorMultiplier": {
+      "Red": 0.1,
+      "Green": 0.2,
+      "Blue": 0.9
+    },
+    "Brightness": 1.0
+  },
+  "Steel": {
+    "ColorMultiplier": {
+      "Red": 0.9,
+      "Green": 0.9,
+      "Blue": 1.0
+    },
+    "Brightness": 1.0
+  },
+  "SteelDoor": {
     "ColorMultiplier": {
       "Red": 1.0,
       "Green": 1.0,
@@ -242,15 +335,7 @@
     },
     "Brightness": 0.8
   },
-  "Carbon": {
-    "ColorMultiplier": {
-      "Red": 1.0,
-      "Green": 1.0,
-      "Blue": 1.0
-    },
-    "Brightness": 0.2
-  },
-  "Snow": {
+  "Vacuum": {
     "ColorMultiplier": {
       "Red": 1.0,
       "Green": 1.0,
@@ -258,65 +343,20 @@
     },
     "Brightness": 1.0
   },
-  "Ice": {
+  "Water": {
     "ColorMultiplier": {
-      "Red": 0.2,
+      "Red": 0.1,
       "Green": 0.3,
-      "Blue": 1.0
-    },
-    "Brightness": 0.9
-  },
-  "DirtyIce": {
-    "ColorMultiplier": {
-      "Red": 0.5,
-      "Green": 0.8,
-      "Blue": 1.0
-    },
-    "Brightness": 0.6
-  },
-  "BleachStone": {
-    "ColorMultiplier": {
-      "Red": 1.0,
-      "Green": 1.0,
-      "Blue": 0.6
-    },
-    "Brightness": 0.9
-  },
-  "Phosphorite": {
-    "ColorMultiplier": {
-      "Red": 1.0,
-      "Green": 0.2,
-      "Blue": 0.7
+      "Blue": 0.9
     },
     "Brightness": 0.8
   },
-  "PhosphorusGas": {
+  "Wolframite": {
     "ColorMultiplier": {
-      "Red": 1.0,
-      "Green": 0.4,
-      "Blue": 0.4
-    },
-    "Brightness": 0.3
-  },
-  "SteelDoor": {
-    "ColorMultiplier": {
-      "Red": 1.0,
-      "Green": 1.0,
-      "Blue": 1.0
-    },
-    "Brightness": 1.0
-  },
-  "Fertilizer": {
-    "ColorMultiplier": {
-      "Red": 0.1,
+      "Red": 0.4,
       "Green": 0.7,
       "Blue": 1.0
     },
-    "Brightness": 0.8
+    "Brightness": 0.95
   }
-
-
-
-
-
 }

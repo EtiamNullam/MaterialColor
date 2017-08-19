@@ -1,7 +1,7 @@
 ﻿using System;
 using Mono.Cecil;
 
-namespace Injector
+namespace MaterialColor.Injector
 {
     public class DefaultInjector
     {
@@ -35,7 +35,7 @@ namespace Injector
             targetModule = MethodInjectorHelper.InjectAsFirstInstruction(
                 sourceModule,
                 targetModule,
-                "InjectionEntry", "EnterOnce", 
+                "InjectionEntry", "EnterOnce",
                 "Game", "OnPrefabInit");
 
             // inject before instruction #5

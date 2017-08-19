@@ -1,7 +1,7 @@
 ﻿using Prism.Unity;
 using System.Windows;
 
-namespace Configurator
+namespace MaterialColor.Configurator.WPF
 {
     public class Bootstrapper : UnityBootstrapper
     {

@@ -1,8 +1,8 @@
-﻿using Common.Data;
+﻿using MaterialColor.Common.Data;
 using System;
 using UnityEngine;
 
-namespace MaterialColor.Extensions
+namespace MaterialColor.Core.Extensions
 {
     public static class Color32Extensions
     {

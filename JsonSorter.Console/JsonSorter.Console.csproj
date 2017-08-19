@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{97C3BE0D-A80A-4E71-B308-6E1DC416D294}</ProjectGuid>
+    <ProjectGuid>{2C9D4A0D-84DB-4B65-8958-223F5B7B5E96}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Injector.Console</RootNamespace>
-    <AssemblyName>Injector.Console</AssemblyName>
+    <RootNamespace>JsonSorter.Console</RootNamespace>
+    <AssemblyName>JsonSorter.Console</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\libs\original\Assembly-CSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,8 +43,13 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\original\UnityEngine.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mode.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -49,9 +57,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Injector\Injector.csproj">
-      <Project>{f991ba84-4ff5-4e77-a8a1-44c52ac4ab85}</Project>
-      <Name>Injector</Name>
+    <ProjectReference Include="..\Common\MaterialColor.Common.csproj">
+      <Project>{eda0cd77-3605-4c5a-aca6-6bbda16a24af}</Project>
+      <Name>MaterialColor.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

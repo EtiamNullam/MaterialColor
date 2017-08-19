@@ -2,7 +2,7 @@
 using System.Linq;
 using System;
 
-namespace Injector.WPF
+namespace MaterialColor.Injector.WPF
 {
     /// <summary>
     /// Interaction logic for App.xaml
