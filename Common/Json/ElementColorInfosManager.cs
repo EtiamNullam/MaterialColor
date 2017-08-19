@@ -5,8 +5,12 @@ namespace MaterialColor.Common.Json
 {
     public class ElementColorInfosManager
     {
-        // TODO: inject instead of creating?
-        private JsonManager _manager = new JsonManager();
+        public ElementColorInfosManager(JsonManager manager)
+        {
+            _manager = manager;
+        }
+
+        private JsonManager _manager;
 
         public void SaveElementsColorInfo(Dictionary<SimHashes, ElementColorInfo> dictionary, string path = null)
         {

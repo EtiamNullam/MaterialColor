@@ -2,7 +2,12 @@
 {
     public class InjectorStateManager
     {
-        private JsonManager _manager = new JsonManager();
+        public InjectorStateManager(JsonManager manager)
+        {
+            _manager = manager;
+        }
+
+        private JsonManager _manager;
 
         public bool LoadState()
         {
