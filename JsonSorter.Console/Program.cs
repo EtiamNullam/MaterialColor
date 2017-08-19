@@ -57,25 +57,26 @@ namespace JsonSorter.Console
         }
 
         private static string _filePath = null;
+        private static JsonManager _jsonManager = new JsonManager();
+        private static ElementColorInfosManager _elementColorInfosManager = new ElementColorInfosManager(_jsonManager);
+        private static TypeColorOffsetsManager _typeColorOffsetsManager = new TypeColorOffsetsManager(_jsonManager);
 
         private static void SortElementColorInfos()
         {
-            var manager = new ElementColorInfosManager();
-            var elementColorInfos = manager.LoadElementColorInfos(_filePath).ToList();
+            var elementColorInfos = _elementColorInfosManager.LoadElementColorInfos(_filePath).ToList();
 
             elementColorInfos.Sort(new Comparison<KeyValuePair<SimHashes, ElementColorInfo>>(CompareElementColorInfoDictionaryPairs));
 
-            manager.SaveElementsColorInfo(elementColorInfos.ToDictionary(element => element.Key, element => element.Value), _filePath);
+            _elementColorInfosManager.SaveElementsColorInfo(elementColorInfos.ToDictionary(element => element.Key, element => element.Value), _filePath);
         }
 
         private static void SortTypeColorOffsets()
         {
-            var manager = new TypeColorOffsetsManager();
-            var typeColorOffsets = manager.LoadTypeColorOffsets(_filePath).ToList();
+            var typeColorOffsets = _typeColorOffsetsManager.LoadTypeColorOffsets(_filePath).ToList();
 
             typeColorOffsets.Sort(new Comparison<KeyValuePair<string, Color32>>(CompareTypeColorOffsetDictionaryPairs));
 
-            manager.SaveTypesColors(typeColorOffsets.ToDictionary(element => element.Key, element => element.Value), _filePath);
+            _typeColorOffsetsManager.SaveTypesColors(typeColorOffsets.ToDictionary(element => element.Key, element => element.Value), _filePath);
         }
 
         private static int CompareElementColorInfoDictionaryPairs(KeyValuePair<SimHashes, ElementColorInfo> a, KeyValuePair<SimHashes, ElementColorInfo> b)

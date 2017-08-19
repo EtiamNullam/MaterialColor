@@ -4,7 +4,12 @@ namespace MaterialColor.Common.Json
 {
     public class ConfiguratorStateManager
     {
-        private JsonManager _manager = new JsonManager();
+        public ConfiguratorStateManager(JsonManager manager)
+        {
+            _manager = manager;
+        }
+
+        private JsonManager _manager;
 
         public ConfiguratorState LoadState()
         {

@@ -5,8 +5,12 @@ namespace MaterialColor.Common.Json
 {
     public class TypeColorOffsetsManager
     {
-        // inject instead of creating?
-        private JsonManager _manager = new JsonManager();
+        public TypeColorOffsetsManager(JsonManager manager)
+        {
+            _manager = manager;
+        }
+
+        private JsonManager _manager;
 
         public void SaveTypesColors(Dictionary<string, Color32> dictionary, string path = null)
         {

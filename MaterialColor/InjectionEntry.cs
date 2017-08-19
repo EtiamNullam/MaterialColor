@@ -1,4 +1,5 @@
-﻿using MaterialColor.Core.Extensions;
+﻿using MaterialColor.Common.Json;
+using MaterialColor.Core.Extensions;
 using MaterialColor.Core.Helpers;
 using MaterialColor.Core.IO;
 using System;
@@ -9,6 +10,14 @@ namespace MaterialColor.Core
     public static class InjectionEntry
     {
         private static bool Initialized = false;
+
+        private static bool ElementColorInfosChanged = false;
+        private static bool TypeColorOffsetsChanged = false;
+
+        private static JsonManager _jsonManager = new JsonManager();
+        private static ConfiguratorStateManager _configuratorStateManager = new ConfiguratorStateManager(_jsonManager);
+        private static ElementColorInfosManager _elementColorInfosManager = new ElementColorInfosManager(_jsonManager);
+        private static TypeColorOffsetsManager _typeColorOffsetsManager = new TypeColorOffsetsManager(_jsonManager);
 
         public static void EnterOnce()
         {
@@ -133,11 +142,9 @@ namespace MaterialColor.Core
 
         private static void TryLoadConfiguratorState()
         {
-            var configuratorStateManager = new Common.Json.ConfiguratorStateManager();
-
             try
             {
-                State.ConfiguratorState = configuratorStateManager.LoadState();
+                State.ConfiguratorState = _configuratorStateManager.LoadState();
             }
             catch (Exception ex)
             {
@@ -155,11 +162,9 @@ namespace MaterialColor.Core
 
         private static void TryLoadElementColorInfos()
         {
-            var elementColorInfosJsonManager = new Common.Json.ElementColorInfosManager();
-
             try
             {
-                State.ElementColorInfos = elementColorInfosJsonManager.LoadElementColorInfos();
+                State.ElementColorInfos = _elementColorInfosManager.LoadElementColorInfos();
             }
             catch (Exception e)
             {
@@ -175,11 +180,9 @@ namespace MaterialColor.Core
 
         private static void TryLoadTypeColorOffsets()
         {
-            var typeColorOffsetsJsonManager = new Common.Json.TypeColorOffsetsManager();
-
             try
             {
-                State.TypeColorOffsets = typeColorOffsetsJsonManager.LoadTypeColorOffsets();
+                State.TypeColorOffsets = _typeColorOffsetsManager.LoadTypeColorOffsets();
             }
             catch (Exception e)
             {
@@ -193,9 +196,6 @@ namespace MaterialColor.Core
                 Debug.LogError(message);
             }
         }
-
-        private static bool ElementColorInfosChanged = false;
-        private static bool TypeColorOffsetsChanged = false;
 
         private static void UpdateBuildingsColors()
         {
