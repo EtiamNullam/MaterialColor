@@ -1,8 +1,8 @@
-﻿using Common.Data;
-using MaterialColor.Helpers;
+﻿using MaterialColor.Common.Data;
+using MaterialColor.Core.Helpers;
 using UnityEngine;
 
-namespace MaterialColor.Extensions
+namespace MaterialColor.Core.Extensions
 {
     public static class SimHashesExtensions
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace MaterialColor.IO
+namespace MaterialColor.Core.IO
 {
     public class FileChangeNotifier : IDisposable
     {
@@ -15,7 +15,7 @@ namespace MaterialColor.IO
             _configuratorStateWatcher = new FileSystemWatcher(directory);
 
             _elementColorInfosWatcher.Filter = Common.Paths.ElementColorInfosFilePath;
-            _elementColorInfosWatcher.Filter = Common.Paths.TypeColorsFilePath;
+            _typeColorOffsetsWatcher.Filter = Common.Paths.TypeColorsFilePath;
             _injectorStateWatcher.Filter = Common.Paths.InjectorStateFilePath;
             _configuratorStateWatcher.Filter = Common.Paths.ConfiguratorStateFilePath;
 
@@ -57,7 +57,7 @@ namespace MaterialColor.IO
             }
         }
 
-        public event FileSystemEventHandler TypeColorsChanged
+        public event FileSystemEventHandler TypeColorOffsetsChanged
         {
             add
             {

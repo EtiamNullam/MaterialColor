@@ -1,4 +1,4 @@
-﻿namespace Common.Json
+﻿namespace MaterialColor.Common.Json
 {
     public class InjectorStateManager
     {

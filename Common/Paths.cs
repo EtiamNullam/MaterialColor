@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Common
+namespace MaterialColor.Common
 {
     public static class Paths
     {

@@ -48,9 +48,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Injector\Injector.csproj">
+    <ProjectReference Include="..\Injector\MaterialColor.Injector.csproj">
       <Project>{f991ba84-4ff5-4e77-a8a1-44c52ac4ab85}</Project>
-      <Name>Injector</Name>
+      <Name>MaterialColor.Injector</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

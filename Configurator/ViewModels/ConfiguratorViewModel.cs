@@ -1,11 +1,11 @@
-﻿using Common.Data;
-using Common.Json;
+﻿using MaterialColor.Common.Data;
+using MaterialColor.Common.Json;
 using Prism.Commands;
 using Prism.Logging;
 using Prism.Mvvm;
 using System;
 
-namespace Configurator.ViewModels
+namespace MaterialColor.Configurator.WPF.ViewModels
 {
     public class ConfiguratorViewModel : BindableBase
     {

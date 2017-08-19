@@ -1,8 +1,8 @@
-﻿using Common.Data;
+﻿using MaterialColor.Common.Data;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MaterialColor
+namespace MaterialColor.Core
 {
     public class State
     {

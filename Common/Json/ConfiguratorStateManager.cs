@@ -1,6 +1,6 @@
-﻿using Common.Data;
+﻿using MaterialColor.Common.Data;
 
-namespace Common.Json
+namespace MaterialColor.Common.Json
 {
     public class ConfiguratorStateManager
     {

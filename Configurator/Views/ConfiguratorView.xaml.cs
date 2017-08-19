@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Configurator.Views
+namespace MaterialColor.Configurator.WPF.Views
 {
     public partial class ConfiguratorView : Window
     {

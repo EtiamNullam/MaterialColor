@@ -1,7 +1,7 @@
-﻿using MaterialColor.Extensions;
+﻿using MaterialColor.Core.Extensions;
 using UnityEngine;
 
-namespace MaterialColor.Helpers
+namespace MaterialColor.Core.Helpers
 {
     public static class ColorHelper
     {

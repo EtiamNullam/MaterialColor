@@ -1,10 +1,10 @@
-﻿using MaterialColor.Extensions;
-using MaterialColor.Helpers;
-using MaterialColor.IO;
+﻿using MaterialColor.Core.Extensions;
+using MaterialColor.Core.Helpers;
+using MaterialColor.Core.IO;
 using System;
 using System.IO;
 
-namespace MaterialColor
+namespace MaterialColor.Core
 {
     public static class InjectionEntry
     {
@@ -12,13 +12,18 @@ namespace MaterialColor
 
         public static void EnterOnce()
         {
-            Debug.LogError("Enter Once");
+            //if (State.ConfiguratorState.ShowDetailedErrorInfo)
+            //{
+            //    Debug.LogError("Enter Once");
+            //}
 
             try
             {
-                if (!Initialized) Initialize();
+                Components.BuildingCompletes.OnAdd += OnBuildingsCompletesAdd;
 
                 ReloadAll();
+
+                if (!Initialized) Initialize();
             }
             catch (Exception e)
             {
@@ -33,24 +38,20 @@ namespace MaterialColor
             }
         }
 
-        private static void Initialize()
-        {
-            Components.BuildingCompletes.OnAdd += OnBuildingsCompletesAdd;
-
-            // unsubscribe?
-            ElementColorInfosChanged = TypeColorOffsetsChanged = true;
-
-            OverlayScreen.OnOverlayChanged += OnOverlayChanged;
-
-            StartFileChangeNotifier();
-            Initialized = true;
-        }
-
         private static void ReloadAll()
         {
             TryLoadElementColorInfos();
             TryLoadTypeColorOffsets();
             TryLoadConfiguratorState();
+        }
+
+        private static void Initialize()
+        {
+            // unsubscribe?
+            OverlayScreen.OnOverlayChanged += OnOverlayChanged;
+
+            StartFileChangeNotifier();
+            Initialized = true;
         }
 
         public static void EnterEveryUpdate()
@@ -61,18 +62,12 @@ namespace MaterialColor
             {
                 TryLoadElementColorInfos();
                 changed = true;
-
-                //temp
-                TryLoadTypeColorOffsets();
             }
 
             if (TypeColorOffsetsChanged)
             {
                 TryLoadTypeColorOffsets();
                 changed = true;
-
-                //temp
-                TryLoadElementColorInfos();
             }
 
             if (changed)
@@ -82,13 +77,8 @@ namespace MaterialColor
             }
         }
 
-        // TODO: find a way to show mesh and gas permeable tiles' material color
-        // maybe not possible?
         public static UnityEngine.Color EnterCell(Rendering.BlockTileRenderer blockRenderer, int cellIndex)
         {
-            // doesnt work for gas permeable tiles (shows gas element)
-            // changed color of white blueprint when building new tiles
-
             var material = GetMaterialFromCell(cellIndex);
             var materialColor = material.ToCellMaterialColor();
 
@@ -105,6 +95,11 @@ namespace MaterialColor
 
         private static SimHashes GetMaterialFromCell(int cellIndex)
         {
+            if (!Grid.IsValidCell(cellIndex))
+            {
+                return SimHashes.Vacuum;
+            }
+
             var cellElementIndex = Grid.Cell[cellIndex].elementIdx;
             var element = ElementLoader.elements[cellElementIndex];
 
@@ -123,10 +118,9 @@ namespace MaterialColor
         {
             if (_fileChangeNotifier == null)
             {
-                //_fileChangeNotifier = new FileChangeNotifier();
                 _fileChangeNotifier = _fileChangeNotifier ?? new FileChangeNotifier();
-                _fileChangeNotifier.ElementColorInfosChanged += OnElementColorsInfosUpdated;
-                _fileChangeNotifier.TypeColorsChanged += OnTypeColorOffsetsUpdated;
+                _fileChangeNotifier.ElementColorInfosChanged += OnElementColorsInfosChanged;
+                _fileChangeNotifier.TypeColorOffsetsChanged += OnTypeColorOffsetsChanged;
                 _fileChangeNotifier.ConfiguratorStateChanged += OnConfiguratorStateChanged;
             }
             // convert to instance class and dispose properly of events and FileChangeNotifier
@@ -200,7 +194,6 @@ namespace MaterialColor
             }
         }
 
-        // doesnt work after 2nd world load
         private static bool ElementColorInfosChanged = false;
         private static bool TypeColorOffsetsChanged = false;
 
@@ -212,14 +205,14 @@ namespace MaterialColor
             }
         }
 
-        private static void OnElementColorsInfosUpdated(object sender, FileSystemEventArgs e)
+        private static void OnElementColorsInfosChanged(object sender, FileSystemEventArgs e)
         {
             Debug.LogError("Element color infos changed.");
 
             ElementColorInfosChanged = true;
         }
 
-        private static void OnTypeColorOffsetsUpdated(object sender, FileSystemEventArgs e)
+        private static void OnTypeColorOffsetsChanged(object sender, FileSystemEventArgs e)
         {
             Debug.LogError("Type colors changed.");
 

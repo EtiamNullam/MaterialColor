@@ -1,4 +1,4 @@
-﻿namespace MaterialColor.Helpers
+﻿namespace MaterialColor.Core.Helpers
 {
     public static class MaterialHelper
     {

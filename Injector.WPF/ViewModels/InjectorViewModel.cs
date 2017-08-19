@@ -1,9 +1,9 @@
-﻿using Common.Json;
+﻿using MaterialColor.Common.Json;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
 
-namespace Injector.WPF.ViewModels
+namespace MaterialColor.Injector.WPF.ViewModels
 {
     public class InjectorViewModel : BindableBase
     {

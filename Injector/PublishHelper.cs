@@ -1,6 +1,6 @@
 ﻿using Mono.Cecil;
 
-namespace Injector
+namespace MaterialColor.Injector
 {
     public static class PublishHelper
     {

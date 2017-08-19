@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System.IO;
 
-namespace Common.Json
+namespace MaterialColor.Common.Json
 {
     public class JsonManager
     {
-        public JsonSerializer Serializer = JsonSerializer.CreateDefault();
+        public JsonSerializer Serializer = JsonSerializer.CreateDefault(new JsonSerializerSettings { Formatting = Formatting.Indented });
 
         public T Deserialize<T>(string path)
         {
