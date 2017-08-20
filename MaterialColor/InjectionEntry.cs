@@ -19,11 +19,14 @@ namespace MaterialColor.Core
         private static ElementColorInfosManager _elementColorInfosManager = new ElementColorInfosManager(_jsonManager);
         private static TypeColorOffsetsManager _typeColorOffsetsManager = new TypeColorOffsetsManager(_jsonManager);
 
+        private static FileChangeNotifier _fileChangeNotifier;
+
         public static void EnterOnce()
         {
             //if (State.ConfiguratorState.ShowDetailedErrorInfo)
             //{
-            //    Debug.LogError("Enter Once");
+            //Debug.LogError("Enter Once");
+            //return;
             //}
 
             try
@@ -56,7 +59,6 @@ namespace MaterialColor.Core
 
         private static void Initialize()
         {
-            // unsubscribe?
             OverlayScreen.OnOverlayChanged += OnOverlayChanged;
 
             StartFileChangeNotifier();
@@ -219,10 +221,7 @@ namespace MaterialColor.Core
             TypeColorOffsetsChanged = true;
         }
 
-        private static FileChangeNotifier _fileChangeNotifier;
-
         private static void OnBuildingsCompletesAdd(BuildingComplete building)
             => ColorHelper.UpdateBuildingColor(building);
-
     }
 }
