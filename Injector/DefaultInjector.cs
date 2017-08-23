@@ -19,8 +19,6 @@ namespace MaterialColor.Injector
         // TODO: refactor
         public void InjectDefaultAndBackup(bool enableConsole)
         {
-            //var modifiedCSharpModule = InjectDefault();
-
             InjectDefault(out var modifiedCSharpModule, out var modifiedFirstPassModule);
 
             if (enableConsole)
