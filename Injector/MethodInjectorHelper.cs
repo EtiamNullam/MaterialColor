@@ -4,14 +4,23 @@ using Mono.Cecil.Cil;
 
 namespace MaterialColor.Injector
 {
-    public static class MethodInjectorHelper
+    public class MethodInjector
     {
-        public static void InjectAsFirstInstruction(ModuleDefinition sourceModule, ModuleDefinition targetModule, string sourceTypeName, string sourceMethodName, string targetTypeName, string targetMethodName, bool includeCallingObject = false, int includeArgumentCount = 0)
+        public MethodInjector(ModuleDefinition sourceModule, ModuleDefinition targetModule)
         {
-            var sourceMethod = CecilHelper.GetMethodDefinition(sourceModule, sourceTypeName, sourceMethodName);
-            var sourceMethodReference = CecilHelper.GetMethodReference(targetModule, sourceMethod);
+            _sourceModule = sourceModule;
+            _targetModule = targetModule;
+        }
 
-            var targetMethod = CecilHelper.GetMethodDefinition(targetModule, targetTypeName, targetMethodName);
+        private ModuleDefinition _sourceModule;
+        private ModuleDefinition _targetModule;
+
+        public void InjectAsFirstInstruction(string sourceTypeName, string sourceMethodName, string targetTypeName, string targetMethodName, bool includeCallingObject = false, int includeArgumentCount = 0)
+        {
+            var sourceMethod = CecilHelper.GetMethodDefinition(_sourceModule, sourceTypeName, sourceMethodName);
+            var sourceMethodReference = CecilHelper.GetMethodReference(_targetModule, sourceMethod);
+
+            var targetMethod = CecilHelper.GetMethodDefinition(_targetModule, targetTypeName, targetMethodName);
             var targetMethodBody = targetMethod.Body;
 
             var firstInstruction = targetMethodBody.Instructions.First();
@@ -36,12 +45,12 @@ namespace MaterialColor.Injector
             methodILProcessor.InsertBefore(firstInstruction, targetInstruction);
         }
 
-        public static void InjectBefore(ModuleDefinition sourceModule, ModuleDefinition targetModule, string sourceTypeName, string sourceMethodName, string targetTypeName, string targetMethodName, int instructionIndex)
+        public void InjectBefore(string sourceTypeName, string sourceMethodName, string targetTypeName, string targetMethodName, int instructionIndex)
         {
-            var sourceMethod = CecilHelper.GetMethodDefinition(sourceModule, sourceTypeName, sourceMethodName);
-            var sourceMethodReference = CecilHelper.GetMethodReference(targetModule, sourceMethod);
+            var sourceMethod = CecilHelper.GetMethodDefinition(_sourceModule, sourceTypeName, sourceMethodName);
+            var sourceMethodReference = CecilHelper.GetMethodReference(_targetModule, sourceMethod);
 
-            var targetMethod = CecilHelper.GetMethodDefinition(targetModule, targetTypeName, targetMethodName);
+            var targetMethod = CecilHelper.GetMethodDefinition(_targetModule, targetTypeName, targetMethodName);
             var targetMethodBody = targetMethod.Body;
 
             var instruction = targetMethodBody.Instructions[instructionIndex];
