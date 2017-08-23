@@ -21,7 +21,7 @@ namespace MaterialColor.Core
         private static ElementColorInfosManager _elementColorInfosManager = new ElementColorInfosManager(_jsonManager);
         private static TypeColorOffsetsManager _typeColorOffsetsManager = new TypeColorOffsetsManager(_jsonManager);
 
-        private static FileChangeNotifier _fileChangeNotifier;
+        private static FileChangeNotifier _fileChangeNotifier = new FileChangeNotifier();
 
         public static void EnterOnce()
         {
@@ -91,47 +91,57 @@ namespace MaterialColor.Core
         }
 
         // TODO: refactor
-        public static UnityEngine.Color EnterCell(Rendering.BlockTileRenderer blockRenderer, int cellIndex)
+        public static Color EnterCell(Rendering.BlockTileRenderer blockRenderer, int cellIndex)
         {
             Color materialColor;
 
-            switch (State.ConfiguratorState.ColorMode)
+            if (!State.Disabled)
             {
-                case Common.Data.ColorMode.Json:
-                    var material = GetMaterialFromCell(cellIndex);
-                    materialColor = material.ToCellMaterialColor();
-                    break;
-                case Common.Data.ColorMode.DebugColor:
-                    materialColor = ElementLoader.elements[Grid.Cell[cellIndex].elementIdx].substance.debugColour;
-                    materialColor.a = 1;
-                    break;
-                default:
-                    materialColor = new Color(1, 1, 1);
-                    break;
+                switch (State.ConfiguratorState.ColorMode)
+                {
+                    case Common.Data.ColorMode.Json:
+                        var material = GetMaterialFromCell(cellIndex);
+                        materialColor = material.ToCellMaterialColor();
+                        break;
+                    case Common.Data.ColorMode.DebugColor:
+                        materialColor = ElementLoader.elements[Grid.Cell[cellIndex].elementIdx].substance.debugColour;
+                        materialColor.a = 1;
+                        break;
+                    default:
+                        materialColor = new Color(1, 1, 1);
+                        break;
+                }
             }
+            else materialColor = new Color(1, 1, 1);
 
-            if (blockRenderer.highlightCell == cellIndex)
-            {
-                return materialColor * 1.25f;
-            }
-            else if (blockRenderer.selectedCell == cellIndex)
-            {
-                return materialColor * 1.5f;
-            }
-            return materialColor;
+            return blockRenderer.highlightCell == cellIndex
+                ? materialColor * 1.25f
+                : blockRenderer.selectedCell == cellIndex
+                    ? materialColor * 1.5f
+                    : materialColor;
         }
 
+        // TODO: refactor
         public static bool EnterToggle(OverlayMenu overlayMenu, KIconToggleMenu.ToggleInfo toggleInfo)
         {
-            var userDataAsInt = toggleInfo.userData as int?;
-
-            if (toggleInfo.userData is SimViewMode userDataAsSimViewMode && userDataAsSimViewMode == (SimViewMode)Common.IDs.ToggleMaterialColorOverlayID)
+            if (toggleInfo.userData is SimViewMode userDataAsSimViewMode
+                && userDataAsSimViewMode == (SimViewMode)Common.IDs.ToggleMaterialColorOverlayID)
             {
                 State.Disabled = !State.Disabled;
                 UpdateBuildingsColors();
+                RebuildAllTiles();
+
                 return true;
             }
             else return false;
+        }
+
+        private static void RebuildAllTiles()
+        {
+            for (int i = 0; i < Grid.CellCount; i++)
+            {
+                World.Instance.blockTileRenderer.Rebuild(ObjectLayer.FoundationTile, i);
+            }
         }
 
         public static void SetLocalizationString()
@@ -152,7 +162,6 @@ namespace MaterialColor.Core
             return element.id;
         }
 
-        // TODO: refactor, fix
         private static void OnOverlayChanged(SimViewMode obj)
         {
             Debug.LogError(obj.ToString());
@@ -161,25 +170,14 @@ namespace MaterialColor.Core
             {
                 UpdateBuildingsColors();
             }
-
-            //if (SpecialOverlayMode)
-            //if (obj == SimViewMode.TileType)
-            //{
-            //    //UpdateBuildingsColors();
-            //}
         }
 
-        // TODO: simplify
+        // convert to instance class and dispose properly of events and FileChangeNotifier
         private static void StartFileChangeNotifier()
         {
-            if (_fileChangeNotifier == null)
-            {
-                _fileChangeNotifier = _fileChangeNotifier ?? new FileChangeNotifier();
-                _fileChangeNotifier.ElementColorInfosChanged += OnElementColorsInfosChanged;
-                _fileChangeNotifier.TypeColorOffsetsChanged += OnTypeColorOffsetsChanged;
-                _fileChangeNotifier.ConfiguratorStateChanged += OnConfiguratorStateChanged;
-            }
-            // convert to instance class and dispose properly of events and FileChangeNotifier
+            _fileChangeNotifier.ElementColorInfosChanged += OnElementColorsInfosChanged;
+            _fileChangeNotifier.TypeColorOffsetsChanged += OnTypeColorOffsetsChanged;
+            _fileChangeNotifier.ConfiguratorStateChanged += OnConfiguratorStateChanged;
         }
 
         private static void OnConfiguratorStateChanged(object sender, FileSystemEventArgs e)
