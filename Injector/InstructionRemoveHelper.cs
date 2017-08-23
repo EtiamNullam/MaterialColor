@@ -3,24 +3,31 @@ using System.Linq;
 
 namespace MaterialColor.Injector
 {
-    public static class InstructionRemoveHelper
+    public class InstructionRemover
     {
-        public static void RemoveInstructionAt(ModuleDefinition module, string typeName, string methodName, int instructionIndex)
+        public InstructionRemover(ModuleDefinition targetModule)
         {
-            var method = CecilHelper.GetMethodDefinition(module, typeName, methodName);
+            _targetModule = targetModule;
+        }
+
+        ModuleDefinition _targetModule;
+
+        public void RemoveInstructionAt(string typeName, string methodName, int instructionIndex)
+        {
+            var method = CecilHelper.GetMethodDefinition(_targetModule, typeName, methodName);
             var methodBody = method.Body;
 
             methodBody.GetILProcessor().Remove(methodBody.Instructions[instructionIndex]);
         }
 
-        public static void ClearAllButLast(ModuleDefinition module, string typeName, string methodName)
+        public void ClearAllButLast(string typeName, string methodName)
         {
-            var method = CecilHelper.GetMethodDefinition(module, typeName, methodName);
+            var method = CecilHelper.GetMethodDefinition(_targetModule, typeName, methodName);
             var methodBody = method.Body;
 
             var methodILProcessor = methodBody.GetILProcessor();
 
-            for (int i = methodBody.Instructions.Count-1; i > 0; i--)
+            for (int i = methodBody.Instructions.Count - 1; i > 0; i--)
             {
                 methodILProcessor.Remove(methodBody.Instructions.First());
             }

@@ -49,12 +49,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CecilHelper.cs" />
+    <Compile Include="Injection.cs" />
+    <Compile Include="InstructionInserter.cs" />
     <Compile Include="Paths.cs" />
     <Compile Include="InstructionRemoveHelper.cs" />
-    <Compile Include="PublishHelper.cs" />
+    <Compile Include="Publisher.cs" />
     <Compile Include="FileManager.cs" />
     <Compile Include="MethodInjectorHelper.cs" />
-    <Compile Include="DefaultInjector.cs" />
+    <Compile Include="InjectionManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

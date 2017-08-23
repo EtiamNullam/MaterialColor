@@ -7,7 +7,7 @@ namespace MaterialColor.Injector.WPF.ViewModels
 {
     public class InjectorViewModel : BindableBase
     {
-        public InjectorViewModel(InjectorStateManager stateManager, FileManager fileManager, DefaultInjector injector)
+        public InjectorViewModel(InjectorStateManager stateManager, FileManager fileManager, InjectionManager injector)
         {
             PatchCommand = new DelegateCommand(Patch);
             RestoreBackupCommand = new DelegateCommand(RestoreBackup, CanRestoreBackup);
@@ -36,7 +36,7 @@ namespace MaterialColor.Injector.WPF.ViewModels
 
         private InjectorStateManager _stateManager;
         private FileManager _fileManager;
-        private DefaultInjector _injector;
+        private InjectionManager _injector;
 
         private string _status;
         private bool _enableDebugConsole;
