@@ -14,9 +14,25 @@ namespace MaterialColor.Core.Helpers
             {
                 var material = MaterialHelper.ExtractMaterial(kAnimControllerBase);
 
-                var color = State.Disabled
-                    ? new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue)
-                    : material.GetMaterialColorForType(buildingName);
+                Color32 color;
+
+                if (!State.Disabled)
+                {
+                    switch (State.ConfiguratorState.ColorMode)
+                    {
+                        case Common.Data.ColorMode.Json:
+                            color = material.GetMaterialColorForType(buildingName);
+                            break;
+                        case Common.Data.ColorMode.DebugColor:
+                            color = material.ToDebugColor();
+                            break;
+                        case Common.Data.ColorMode.None:
+                        default:
+                            color = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue);
+                            break;
+                    }
+                }
+                else color = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue);
 
                 var dimmedColor = color.SetBrightness(color.GetBrightness() / 2);
 
@@ -104,7 +120,7 @@ namespace MaterialColor.Core.Helpers
 
             var debugColor = substance.debugColour;
 
-            debugColor.a = 1;
+            debugColor.a = byte.MaxValue;
 
             return debugColor;
         }

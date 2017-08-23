@@ -51,5 +51,16 @@ namespace MaterialColor.Core.Extensions
 
             return result;
         }
+
+        public static Color32 ToDebugColor(this SimHashes material)
+        {
+            var element = ElementLoader.FindElementByHash(material);
+
+            var debugColor = element.substance.debugColour;
+
+            debugColor.a = byte.MaxValue;
+
+            return debugColor;
+        }
     }
 }
