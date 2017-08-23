@@ -106,34 +106,20 @@ namespace MaterialColor.Injector
         private void AddOverlayButton(ModuleDefinition csharpModule)
         {
             var overlayMenu = csharpModule.Types.First(type => type.Name == "OverlayMenu");
-
             var initializeTogglesMethod = overlayMenu.Methods.First(method => method.Name == "InitializeToggles");
-
             var lastAddInstruction = initializeTogglesMethod.Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Callvirt);
-            var newToggleInfoInstruction = initializeTogglesMethod.Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Newobj);
 
-            // not used
-            var locStringToStringInstruction = initializeTogglesMethod.Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Call);
-
-            // test
             var toggleInfoConstructor = csharpModule.Types.First(type => type.Name == "KIconToggleMenu")
                 .NestedTypes.First(type => type.Name == "ToggleInfo")
                 .Methods.First(method => method.Name == ".ctor");
-            //
 
-            // is it neccesary?
             var boxToSimViewMode = initializeTogglesMethod.Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Box);
 
             var buttonInstructions = new List<Instruction>();
 
-            // TODO: remove "overlay" from below as its not overlay technically its whole mod toggle
             buttonInstructions.Add(Instruction.Create(OpCodes.Ldloc_0));
-            buttonInstructions.Add(Instruction.Create(OpCodes.Ldstr, "MaterialColor Overlay"));
-            //buttonInstructions.Add(locStringToStringInstruction); above is not a LocString
+            buttonInstructions.Add(Instruction.Create(OpCodes.Ldstr, "Toggle MaterialColor"));
             buttonInstructions.Add(Instruction.Create(OpCodes.Ldstr, "overlay_materialcolor")); // probably wrong, reuse other sprite
-            //buttonInstructions.Add(Instruction.Create(OpCodes.Ldc_I4, (int) SimViewMode.TileType)); already used SimViewMode
-            //buttonInstructions.Add(Instruction.Create(OpCodes.Ldc_I4, (int)SimViewMode.Reserved)); better way, see below
-            //buttonInstructions.Add(Instruction.Create(OpCodes.Ldstr, "ToggleMaterialColorOverlayMessage")); //doesnt work, see below
             buttonInstructions.Add(Instruction.Create(OpCodes.Ldc_I4, Common.IDs.ToggleMaterialColorOverlayID));
             buttonInstructions.Add(boxToSimViewMode);
             buttonInstructions.Add(Instruction.Create(OpCodes.Ldc_I4, (int)Action.Overlay12));
