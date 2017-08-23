@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Helpers\ColorHelper.cs" />
     <Compile Include="Extensions\Color32Extensions.cs" />
+    <Compile Include="IO\JsonFileLoader.cs" />
     <Compile Include="State.cs" />
     <Compile Include="IO\FileChangeNotifier.cs" />
     <Compile Include="InjectionEntry.cs" />
