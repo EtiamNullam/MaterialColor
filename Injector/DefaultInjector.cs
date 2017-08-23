@@ -1,8 +1,12 @@
 ﻿using System;
 using Mono.Cecil;
+using System.Linq;
+using Mono.Cecil.Cil;
+using System.Collections.Generic;
 
 namespace MaterialColor.Injector
 {
+    //TODO: refactor
     public class DefaultInjector
     {
         public DefaultInjector(FileManager fileManager)
@@ -12,72 +16,206 @@ namespace MaterialColor.Injector
 
         private FileManager _fileManager;
 
+        // TODO: refactor
         public void InjectDefaultAndBackup(bool enableConsole)
         {
-            var modifiedModule = InjectDefault();
+            //var modifiedCSharpModule = InjectDefault();
+
+            InjectDefault(out var modifiedCSharpModule, out var modifiedFirstPassModule);
 
             if (enableConsole)
             {
-                modifiedModule = EnableConsole(modifiedModule);
+                EnableConsole(modifiedCSharpModule);
             }
 
-            var path = DefaultPaths.DefaultTargetAssemblyPath;
+            var assemblyCSharpPath = Paths.DefaultAssemblyCSharpPath;
+            var assemblyFirstPassPath = Paths.DefaultAssemblyFirstPassPath;
 
-            _fileManager.MakeBackup(path);
-            _fileManager.SaveModule(modifiedModule, path);
+            _fileManager.MakeBackup(assemblyCSharpPath);
+            _fileManager.SaveModule(modifiedCSharpModule, assemblyCSharpPath);
+
+            _fileManager.MakeBackup(assemblyFirstPassPath);
+            _fileManager.SaveModule(modifiedFirstPassModule, assemblyFirstPassPath);
         }
 
-        private ModuleDefinition InjectDefault()
+        // TODO: refactor
+        private void InjectDefault(out ModuleDefinition csharpModule, out ModuleDefinition firstPassModule)
         {
-            var sourceModule = CecilHelper.GetModule(DefaultPaths.DefaultSourceAssemblyPath, DefaultPaths.ManagedDirectoryPath);
-            var targetModule = CecilHelper.GetModule(DefaultPaths.DefaultTargetAssemblyPath, DefaultPaths.ManagedDirectoryPath);
+            var sourceModule = CecilHelper.GetModule(Paths.DefaultSourceAssemblyPath, Paths.ManagedDirectoryPath);
+            csharpModule = CecilHelper.GetModule(Paths.DefaultAssemblyCSharpPath, Paths.ManagedDirectoryPath);
+            firstPassModule = CecilHelper.GetModule(Paths.DefaultAssemblyFirstPassPath, Paths.ManagedDirectoryPath);
 
-            targetModule = MethodInjectorHelper.InjectAsFirstInstruction(
+            MethodInjectorHelper.InjectAsFirstInstruction(
                 sourceModule,
-                targetModule,
+                csharpModule,
                 "InjectionEntry", "EnterOnce",
                 "Game", "OnPrefabInit");
 
             // inject before instruction #5
-            targetModule = MethodInjectorHelper.InjectBefore(
+             MethodInjectorHelper.InjectBefore(
                 sourceModule,
-                targetModule,
+                csharpModule,
                 "InjectionEntry", "EnterEveryUpdate",
                 "Game", "Update",
                 5);
 
             // GetCellColor test - correct
-            targetModule = InstructionRemoveHelper.ClearAllButLast(
-                targetModule,
+             InstructionRemoveHelper.ClearAllButLast(
+                csharpModule,
                 "BlockTileRenderer", "GetCellColor");
 
-            targetModule = MethodInjectorHelper.InjectAsFirstInstruction(
+             MethodInjectorHelper.InjectAsFirstInstruction(
                 sourceModule,
-                targetModule,
+                csharpModule,
                 "InjectionEntry", "EnterCell",
                 "BlockTileRenderer", "GetCellColor",
                 true, 1);
 
-            targetModule = PublishHelper.MakeFieldPublic(targetModule, "BlockTileRenderer", "selectedCell");
-            targetModule = PublishHelper.MakeFieldPublic(targetModule, "BlockTileRenderer", "highlightCell");
+            PublishHelper.MakeFieldPublic(csharpModule, "BlockTileRenderer", "selectedCell");
+            PublishHelper.MakeFieldPublic(csharpModule, "BlockTileRenderer", "highlightCell");
             //
 
-            targetModule = PublishHelper.MakeFieldPublic(targetModule, "Ownable", "unownedTint");
-            targetModule = PublishHelper.MakeFieldPublic(targetModule, "Ownable", "ownedTint");
+            PublishHelper.MakeFieldPublic(csharpModule, "Ownable", "unownedTint");
+            PublishHelper.MakeFieldPublic(csharpModule, "Ownable", "ownedTint");
 
             // storagelocker dim on load test - not really needed but should be left
-            targetModule = PublishHelper.MakeFieldPublic(targetModule, "StorageLocker", "filterable");
-            targetModule = PublishHelper.MakeMethodPublic(targetModule, "StorageLocker", "OnFilterChanged");
+            PublishHelper.MakeFieldPublic(csharpModule, "StorageLocker", "filterable");
+            PublishHelper.MakeMethodPublic(csharpModule, "StorageLocker", "OnFilterChanged");
             // ownable dim properly test - correct
-            targetModule = PublishHelper.MakeMethodPublic(targetModule, "Ownable", "UpdateTint");
+            PublishHelper.MakeMethodPublic(csharpModule, "Ownable", "UpdateTint");
             // fridge/rationbox dim properly test - probably correct
-            targetModule = PublishHelper.MakeFieldPublic(targetModule, "Refrigerator", "filterable");
-            targetModule = PublishHelper.MakeMethodPublic(targetModule, "Refrigerator", "OnFilterChanged");
-            targetModule = PublishHelper.MakeFieldPublic(targetModule, "RationBox", "filterable");
-            targetModule = PublishHelper.MakeMethodPublic(targetModule, "RationBox", "OnFilterChanged");
+            PublishHelper.MakeFieldPublic(csharpModule, "Refrigerator", "filterable");
+            PublishHelper.MakeMethodPublic(csharpModule, "Refrigerator", "OnFilterChanged");
+            PublishHelper.MakeFieldPublic(csharpModule, "RationBox", "filterable");
+            PublishHelper.MakeMethodPublic(csharpModule, "RationBox", "OnFilterChanged");
+            //
+            InjectKeybindings(csharpModule, firstPassModule);
+            //
+            AddLocalizationString(sourceModule, csharpModule);
+            //
+            AddOverlayButton(csharpModule);
+            //
+            AttachCustomActionToToggle(sourceModule, csharpModule);
+            //
+        }
+
+        private void InjectKeybindings(ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
+        {
+            AddDefaultKeybinding(csharpModule, firstPassModule, KKeyCode.F6, Modifier.Alt, Action.Overlay12);
+        }
+
+        // TODO: refactor, test
+        private void AddOverlayButton(ModuleDefinition csharpModule)
+        {
+            var overlayMenu = csharpModule.Types.First(type => type.Name == "OverlayMenu");
+
+            var initializeTogglesMethod = overlayMenu.Methods.First(method => method.Name == "InitializeToggles");
+
+            var lastAddInstruction = initializeTogglesMethod.Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Callvirt);
+            var newToggleInfoInstruction = initializeTogglesMethod.Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Newobj);
+
+            // not used
+            var locStringToStringInstruction = initializeTogglesMethod.Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Call);
+
+            // test
+            var toggleInfoConstructor = csharpModule.Types.First(type => type.Name == "KIconToggleMenu")
+                .NestedTypes.First(type => type.Name == "ToggleInfo")
+                .Methods.First(method => method.Name == ".ctor");
             //
 
-            return targetModule;
+            // is it neccesary?
+            var boxToSimViewMode = initializeTogglesMethod.Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Box);
+
+            var buttonInstructions = new List<Instruction>();
+
+            // TODO: remove "overlay" from below as its not overlay technically its whole mod toggle
+            buttonInstructions.Add(Instruction.Create(OpCodes.Ldloc_0));
+            buttonInstructions.Add(Instruction.Create(OpCodes.Ldstr, "MaterialColor Overlay"));
+            //buttonInstructions.Add(locStringToStringInstruction); above is not a LocString
+            buttonInstructions.Add(Instruction.Create(OpCodes.Ldstr, "overlay_materialcolor")); // probably wrong, reuse other sprite
+            //buttonInstructions.Add(Instruction.Create(OpCodes.Ldc_I4, (int) SimViewMode.TileType)); already used SimViewMode
+            //buttonInstructions.Add(Instruction.Create(OpCodes.Ldc_I4, (int)SimViewMode.Reserved)); better way, see below
+            //buttonInstructions.Add(Instruction.Create(OpCodes.Ldstr, "ToggleMaterialColorOverlayMessage")); //doesnt work, see below
+            buttonInstructions.Add(Instruction.Create(OpCodes.Ldc_I4, Common.IDs.ToggleMaterialColorOverlayID));
+            buttonInstructions.Add(boxToSimViewMode);
+            buttonInstructions.Add(Instruction.Create(OpCodes.Ldc_I4, (int)Action.Overlay12));
+            buttonInstructions.Add(Instruction.Create(OpCodes.Ldstr, "Toggles MaterialColor overlay"));
+            buttonInstructions.Add(Instruction.Create(OpCodes.Newobj, toggleInfoConstructor));
+            buttonInstructions.Add(lastAddInstruction);
+
+            buttonInstructions.Reverse();
+
+            var ILProcessor = initializeTogglesMethod.Body.GetILProcessor();
+
+            foreach (var instruction in buttonInstructions)
+            {
+                ILProcessor.InsertAfter(lastAddInstruction, instruction);
+            }
+        }
+
+        // TODO: refactor
+        private void AddDefaultKeybinding(ModuleDefinition CSharpModule, ModuleDefinition FirstPassModule, KKeyCode keyCode, Modifier keyModifier, Action action, string screen = "Root")
+        {
+            var beforeFieldInit = CecilHelper.GetMethodDefinition(FirstPassModule, CecilHelper.GetTypeDefinition(FirstPassModule, "GameInputMapping"), ".cctor");
+
+            var lastKeybindingDeclarationEnd = beforeFieldInit.Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Stobj);
+            var stoBindingEntryInstruction = beforeFieldInit.Body.Instructions.First(instruction => instruction.OpCode == OpCodes.Stobj);
+            var newBindingEntryInstruction = beforeFieldInit.Body.Instructions.First(instruction => instruction.OpCode == OpCodes.Newobj);
+
+            var keybindingInstructions = new List<Instruction>();
+
+            keybindingInstructions.Add(Instruction.Create(OpCodes.Dup));
+            keybindingInstructions.Add(Instruction.Create(OpCodes.Ldc_I4_S, (sbyte) 0x6C)); // index 
+            keybindingInstructions.Add(Instruction.Create(OpCodes.Ldelema, (TypeReference)stoBindingEntryInstruction.Operand));
+            keybindingInstructions.Add(Instruction.Create(OpCodes.Ldstr, screen));
+            keybindingInstructions.Add(Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)16)); // gamepad button
+            keybindingInstructions.Add(Instruction.Create(OpCodes.Ldc_I4, (int)keyCode));
+            keybindingInstructions.Add(Instruction.Create(OpCodes.Ldc_I4, (int)keyModifier));
+            keybindingInstructions.Add(Instruction.Create(OpCodes.Ldc_I4, (int)action));
+            keybindingInstructions.Add(Instruction.Create(OpCodes.Ldc_I4_1)); // rebindable = true
+            keybindingInstructions.Add(newBindingEntryInstruction); // create new object
+            keybindingInstructions.Add(stoBindingEntryInstruction); // store in array?
+
+            keybindingInstructions.Reverse();
+
+            var ILProcessor = beforeFieldInit.Body.GetILProcessor();
+
+            // increase array size by one
+            var firstInstruction = beforeFieldInit.Body.Instructions.First();
+
+            ILProcessor.Replace(firstInstruction, Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)0x6D));
+            //
+
+            foreach (var instruction in keybindingInstructions)
+            {
+                ILProcessor.InsertAfter(lastKeybindingDeclarationEnd, instruction);
+            }
+        }
+
+        // use only one entry point for initialization?
+        private void AddLocalizationString(ModuleDefinition sourceModule, ModuleDefinition csharpModule)
+        {
+            var inputBindings = csharpModule
+                .Types
+                .First(type => type.Name == "INPUT_BINDINGS")
+                    .NestedTypes
+                    .First(type => type.Name == "ROOT");
+
+            var fieldDefinition = new FieldDefinition(
+                    "OVERLAY12",
+                    FieldAttributes.Static | FieldAttributes.Public,
+                    CecilHelper.GetTypeDefinition(csharpModule, "LocString")
+                );
+
+            inputBindings.Fields.Add(fieldDefinition);
+
+            MethodInjectorHelper.InjectAsFirstInstruction(
+                sourceModule,
+                csharpModule,
+                "InjectionEntry",
+                "SetLocalizationString",
+                "GlobalAssets",
+                "Awake");
         }
 
         /*
@@ -88,64 +226,46 @@ namespace MaterialColor.Injector
          * OptionsMenuScreen.Update()
          * ReportErrorDialog.Update()
          */
-        private ModuleDefinition EnableConsole(ModuleDefinition module)
+        private void EnableConsole(ModuleDefinition module)
         {
-            module = InstructionRemoveHelper.RemoveInstructionAt(module, "Game", "Update", 9);
-            module = InstructionRemoveHelper.RemoveInstructionAt(module, "Game", "Update", 9);
-            module = InstructionRemoveHelper.RemoveInstructionAt(module, "Game", "Update", 9);
-            module = InstructionRemoveHelper.RemoveInstructionAt(module, "Game", "Update", 9);
+            InstructionRemoveHelper.RemoveInstructionAt(module, "FrontEndManager", "LateUpdate", 0);
+            InstructionRemoveHelper.RemoveInstructionAt(module, "FrontEndManager", "LateUpdate", 0);
+            InstructionRemoveHelper.RemoveInstructionAt(module, "FrontEndManager", "LateUpdate", 0);
+            InstructionRemoveHelper.RemoveInstructionAt(module, "FrontEndManager", "LateUpdate", 0);
 
-            return module;
+            InstructionRemoveHelper.RemoveInstructionAt(module, "Game", "Update", 9);
+            InstructionRemoveHelper.RemoveInstructionAt(module, "Game", "Update", 9);
+            InstructionRemoveHelper.RemoveInstructionAt(module, "Game", "Update", 9);
+            InstructionRemoveHelper.RemoveInstructionAt(module, "Game", "Update", 9);
         }
 
-        [Obsolete]
-        private static void CustomInjection()
+        // TODO: refactor
+        private void AttachCustomActionToToggle(ModuleDefinition sourceModule, ModuleDefinition csharpModule)
         {
-            //Console.Write("From module: ");
-            //var from = Console.ReadLine();
+            var OnToggleSelectMethod = csharpModule.Types.First(type => type.Name == "OverlayMenu").Methods.First(method => method.Name == "OnToggleSelect");
 
-            //Console.Write("To module: ");
-            //var to = Console.ReadLine();
+            var firstInstruction = OnToggleSelectMethod.Body.Instructions.First();
 
-            //MethodInjector injector;
+            var instructionsToAdd = new List<Instruction>();
 
-            //try
-            //{
-            //    injector = new MethodInjector(from, to);
-            //}
-            //catch (Exception e)
-            //{
-            //    ShowException(e);
-            //    return;
-            //}
+            instructionsToAdd.Add(Instruction.Create(OpCodes.Brfalse, firstInstruction));
+            instructionsToAdd.Add(Instruction.Create(OpCodes.Ret));
 
-            //Console.Write("From type name: ");
-            //var fromTypeName = Console.ReadLine();
+            var ILProcessor = OnToggleSelectMethod.Body.GetILProcessor();
 
-            //Console.Write("From method name: ");
-            //var fromMethodName = Console.ReadLine();
+            foreach (var instruction in instructionsToAdd)
+            {
+                ILProcessor.InsertBefore(firstInstruction, instruction);
+            }
 
-            //Console.Write("To type name: ");
-            //var toTypeName = Console.ReadLine();
-
-            //Console.Write("To method name: ");
-            //var toMethodName = Console.ReadLine();
-
-            //injector.InjectAsFirstInstruction(fromTypeName, fromMethodName, toTypeName, toMethodName);
-            ////injector.InjectAsFirstInstructionAtEntryPoint(fromTypeName, fromMethodName);
-
-            //var fileManager = new FileManager();
-
-            //fileManager.MakeBackup(to);
-
-            //try
-            //{
-            //    fileManager.SaveModule(injector.ToModule, to);
-            //}
-            //catch (Exception e)
-            //{
-            //    ShowException(e);
-            //}
+            MethodInjectorHelper.InjectAsFirstInstruction(
+                sourceModule,
+                csharpModule,
+                "InjectionEntry",
+                "EnterToggle",
+                "OverlayMenu",
+                "OnToggleSelect",
+                true, 1);
         }
     }
 }

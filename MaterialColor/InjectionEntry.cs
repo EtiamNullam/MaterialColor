@@ -4,9 +4,11 @@ using MaterialColor.Core.Helpers;
 using MaterialColor.Core.IO;
 using System;
 using System.IO;
+using UnityEngine;
 
 namespace MaterialColor.Core
 {
+    // TODO: refactor
     public static class InjectionEntry
     {
         private static bool Initialized = false;
@@ -88,10 +90,25 @@ namespace MaterialColor.Core
             }
         }
 
+        // TODO: refactor
         public static UnityEngine.Color EnterCell(Rendering.BlockTileRenderer blockRenderer, int cellIndex)
         {
-            var material = GetMaterialFromCell(cellIndex);
-            var materialColor = material.ToCellMaterialColor();
+            Color materialColor;
+
+            switch (State.ConfiguratorState.ColorMode)
+            {
+                case Common.Data.ColorMode.Json:
+                    var material = GetMaterialFromCell(cellIndex);
+                    materialColor = material.ToCellMaterialColor();
+                    break;
+                case Common.Data.ColorMode.DebugColor:
+                    materialColor = ElementLoader.elements[Grid.Cell[cellIndex].elementIdx].substance.debugColour;
+                    materialColor.a = 1;
+                    break;
+                default:
+                    materialColor = new Color(1, 1, 1);
+                    break;
+            }
 
             if (blockRenderer.highlightCell == cellIndex)
             {
@@ -102,6 +119,24 @@ namespace MaterialColor.Core
                 return materialColor * 1.5f;
             }
             return materialColor;
+        }
+
+        public static bool EnterToggle(OverlayMenu overlayMenu, KIconToggleMenu.ToggleInfo toggleInfo)
+        {
+            var userDataAsInt = toggleInfo.userData as int?;
+
+            if (toggleInfo.userData is SimViewMode userDataAsSimViewMode && userDataAsSimViewMode == (SimViewMode)Common.IDs.ToggleMaterialColorOverlayID)
+            {
+                State.Disabled = !State.Disabled;
+                UpdateBuildingsColors();
+                return true;
+            }
+            else return false;
+        }
+
+        public static void SetLocalizationString()
+        {
+            STRINGS.INPUT_BINDINGS.ROOT.OVERLAY12 = "Toggle_MaterialColor_Overlay";
         }
 
         private static SimHashes GetMaterialFromCell(int cellIndex)
@@ -117,14 +152,24 @@ namespace MaterialColor.Core
             return element.id;
         }
 
+        // TODO: refactor, fix
         private static void OnOverlayChanged(SimViewMode obj)
         {
-            if (obj == SimViewMode.None)
+            Debug.LogError(obj.ToString());
+
+            if (!State.Disabled && obj == SimViewMode.None)
             {
                 UpdateBuildingsColors();
             }
+
+            //if (SpecialOverlayMode)
+            //if (obj == SimViewMode.TileType)
+            //{
+            //    //UpdateBuildingsColors();
+            //}
         }
 
+        // TODO: simplify
         private static void StartFileChangeNotifier()
         {
             if (_fileChangeNotifier == null)

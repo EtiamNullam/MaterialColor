@@ -5,17 +5,15 @@ namespace MaterialColor.Injector
 {
     public static class InstructionRemoveHelper
     {
-        public static ModuleDefinition RemoveInstructionAt(ModuleDefinition module, string typeName, string methodName, int instructionIndex)
+        public static void RemoveInstructionAt(ModuleDefinition module, string typeName, string methodName, int instructionIndex)
         {
             var method = CecilHelper.GetMethodDefinition(module, typeName, methodName);
             var methodBody = method.Body;
 
             methodBody.GetILProcessor().Remove(methodBody.Instructions[instructionIndex]);
-
-            return module;
         }
 
-        public static ModuleDefinition ClearAllButLast(ModuleDefinition module, string typeName, string methodName)
+        public static void ClearAllButLast(ModuleDefinition module, string typeName, string methodName)
         {
             var method = CecilHelper.GetMethodDefinition(module, typeName, methodName);
             var methodBody = method.Body;
@@ -26,8 +24,6 @@ namespace MaterialColor.Injector
             {
                 methodILProcessor.Remove(methodBody.Instructions.First());
             }
-
-            return module;
         }
     }
 }
