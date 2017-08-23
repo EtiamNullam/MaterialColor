@@ -7,7 +7,6 @@
         public bool ShowBuildingsAsWhite { get; set; }
         public bool ShowDetailedErrorInfo { get; set; }
 
-        // TODO: allow change via Configurator
         public ColorMode ColorMode { get; set; } = ColorMode.Json;
     }
 }

@@ -5,11 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MaterialColor.Configurator.WPF.Views"
         xmlns:prism="http://prismlibrary.com/"
+        xmlns:commonData="clr-namespace:MaterialColor.Common.Data;assembly=MaterialColor.Common"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Configurator" Height="210" Width="360" MinHeight="210" MinWidth="280"
+        Title="Configurator" Height="290" Width="360" MinHeight="290" MinWidth="300"
         prism:ViewModelLocator.AutoWireViewModel="True">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues" ObjectType="{x:Type system:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="commonData:ColorMode"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="105"/>
             <RowDefinition />
         </Grid.RowDefinitions>
@@ -19,15 +30,26 @@
             <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Margin="5" Grid.ColumnSpan="2">
-            <CheckBox Content="Show missing _element color infos" Margin="5" IsChecked="{Binding State.ShowMissingElementColorInfos}"/>
-            <CheckBox Content="Show missing _type color offsets" Margin="5" IsChecked="{Binding State.ShowMissingTypeColorOffsets}"/>
-            <CheckBox Content="Apply _white to colorable objects" Margin="5" IsChecked="{Binding State.ShowBuildingsAsWhite}"/>
-            <CheckBox Content="Show _detailed informations about errors" Margin="5" IsChecked="{Binding State.ShowDetailedErrorInfo}"/>
+        <Grid Grid.ColumnSpan="2" Margin="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="90"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Color mode:"/>
+            <ComboBox Grid.Column="1" Width="120" HorizontalAlignment="Left" SelectedItem="{Binding State.ColorMode}" ItemsSource="{Binding Source={StaticResource dataFromEnum}}"/>
+        </Grid>
+        
+        <Label Content="Advanced:" Grid.Row="1" Grid.ColumnSpan="2" Margin="2"/>
+        
+        <StackPanel Margin="5" Grid.ColumnSpan="2" Grid.Row="2">
+            <CheckBox Content="Show missing _element color infos" Margin="20,5" IsChecked="{Binding State.ShowMissingElementColorInfos}"/>
+            <CheckBox Content="Show missing _type color offsets" Margin="20,5" IsChecked="{Binding State.ShowMissingTypeColorOffsets}"/>
+            <CheckBox Content="Apply _white to colorable objects" Margin="20,5" IsChecked="{Binding State.ShowBuildingsAsWhite}"/>
+            <CheckBox Content="Show _detailed informations about errors" Margin="20,5" IsChecked="{Binding State.ShowDetailedErrorInfo}"/>
         </StackPanel>
 
-        <Button IsDefault="True" Grid.Row="1" Grid.Column="1" Content="_Apply" Height="40" Margin="10" Command="{Binding ApplyCommand}" VerticalAlignment="Bottom"/>
+        <Button IsDefault="True" Grid.Row="3" Grid.Column="1" Content="_Apply" Height="40" Margin="10" Command="{Binding ApplyCommand}" VerticalAlignment="Bottom"/>
 
-        <TextBox Margin="12.5" Grid.Row="1" Text="{Binding Status}" IsReadOnly="True" TextWrapping="Wrap" TextChanged="OnStatusChanged" VerticalScrollBarVisibility="Visible"/>
+        <TextBox Margin="12.5" Grid.Row="3" Text="{Binding Status}" IsReadOnly="True" TextWrapping="Wrap" TextChanged="OnStatusChanged" VerticalScrollBarVisibility="Visible"/>
     </Grid>
 </Window>

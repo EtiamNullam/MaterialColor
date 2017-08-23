@@ -86,5 +86,27 @@ namespace MaterialColor.Core.Helpers
             }
             return typeStandardColor;
         }
+
+        public static Color GetDefaultCellColor()
+            => new Color(1, 1, 1);
+
+        public static Color GetCellColorJson(int cellIndex)
+        {
+            var material = MaterialHelper.GetMaterialFromCell(cellIndex);
+            return material.ToCellMaterialColor();
+        }
+
+        public static Color GetCellColorDebug(int cellIndex)
+        {
+            var cell = Grid.Cell[cellIndex];
+            var element = ElementLoader.elements[cell.elementIdx];
+            var substance = element.substance;
+
+            var debugColor = substance.debugColour;
+
+            debugColor.a = 1;
+
+            return debugColor;
+        }
     }
 }
