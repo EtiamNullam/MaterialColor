@@ -6,7 +6,7 @@ namespace MaterialColor.Injector
 {
     public static class MethodInjectorHelper
     {
-        public static ModuleDefinition InjectAsFirstInstruction(ModuleDefinition sourceModule, ModuleDefinition targetModule, string sourceTypeName, string sourceMethodName, string targetTypeName, string targetMethodName, bool includeCallingObject = false, int includeArgumentCount = 0)
+        public static void InjectAsFirstInstruction(ModuleDefinition sourceModule, ModuleDefinition targetModule, string sourceTypeName, string sourceMethodName, string targetTypeName, string targetMethodName, bool includeCallingObject = false, int includeArgumentCount = 0)
         {
             var sourceMethod = CecilHelper.GetMethodDefinition(sourceModule, sourceTypeName, sourceMethodName);
             var sourceMethodReference = CecilHelper.GetMethodReference(targetModule, sourceMethod);
@@ -34,11 +34,9 @@ namespace MaterialColor.Injector
 
             var targetInstruction = Instruction.Create(OpCodes.Call, sourceMethodReference);
             methodILProcessor.InsertBefore(firstInstruction, targetInstruction);
-
-            return targetModule;
         }
 
-        public static ModuleDefinition InjectBefore(ModuleDefinition sourceModule, ModuleDefinition targetModule, string sourceTypeName, string sourceMethodName, string targetTypeName, string targetMethodName, int instructionIndex)
+        public static void InjectBefore(ModuleDefinition sourceModule, ModuleDefinition targetModule, string sourceTypeName, string sourceMethodName, string targetTypeName, string targetMethodName, int instructionIndex)
         {
             var sourceMethod = CecilHelper.GetMethodDefinition(sourceModule, sourceTypeName, sourceMethodName);
             var sourceMethodReference = CecilHelper.GetMethodReference(targetModule, sourceMethod);
@@ -49,8 +47,6 @@ namespace MaterialColor.Injector
             var instruction = targetMethodBody.Instructions[instructionIndex];
 
             targetMethodBody.GetILProcessor().InsertBefore(instruction, Instruction.Create(OpCodes.Call, sourceMethodReference));
-
-            return targetModule;
         }
     }
 }

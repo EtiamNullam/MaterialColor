@@ -4,12 +4,14 @@ using UnityEngine;
 
 namespace MaterialColor.Core
 {
-    public class State
+    public static class State
     {
         public static Dictionary<string, Color32> TypeColorOffsets = new Dictionary<string, Color32>();
         public static Dictionary<SimHashes, ElementColorInfo> ElementColorInfos = new Dictionary<SimHashes, ElementColorInfo>();
 
         public static ConfiguratorState ConfiguratorState = new ConfiguratorState();
+
+        public static bool Disabled = false;
 
         public static readonly List<string> TileNames = new List<string>
         {

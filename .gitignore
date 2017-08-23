@@ -244,4 +244,5 @@ ModelManifest.xml
 # custom
 libs/
 target structure.txt
-_output/
+_release 1.0/
+TODO.todotxt

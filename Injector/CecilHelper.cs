@@ -25,6 +25,11 @@ namespace MaterialColor.Injector
         {
             var type = GetTypeDefinition(module, typeName);
 
+            return GetMethodDefinition(module, type, methodName);
+        }
+
+        public static MethodDefinition GetMethodDefinition(ModuleDefinition module, TypeDefinition type, string methodName)
+        {
             return type.Methods.First(method => method.Name == methodName);
         }
 

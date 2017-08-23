@@ -13,7 +13,11 @@ namespace MaterialColor.Core.Helpers
             if (kAnimControllerBase != null)
             {
                 var material = MaterialHelper.ExtractMaterial(kAnimControllerBase);
-                var color = material.GetMaterialColorForType(buildingName);
+
+                var color = State.Disabled
+                    ? new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue)
+                    : material.GetMaterialColorForType(buildingName);
+
                 var dimmedColor = color.SetBrightness(color.GetBrightness() / 2);
 
                 // storagelocker

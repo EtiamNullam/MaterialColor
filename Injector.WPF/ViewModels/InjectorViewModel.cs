@@ -42,7 +42,7 @@ namespace MaterialColor.Injector.WPF.ViewModels
         private bool _enableDebugConsole;
 
         public bool CanRestoreBackup()
-            => _fileManager.BackupForFileExists(DefaultPaths.DefaultTargetAssemblyPath);
+            => _fileManager.BackupForFileExists(Paths.DefaultAssemblyCSharpPath) | _fileManager.BackupForFileExists(Paths.DefaultAssemblyFirstPassPath);
 
         public void Patch()
         {
@@ -110,7 +110,18 @@ namespace MaterialColor.Injector.WPF.ViewModels
 
         public bool TryRestoreBackup()
         {
-            var result = _fileManager.RestoreBackupForFile(DefaultPaths.DefaultTargetAssemblyPath);
+            bool result = false;
+
+            try
+            {
+                result = _fileManager.RestoreBackupForFile(Paths.DefaultAssemblyCSharpPath)
+                    | _fileManager.RestoreBackupForFile(Paths.DefaultAssemblyFirstPassPath);
+            }
+            catch (Exception e)
+            {
+                Status = $"Can't restore backup.\n{e.Message}\n{e.StackTrace}";
+                result = false;
+            }
 
             RestoreBackupCommand.RaiseCanExecuteChanged();
 
