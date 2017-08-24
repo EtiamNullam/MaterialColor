@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8FD9FE43-2728-495F-BEC6-2BBC4BE8A6E7}</ProjectGuid>
+    <ProjectGuid>{F991BA84-4FF5-4E77-A8A1-44C52AC4AB85}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Injector.Tests</RootNamespace>
-    <AssemblyName>Injector.Tests</AssemblyName>
+    <RootNamespace>MaterialColor.Injector</RootNamespace>
+    <AssemblyName>MaterialColor.Injector</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -32,32 +32,42 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=3.7.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.7.1\lib\net45\nunit.framework.dll</HintPath>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\libs\original\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\libs\original\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.9.6.4\lib\net45\Mono.Cecil.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileManagerTests.cs" />
+    <Compile Include="CecilHelper.cs" />
+    <Compile Include="Injection.cs" />
+    <Compile Include="InstructionInserter.cs" />
+    <Compile Include="IO\Paths.cs" />
+    <Compile Include="InstructionRemover.cs" />
+    <Compile Include="Publisher.cs" />
+    <Compile Include="IO\FileManager.cs" />
+    <Compile Include="MethodInjector.cs" />
+    <Compile Include="InjectionManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Injector\MaterialColor.Injector.csproj">
-      <Project>{f991ba84-4ff5-4e77-a8a1-44c52ac4ab85}</Project>
-      <Name>MaterialColor.Injector</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MaterialColor.Common\MaterialColor.Common.csproj">
+      <Project>{eda0cd77-3605-4c5a-aca6-6bbda16a24af}</Project>
+      <Name>MaterialColor.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -242,9 +242,7 @@ ModelManifest.xml
 .fake/
 
 # custom
-libs/
-target structure.txt
-_release 1.0/
-_release 1.1/
-TODO.todotxt
+
+# vim
 *.swp
+_output/

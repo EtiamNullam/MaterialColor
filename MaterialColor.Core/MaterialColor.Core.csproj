@@ -36,15 +36,12 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\libs\modified\sprite test\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\original\Assembly-CSharp-firstpass.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\..\Libraries\original\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine">
-      <HintPath>..\libs\original\UnityEngine.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\Libraries\original\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -68,7 +65,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\MaterialColor.Common.csproj">
+    <ProjectReference Include="..\MaterialColor.Common\MaterialColor.Common.csproj">
       <Project>{eda0cd77-3605-4c5a-aca6-6bbda16a24af}</Project>
       <Name>MaterialColor.Common</Name>
     </ProjectReference>

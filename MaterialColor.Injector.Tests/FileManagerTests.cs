@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace Injector.Tests
+namespace MaterialColor.Injector.Tests
 {
     [TestFixture]
     public class FileManagerTests
