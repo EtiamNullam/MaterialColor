@@ -113,11 +113,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\MaterialColor.Common.csproj">
+    <ProjectReference Include="..\MaterialColor.Common\MaterialColor.Common.csproj">
       <Project>{eda0cd77-3605-4c5a-aca6-6bbda16a24af}</Project>
       <Name>MaterialColor.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Injector\MaterialColor.Injector.csproj">
+    <ProjectReference Include="..\MaterialColor.Injector\MaterialColor.Injector.csproj">
       <Project>{f991ba84-4ff5-4e77-a8a1-44c52ac4ab85}</Project>
       <Name>MaterialColor.Injector</Name>
     </ProjectReference>

@@ -1,8 +1,8 @@
-﻿using MaterialColor.Extensions;
+﻿using MaterialColor.Core.Extensions;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace MaterialColor.Tests
+namespace MaterialColor.Core.Tests
 {
     [TestFixture]
     public class Color32ExtensionsTests

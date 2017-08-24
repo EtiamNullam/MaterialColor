@@ -1,9 +1,9 @@
-﻿using Common.Data;
+﻿using MaterialColor.Common.Data;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.IO;
 
-namespace MaterialColor.Tests
+namespace MaterialColor.Core.Tests
 {
     [TestFixture]
     public class JsonTests
