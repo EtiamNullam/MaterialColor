@@ -19,10 +19,10 @@ namespace MaterialColor.Injector.WPF
                 {
                     if (argument == "-recover" || argument == "-r")
                     {
-                        var fileManager = new FileManager();
+                        var fileManager = new IO.FileManager();
 
-                        fileManager.RestoreBackupForFile(Paths.DefaultAssemblyCSharpPath);
-                        fileManager.RestoreBackupForFile(Paths.DefaultAssemblyFirstPassPath);
+                        fileManager.RestoreBackupForFile(IO.Paths.DefaultAssemblyCSharpPath);
+                        fileManager.RestoreBackupForFile(IO.Paths.DefaultAssemblyFirstPassPath);
                         Shutdown();
                         return;
                     }

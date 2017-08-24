@@ -1,4 +1,4 @@
-﻿namespace MaterialColor.Injector
+﻿namespace MaterialColor.Injector.IO
 {
     public static class Paths
     {

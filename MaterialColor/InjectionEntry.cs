@@ -8,7 +8,6 @@ using UnityEngine;
 
 namespace MaterialColor.Core
 {
-    // TODO: refactor
     public static class InjectionEntry
     {
         private static bool Initialized = false;
@@ -51,8 +50,52 @@ namespace MaterialColor.Core
             Initialized = true;
         }
 
+        //
+        //static bool spritesLogged = false;
+        //
+
         public static void EnterEveryUpdate()
         {
+            // find other way than technically a spinlock
+            // sprite test
+            //if (!spritesLogged)
+            //{
+            //    //try
+            //    {
+            //        foreach (var sprite in OverlayMenu.Instance?.icons)
+            //        {
+            //            if (sprite.name == "overlay_liquidvent")
+            //            {
+            //                var newTexture = duplicateTexture(sprite.texture);
+            //                var pixels = newTexture.GetPixels32();
+            //                var colorMultiplier = new Common.Data.Color32Multiplier(0.1f, 0.2f, 1);
+
+            //                foreach (var pixel in pixels)
+            //                {
+            //                    pixel.Multiply(colorMultiplier);
+            //                }
+
+            //                newTexture.SetPixels32(pixels);
+
+            //                var newSprite = Sprite.Create(newTexture, sprite.rect, sprite.pivot);
+            //                // if it works, remove magic string
+            //                newSprite.name = "overlay_materialcolor";
+            //                OverlayMenu.Instance.icons.Append(newSprite);
+            //                OverlayMenu.Instance.RefreshButtons();
+
+            //                //var newSprite = Sprite.Create(sprite.texture, sprite.rect, sprite.pivot);
+            //                //newSprite.
+            //            }
+            //        }
+            //        spritesLogged = true;
+            //        foreach (var sprite in OverlayMenu.Instance?.icons)
+            //        {
+            //            Debug.LogError(sprite.name);
+            //        }
+            //    }
+            //    //catch { }
+            //}
+            //
             if (ElementColorInfosChanged || TypeColorOffsetsChanged || ConfiguratorStateChanged)
             {
                 UpdateBuildingsColors();
@@ -60,6 +103,26 @@ namespace MaterialColor.Core
                 ElementColorInfosChanged = TypeColorOffsetsChanged = ConfiguratorStateChanged = false;
             }
         }
+
+        //private static Texture2D duplicateTexture(Texture2D source)
+        //{
+        //    RenderTexture renderTex = RenderTexture.GetTemporary(
+        //                source.width,
+        //                source.height,
+        //                0,
+        //                RenderTextureFormat.Default,
+        //                RenderTextureReadWrite.Linear);
+
+        //    Graphics.Blit(source, renderTex);
+        //    RenderTexture previous = RenderTexture.active;
+        //    RenderTexture.active = renderTex;
+        //    Texture2D readableText = new Texture2D(source.width, source.height);
+        //    readableText.ReadPixels(new Rect(0, 0, renderTex.width, renderTex.height), 0, 0);
+        //    readableText.Apply();
+        //    RenderTexture.active = previous;
+        //    RenderTexture.ReleaseTemporary(renderTex);
+        //    return readableText;
+        //}
 
         public static Color EnterCell(Rendering.BlockTileRenderer blockRenderer, int cellIndex)
         {
