@@ -51,11 +51,11 @@
     <Compile Include="CecilHelper.cs" />
     <Compile Include="Injection.cs" />
     <Compile Include="InstructionInserter.cs" />
-    <Compile Include="Paths.cs" />
-    <Compile Include="InstructionRemoveHelper.cs" />
+    <Compile Include="IO\Paths.cs" />
+    <Compile Include="InstructionRemover.cs" />
     <Compile Include="Publisher.cs" />
-    <Compile Include="FileManager.cs" />
-    <Compile Include="MethodInjectorHelper.cs" />
+    <Compile Include="IO\FileManager.cs" />
+    <Compile Include="MethodInjector.cs" />
     <Compile Include="InjectionManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

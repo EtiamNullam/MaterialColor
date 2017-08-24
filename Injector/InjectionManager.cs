@@ -3,6 +3,7 @@ using Mono.Cecil;
 using System.Linq;
 using Mono.Cecil.Cil;
 using System.Collections.Generic;
+using MaterialColor.Injector.IO;
 
 namespace MaterialColor.Injector
 {

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace MaterialColor.Injector
 {
-    // WIP
     public class Injection
     {
         public Injection(ModuleDefinition sourceModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
@@ -42,6 +41,11 @@ namespace MaterialColor.Injector
             {
                 EnableConsole();
             }
+
+            // sprite test
+            //_csharpPublisher.MakeFieldPublic("KIconToggleMenu", "icons");
+            //_csharpPublisher.MakeMethodPublic("KIconToggleMenu", "RefreshButtons");
+            //
 
             InjectMain();
             InjectCellColorHandling();
