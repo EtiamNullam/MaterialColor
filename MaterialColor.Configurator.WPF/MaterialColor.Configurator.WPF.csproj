@@ -153,4 +153,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(TargetDir)MaterialColor.Configurator.WPF.exe" "$(SolutionDir)_output\MaterialColor.Configurator.exe"
+copy /Y "$(TargetDir)MaterialColor.Configurator.WPF.exe.config" "$(SolutionDir)_output\MaterialColor.Configurator.exe.config"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
