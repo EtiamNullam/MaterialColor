@@ -71,6 +71,10 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(TargetDir)MaterialColor.Core.dll" "$(SolutionDir)_output\OxygenNotIncluded_Data\Managed\MaterialColor.Core.dll"
+copy /Y "$(TargetDir)MaterialColor.Common.dll" "$(SolutionDir)_output\OxygenNotIncluded_Data\Managed\MaterialColor.Common.dll"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
