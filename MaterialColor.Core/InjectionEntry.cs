@@ -19,6 +19,8 @@ namespace MaterialColor.Core
         private static JsonFileLoader _jsonLoader = new JsonFileLoader(new JsonManager());
         private static FileChangeNotifier _fileChangeNotifier = new FileChangeNotifier();
 
+        private static bool _firstUpdate = false;
+
         // TODO: merge with EnterEveryUpdate?
         public static void EnterOnce()
         {
@@ -47,17 +49,10 @@ namespace MaterialColor.Core
 
         private static void Initialize()
         {
-            //OverlayScreen.Instance.OnOverlayChanged += OnOverlayChanged;
-
             StartFileChangeNotifier();
             Initialized = true;
             _firstUpdate = true;
         }
-
-        //
-        //static bool spritesLogged = false;
-        //
-        private static bool _firstUpdate = false;
 
         public static void EnterEveryUpdate()
         {
@@ -67,46 +62,6 @@ namespace MaterialColor.Core
                 _firstUpdate = false;
             }
 
-            // find other way than technically a spinlock
-            // sprite test
-            //if (!spritesLogged)
-            //{
-            //    //try
-            //    {
-            //        foreach (var sprite in OverlayMenu.Instance?.icons)
-            //        {
-            //            if (sprite.name == "overlay_liquidvent")
-            //            {
-            //                var newTexture = duplicateTexture(sprite.texture);
-            //                var pixels = newTexture.GetPixels32();
-            //                var colorMultiplier = new Common.Data.Color32Multiplier(0.1f, 0.2f, 1);
-
-            //                foreach (var pixel in pixels)
-            //                {
-            //                    pixel.Multiply(colorMultiplier);
-            //                }
-
-            //                newTexture.SetPixels32(pixels);
-
-            //                var newSprite = Sprite.Create(newTexture, sprite.rect, sprite.pivot);
-            //                // if it works, remove magic string
-            //                newSprite.name = "overlay_materialcolor";
-            //                OverlayMenu.Instance.icons.Append(newSprite);
-            //                OverlayMenu.Instance.RefreshButtons();
-
-            //                //var newSprite = Sprite.Create(sprite.texture, sprite.rect, sprite.pivot);
-            //                //newSprite.
-            //            }
-            //        }
-            //        spritesLogged = true;
-            //        foreach (var sprite in OverlayMenu.Instance?.icons)
-            //        {
-            //            Debug.LogError(sprite.name);
-            //        }
-            //    }
-            //    //catch { }
-            //}
-            //
             if (ElementColorInfosChanged || TypeColorOffsetsChanged || ConfiguratorStateChanged)
             {
                 UpdateBuildingsColors();
