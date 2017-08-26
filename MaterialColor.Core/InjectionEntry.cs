@@ -58,8 +58,15 @@ namespace MaterialColor.Core
         {
             if (_firstUpdate)
             {
-                OverlayScreen.Instance.OnOverlayChanged += OnOverlayChanged;
-                _firstUpdate = false;
+                if (OverlayScreen.Instance != null)
+                {
+                    OverlayScreen.Instance.OnOverlayChanged += OnOverlayChanged;
+                    _firstUpdate = false;
+                }
+                else if (State.ConfiguratorState.ShowDetailedErrorInfo)
+                {
+                    Debug.LogError("OverlayScreen.Instance is null");
+                }
             }
 
             if (ElementColorInfosChanged || TypeColorOffsetsChanged || ConfiguratorStateChanged)
