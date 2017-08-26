@@ -57,9 +57,7 @@ namespace MaterialColor.Injector
         {
             _sourceToCSharpInjector.InjectAsFirstInstruction(
                  "InjectionEntry", "EnterOnce",
-                "Game", "OnPrefabInit"); //old version
-                //"OverlayScreen", "OnSpawn");
-                //"Game", "OnSpawn");
+                "Game", "OnPrefabInit");
 
             _sourceToCSharpInjector.InjectBefore(
                "InjectionEntry", "EnterEveryUpdate",
@@ -67,7 +65,6 @@ namespace MaterialColor.Injector
                5);
         }
 
-        // should work
         private void InjectCellColorHandling()
         {
             _csharpInstructionRemover.ClearAllButLast("BlockTileRenderer", "GetCellColor");
@@ -83,36 +80,18 @@ namespace MaterialColor.Injector
 
         private void InjectBuildingsSpecialCasesHandling()
         {
-            // common
             _csharpPublisher.MakeFieldPublic("Ownable", "unownedTint");
             _csharpPublisher.MakeFieldPublic("Ownable", "ownedTint");
 
             _csharpPublisher.MakeMethodPublic("Ownable", "UpdateTint");
 
-            // old version
-            //_csharpPublisher.MakeFieldPublic("StorageLocker", "filterable");
-            //_csharpPublisher.MakeMethodPublic("StorageLocker", "OnFilterChanged");
-
-            //_csharpPublisher.MakeFieldPublic("Refrigerator", "filterable");
-            //_csharpPublisher.MakeMethodPublic("Refrigerator", "OnFilterChanged");
-
-            //_csharpPublisher.MakeFieldPublic("RationBox", "filterable");
-            //_csharpPublisher.MakeMethodPublic("RationBox", "OnFilterChanged");
-
-            // new version
-
             _csharpPublisher.MakeFieldPublic("FilteredStorage", "filterTint");
             _csharpPublisher.MakeFieldPublic("FilteredStorage", "noFilterTint");
 
             _csharpPublisher.MakeFieldPublic("FilteredStorage", "filterable");
-            //_csharpPublisher.MakeMethodPublic("FilteredStorage", "OnFilterChanged");
 
             _csharpPublisher.MakeFieldPublic("StorageLocker", "filteredStorage");
-
-
             _csharpPublisher.MakeFieldPublic("Refrigerator", "filteredStorage");
-
-
             _csharpPublisher.MakeFieldPublic("RationBox", "filteredStorage");
         }
 
@@ -165,7 +144,6 @@ namespace MaterialColor.Injector
         }
 
         // TODO: use other sprite, refactor
-        // error somewhere in here
         private void AddOverlayButton()
         {
             var overlayMenu = _csharpModule.Types.First(type => type.Name == "OverlayMenu");
@@ -239,12 +217,8 @@ namespace MaterialColor.Injector
             _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
             _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
 
-            // see eventsource guid
-            //_csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 9);
-            //_csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 9);
-            //_csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 9);
-            //_csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 9);
-            // else
+            // see eventsource guid for supporting many versions
+
             _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 8);
             _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 8);
             _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 8);
