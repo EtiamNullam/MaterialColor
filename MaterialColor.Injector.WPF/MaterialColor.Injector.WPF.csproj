@@ -108,6 +108,7 @@
       <SubType>Code</SubType>
     </Compile>
     <None Include="packages.config" />
+    <None Include="BuildActions\PostBuild.ps1" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -136,21 +137,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetDir)MaterialColor.Injector.dll" "$(SolutionDir)_output\OxygenNotIncluded_Data\MaterialColor.Injector\MaterialColor.Injector.dll"
-copy /Y "$(TargetDir)MaterialColor.Injector.dll.config" "$(SolutionDir)_output\OxygenNotIncluded_Data\MaterialColor.Injector\MaterialColor.Injector.dll.config"
-copy /Y "$(TargetDir)Mono.Cecil.dll" "$(SolutionDir)_output\OxygenNotIncluded_Data\MaterialColor.Injector\Mono.Cecil.dll"
-
-copy /Y "$(TargetDir)MaterialColor.Injector.WPF.exe" "$(SolutionDir)_output\MaterialColor.Injector.exe"
-copy /Y "$(TargetDir)MaterialColor.Injector.WPF.exe.config" "$(SolutionDir)_output\MaterialColor.Injector.exe.config"
-
-copy /Y "$(TargetDir)Microsoft.Practices.ServiceLocation.dll" "$(SolutionDir)_output\OxygenNotIncluded_Data\MaterialColor.WPF\Microsoft.Practices.ServiceLocation.dll"
-copy /Y "$(TargetDir)Microsoft.Practices.Unity.Configuration.dll" "$(SolutionDir)_output\OxygenNotIncluded_Data\MaterialColor.WPF\Microsoft.Practices.Unity.Configuration.dll"
-copy /Y "$(TargetDir)Microsoft.Practices.Unity.dll" "$(SolutionDir)_output\OxygenNotIncluded_Data\MaterialColor.WPF\Microsoft.Practices.Unity.dll"
-copy /Y "$(TargetDir)Microsoft.Practices.Unity.RegistrationByConvention.dll" "$(SolutionDir)_output\OxygenNotIncluded_Data\MaterialColor.WPF\Microsoft.Practices.Unity.RegistrationByConvention.dll"
-copy /Y "$(TargetDir)Prism.dll" "$(SolutionDir)_output\OxygenNotIncluded_Data\MaterialColor.WPF\Prism.dll"
-copy /Y "$(TargetDir)Prism.Unity.Wpf.dll" "$(SolutionDir)_output\OxygenNotIncluded_Data\MaterialColor.WPF\Prism.Unity.Wpf.dll"
-copy /Y "$(TargetDir)Prism.Wpf.dll" "$(SolutionDir)_output\OxygenNotIncluded_Data\MaterialColor.WPF\Prism.Wpf.dll"
-copy /Y "$(TargetDir)System.Windows.Interactivity.dll" "$(SolutionDir)_output\OxygenNotIncluded_Data\MaterialColor.WPF\System.Windows.Interactivity.dll"
-</PostBuildEvent>
+    <PostBuildEvent>powershell "&amp; ""$(ProjectDir)BuildActions\PostBuild.ps1"""</PostBuildEvent>
   </PropertyGroup>
 </Project>

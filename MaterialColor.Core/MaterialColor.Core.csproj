@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="BuildActions\PostBuild.ps1" />
     <None Include="ElementColorInfos.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -73,8 +74,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetDir)MaterialColor.Core.dll" "$(SolutionDir)_output\OxygenNotIncluded_Data\Managed\MaterialColor.Core.dll"
-copy /Y "$(TargetDir)MaterialColor.Common.dll" "$(SolutionDir)_output\OxygenNotIncluded_Data\Managed\MaterialColor.Common.dll"</PostBuildEvent>
+    <PostBuildEvent>powershell "&amp; ""$(ProjectDir)BuildActions\PostBuild.ps1"""</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

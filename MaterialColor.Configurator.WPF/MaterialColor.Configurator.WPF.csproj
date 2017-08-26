@@ -128,6 +128,7 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <None Include="BuildActions\PostBuild.ps1" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>
@@ -154,7 +155,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetDir)MaterialColor.Configurator.WPF.exe" "$(SolutionDir)_output\MaterialColor.Configurator.exe"
-copy /Y "$(TargetDir)MaterialColor.Configurator.WPF.exe.config" "$(SolutionDir)_output\MaterialColor.Configurator.exe.config"</PostBuildEvent>
+    <PostBuildEvent>powershell "&amp; ""$(ProjectDir)BuildActions\PostBuild.ps1"""</PostBuildEvent>
   </PropertyGroup>
 </Project>
