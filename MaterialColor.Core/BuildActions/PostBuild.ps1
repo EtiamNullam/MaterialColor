@@ -9,4 +9,7 @@ if ([string]::IsNullOrWhiteSpace($outputPath))
 $managedSubPath = "OxygenNotIncluded_Data\Managed";
 $managedFullPath = $outputPath + $managedSubPath;
 
+New-Item $outputPath -ItemType Directory
+New-Item $managedFullPath -ItemType Directory
+
 Copy-Item MaterialColor.Co*.dll $managedFullPath;

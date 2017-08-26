@@ -6,4 +6,5 @@ if ([string]::IsNullOrWhiteSpace($outputPath))
     return;
 }
 
+New-Item $outputPath -ItemType Directory
 Copy-Item *.exe* $outputPath;
