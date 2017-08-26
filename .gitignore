@@ -242,6 +242,7 @@ ModelManifest.xml
 .fake/
 
 # custom
+MaterialColor.Common\BuildActions\OutputPath.txt
 
 # vim
 *.swp
