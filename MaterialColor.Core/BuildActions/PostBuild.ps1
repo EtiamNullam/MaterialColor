@@ -12,4 +12,4 @@ $managedFullPath = $outputPath + $managedSubPath;
 New-Item $outputPath -ItemType Directory
 New-Item $managedFullPath -ItemType Directory
 
-Copy-Item MaterialColor.Co*.dll $managedFullPath;
+Copy-Item MaterialColor.Co*.dll $managedFullPath -Force;
