@@ -6,5 +6,12 @@ if ([string]::IsNullOrWhiteSpace($outputPath))
     return;
 }
 
-New-Item $outputPath -ItemType Directory
-Copy-Item *.exe* $outputPath -Force;
+New-Item $outputPath -ItemType Directory;
+
+$filesToCopy = ls *.exe*;
+
+(ls *.exe*) |
+% {
+	$newFilename = $_.Name.Replace("WPF.", [string]::Empty);
+	Copy-Item $_ ($outputPath + $newFilename) -Force
+}
