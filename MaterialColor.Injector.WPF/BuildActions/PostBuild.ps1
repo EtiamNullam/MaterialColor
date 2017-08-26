@@ -19,7 +19,11 @@ New-Item $wpfFullPath -ItemType Directory
 Copy-Item *injector.dll* $injectorFullPath -Force;
 Copy-Item Mono.Cecil.dll $injectorFullPath -Force;
 
-Copy-Item *.exe* $outputPath;
+(ls *.exe*) |
+% {
+	$newFilename = $_.Name.Replace("WPF.", [string]::Empty);
+	Copy-Item $_ ($outputPath + $newFilename) -Force
+}
 
 Copy-Item *Practices*.dll $wpfFullPath -Force;
 Copy-Item *Prism*.dll $wpfFullPath -Force;
