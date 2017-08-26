@@ -41,9 +41,7 @@ namespace MaterialColor.Core.Helpers
 
                 if (storageLocker != null)
                 {
-                    storageLocker.filterTint = color;
-                    storageLocker.noFilterTint = dimmedColor;
-                    storageLocker.OnFilterChanged(storageLocker.filterable.GetTags());
+                    SetFilteredStorageColors(storageLocker.filteredStorage, color, dimmedColor);
                 }
                 else // ownable
                 {
@@ -61,9 +59,7 @@ namespace MaterialColor.Core.Helpers
 
                         if (rationBox != null)
                         {
-                            rationBox.filterTint = color;
-                            rationBox.noFilterTint = dimmedColor;
-                            rationBox.OnFilterChanged(rationBox.filterable.GetTags());
+                            SetFilteredStorageColors(rationBox.filteredStorage, color, dimmedColor);
                         }
                         else // refrigerator
                         {
@@ -71,9 +67,7 @@ namespace MaterialColor.Core.Helpers
 
                             if (fridge != null)
                             {
-                                fridge.filterTint = color;
-                                fridge.noFilterTint = dimmedColor;
-                                fridge.OnFilterChanged(fridge.filterable.GetTags());
+                                SetFilteredStorageColors(fridge.filteredStorage, color, dimmedColor);
                             }
                             else
                             {
@@ -87,6 +81,13 @@ namespace MaterialColor.Core.Helpers
             {
                 Debug.LogError($"Can't find KAnimControllerBase component in <{buildingName}>.");
             }
+        }
+
+        private static void SetFilteredStorageColors(FilteredStorage storage, Color32 color, Color32 dimmedColor)
+        {
+            storage.filterTint = color;
+            storage.noFilterTint = dimmedColor;
+            storage.FilterChanged();
         }
 
         public static Color32 GetTypeStandardColor(string typeName)

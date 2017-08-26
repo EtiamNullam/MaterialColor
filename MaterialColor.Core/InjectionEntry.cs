@@ -19,6 +19,7 @@ namespace MaterialColor.Core
         private static JsonFileLoader _jsonLoader = new JsonFileLoader(new JsonManager());
         private static FileChangeNotifier _fileChangeNotifier = new FileChangeNotifier();
 
+        // TODO: merge with EnterEveryUpdate?
         public static void EnterOnce()
         {
             try
@@ -28,6 +29,8 @@ namespace MaterialColor.Core
                 _jsonLoader.ReloadAll();
 
                 if (!Initialized) Initialize();
+
+                ElementColorInfosChanged = TypeColorOffsetsChanged = ConfiguratorStateChanged = true;
             }
             catch (Exception e)
             {
@@ -44,18 +47,26 @@ namespace MaterialColor.Core
 
         private static void Initialize()
         {
-            OverlayScreen.OnOverlayChanged += OnOverlayChanged;
+            //OverlayScreen.Instance.OnOverlayChanged += OnOverlayChanged;
 
             StartFileChangeNotifier();
             Initialized = true;
+            _firstUpdate = true;
         }
 
         //
         //static bool spritesLogged = false;
         //
+        private static bool _firstUpdate = false;
 
         public static void EnterEveryUpdate()
         {
+            if (_firstUpdate)
+            {
+                OverlayScreen.Instance.OnOverlayChanged += OnOverlayChanged;
+                _firstUpdate = false;
+            }
+
             // find other way than technically a spinlock
             // sprite test
             //if (!spritesLogged)
