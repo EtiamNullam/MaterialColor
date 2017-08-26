@@ -11,7 +11,14 @@ namespace MaterialColor.Configurator.WPF
         {
             base.OnStartup(e);
 
-            new Bootstrapper().Run();
+            try
+            {
+                new Bootstrapper().Run();
+            }
+            catch
+            {
+                Shutdown(1);
+            }
         }
     }
 }
