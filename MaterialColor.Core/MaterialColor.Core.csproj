@@ -67,6 +67,9 @@
     <None Include="TypeColorOffsets.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="UninstallMaterialColor.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MaterialColor.Common\MaterialColor.Common.csproj">

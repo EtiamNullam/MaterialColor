@@ -13,3 +13,5 @@ New-Item $outputPath -ItemType Directory
 New-Item $managedFullPath -ItemType Directory
 
 Copy-Item MaterialColor.Co*.dll $managedFullPath -Force;
+
+Copy-Item UninstallMaterialColor.ps1 $outputPath -Force
