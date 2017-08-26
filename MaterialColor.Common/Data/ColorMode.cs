@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace MaterialColor.Common.Data
 {
-    // TODO: allow change via Configurator
     public enum ColorMode
     {
         None,

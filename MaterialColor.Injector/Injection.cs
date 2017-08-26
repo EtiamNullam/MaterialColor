@@ -57,7 +57,9 @@ namespace MaterialColor.Injector
         {
             _sourceToCSharpInjector.InjectAsFirstInstruction(
                  "InjectionEntry", "EnterOnce",
-                "Game", "OnPrefabInit");
+                "Game", "OnPrefabInit"); //old version
+                //"OverlayScreen", "OnSpawn");
+                //"Game", "OnSpawn");
 
             _sourceToCSharpInjector.InjectBefore(
                "InjectionEntry", "EnterEveryUpdate",
@@ -65,6 +67,7 @@ namespace MaterialColor.Injector
                5);
         }
 
+        // should work
         private void InjectCellColorHandling()
         {
             _csharpInstructionRemover.ClearAllButLast("BlockTileRenderer", "GetCellColor");
@@ -80,18 +83,37 @@ namespace MaterialColor.Injector
 
         private void InjectBuildingsSpecialCasesHandling()
         {
+            // common
             _csharpPublisher.MakeFieldPublic("Ownable", "unownedTint");
             _csharpPublisher.MakeFieldPublic("Ownable", "ownedTint");
 
-            _csharpPublisher.MakeFieldPublic("StorageLocker", "filterable");
-            _csharpPublisher.MakeMethodPublic("StorageLocker", "OnFilterChanged");
-
             _csharpPublisher.MakeMethodPublic("Ownable", "UpdateTint");
 
-            _csharpPublisher.MakeFieldPublic("Refrigerator", "filterable");
-            _csharpPublisher.MakeMethodPublic("Refrigerator", "OnFilterChanged");
-            _csharpPublisher.MakeFieldPublic("RationBox", "filterable");
-            _csharpPublisher.MakeMethodPublic("RationBox", "OnFilterChanged");
+            // old version
+            //_csharpPublisher.MakeFieldPublic("StorageLocker", "filterable");
+            //_csharpPublisher.MakeMethodPublic("StorageLocker", "OnFilterChanged");
+
+            //_csharpPublisher.MakeFieldPublic("Refrigerator", "filterable");
+            //_csharpPublisher.MakeMethodPublic("Refrigerator", "OnFilterChanged");
+
+            //_csharpPublisher.MakeFieldPublic("RationBox", "filterable");
+            //_csharpPublisher.MakeMethodPublic("RationBox", "OnFilterChanged");
+
+            // new version
+
+            _csharpPublisher.MakeFieldPublic("FilteredStorage", "filterTint");
+            _csharpPublisher.MakeFieldPublic("FilteredStorage", "noFilterTint");
+
+            _csharpPublisher.MakeFieldPublic("FilteredStorage", "filterable");
+            //_csharpPublisher.MakeMethodPublic("FilteredStorage", "OnFilterChanged");
+
+            _csharpPublisher.MakeFieldPublic("StorageLocker", "filteredStorage");
+
+
+            _csharpPublisher.MakeFieldPublic("Refrigerator", "filteredStorage");
+
+
+            _csharpPublisher.MakeFieldPublic("RationBox", "filteredStorage");
         }
 
         private void InjectToggleButton()
@@ -107,6 +129,7 @@ namespace MaterialColor.Injector
             AddDefaultKeybinding(_csharpModule, _firstPassModule, KKeyCode.F6, Modifier.Alt, Action.Overlay12);
         }
 
+        // make it read and increase index, instead of hard values
         private void AddDefaultKeybinding(ModuleDefinition CSharpModule, ModuleDefinition FirstPassModule, KKeyCode keyCode, Modifier keyModifier, Action action, string screen = "Root")
         {
             var beforeFieldInit = CecilHelper.GetMethodDefinition(FirstPassModule, CecilHelper.GetTypeDefinition(FirstPassModule, "GameInputMapping"), ".cctor");
@@ -118,7 +141,7 @@ namespace MaterialColor.Injector
             var instructionsToAdd = new List<Instruction>
             {
                 Instruction.Create(OpCodes.Dup),
-                Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)0x6C), // index 
+                Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)0x6E), // index 
                 Instruction.Create(OpCodes.Ldelema, (TypeReference)stoBindingEntryInstruction.Operand),
                 Instruction.Create(OpCodes.Ldstr, screen),
                 Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)16), // gamepad button
@@ -135,12 +158,14 @@ namespace MaterialColor.Injector
             // increase array size by one
             var firstInstruction = beforeFieldInit.Body.Instructions.First();
 
-            ILProcessor.Replace(firstInstruction, Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)0x6D));
+            //ILProcessor.Replace(firstInstruction, Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)0x6D)); // old version
+            ILProcessor.Replace(firstInstruction, Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)0x6F));
             //
             new InstructionInserter(ILProcessor).InsertAfter(lastKeybindingDeclarationEnd, instructionsToAdd);
         }
 
         // TODO: use other sprite, refactor
+        // error somewhere in here
         private void AddOverlayButton()
         {
             var overlayMenu = _csharpModule.Types.First(type => type.Name == "OverlayMenu");
@@ -162,6 +187,7 @@ namespace MaterialColor.Injector
                 boxToSimViewMode,
                 Instruction.Create(OpCodes.Ldc_I4, (int)Action.Overlay12),
                 Instruction.Create(OpCodes.Ldstr, "Toggles MaterialColor overlay"),
+                Instruction.Create(OpCodes.Ldstr, "MaterialColor"), // new version only
                 Instruction.Create(OpCodes.Newobj, toggleInfoConstructor),
                 lastAddInstruction
             };
@@ -204,17 +230,25 @@ namespace MaterialColor.Injector
          * OptionsMenuScreen.Update()
          * ReportErrorDialog.Update()
          */
+         //TODO: make it more flexible for future versions
         private void EnableConsole()
         {
+            // error needs to be around here
             _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
             _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
             _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
             _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
 
-            _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 9);
-            _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 9);
-            _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 9);
-            _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 9);
+            // see eventsource guid
+            //_csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 9);
+            //_csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 9);
+            //_csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 9);
+            //_csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 9);
+            // else
+            _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 8);
+            _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 8);
+            _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 8);
+            _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 8);
         }
 
         private void AttachCustomActionToToggle()

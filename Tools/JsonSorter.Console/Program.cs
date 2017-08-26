@@ -23,7 +23,11 @@ namespace JsonSorter.Console
                 return;
             }
 
-            var mode = args[0] == "element" ? Mode.Element : args[0] == "type" ? Mode.Type : Mode.None;
+            var mode = ElementArgAliases.Contains(args[0].ToLower())
+                ? Mode.Element
+                : TypeArgAliases.Contains(args[0].ToLower())
+                    ? Mode.Type
+                    : Mode.None;
 
             if (mode == Mode.None) return;
 
@@ -60,6 +64,16 @@ namespace JsonSorter.Console
         private static JsonManager _jsonManager = new JsonManager();
         private static ElementColorInfosManager _elementColorInfosManager = new ElementColorInfosManager(_jsonManager);
         private static TypeColorOffsetsManager _typeColorOffsetsManager = new TypeColorOffsetsManager(_jsonManager);
+
+        private static List<string> TypeArgAliases = new List<string>
+        {
+            "-type", "-t"
+        };
+
+        private static List<string> ElementArgAliases = new List<string>
+        {
+            "-element", "-e"
+        };
 
         private static void SortElementColorInfos()
         {
