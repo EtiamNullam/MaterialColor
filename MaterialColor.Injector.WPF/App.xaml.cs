@@ -23,13 +23,20 @@ namespace MaterialColor.Injector.WPF
 
                         fileManager.RestoreBackupForFile(IO.Paths.DefaultAssemblyCSharpPath);
                         fileManager.RestoreBackupForFile(IO.Paths.DefaultAssemblyFirstPassPath);
-                        Shutdown();
+                        Shutdown(2);
                         return;
                     }
                 }
             }
 
-            new Bootstrapper().Run();
+            try
+            {
+                new Bootstrapper().Run();
+            }
+            catch
+            {
+                Shutdown(1);
+            }
         }
     }
 }
