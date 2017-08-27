@@ -6,7 +6,7 @@ if ([string]::IsNullOrWhiteSpace($outputPath))
     return;
 }
 
-New-Item $outputPath -ItemType Directory;
+New-Item $outputPath -ItemType Directory -ErrorAction SilentlyContinue;
 
 $filesToCopy = ls *.exe*;
 
