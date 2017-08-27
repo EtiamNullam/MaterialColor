@@ -28,11 +28,11 @@ namespace MaterialColor.Core.Helpers
                             break;
                         case Common.Data.ColorMode.None:
                         default:
-                            color = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue);
+                            color = DefaultColor;
                             break;
                     }
                 }
-                else color = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue);
+                else color = DefaultColor;
 
                 var dimmedColor = color.SetBrightness(color.GetBrightness() / 2);
 
@@ -83,6 +83,15 @@ namespace MaterialColor.Core.Helpers
             }
         }
 
+        public readonly static Color32 DefaultColor =
+            new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue);
+
+        public readonly static Color32 MissingDebugColor =
+            new Color32(byte.MaxValue, 0, byte.MaxValue, byte.MaxValue);
+
+        public readonly static Color32 NoOffset =
+            new Color32(0, 0, 0, byte.MaxValue);
+
         private static void SetFilteredStorageColors(FilteredStorage storage, Color32 color, Color32 dimmedColor)
         {
             storage.filterTint = color;
@@ -90,18 +99,21 @@ namespace MaterialColor.Core.Helpers
             storage.FilterChanged();
         }
 
-        public static Color32 GetTypeStandardColor(string typeName)
+        public static bool TryGetTypeStandardColor(string typeName, out Color32 standardColor)
         {
-            if (!State.TypeColorOffsets.TryGetValue(typeName, out Color32 typeStandardColor))
+            if (State.TypeColorOffsets.TryGetValue(typeName, out Color32 typeStandardColor))
             {
-                if (State.ConfiguratorState.ShowMissingTypeColorOffsets)
-                {
-                    Debug.LogError($"Can't find <{typeName}> type color");
-                    return new Color32(0xFF, 0, 0xFF, 0xFF);
-                }
-                return new Color32(0xFF, 0xFF, 0xFF, 0xFF);
+                standardColor = typeStandardColor;
+                return true;
             }
-            return typeStandardColor;
+            else
+            {
+                standardColor = State.ConfiguratorState.ShowMissingTypeColorOffsets
+                    ? MissingDebugColor
+                    : NoOffset;
+
+                return false;
+            }
         }
 
         public static Color GetDefaultCellColor()

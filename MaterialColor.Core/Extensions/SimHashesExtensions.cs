@@ -8,7 +8,15 @@ namespace MaterialColor.Core.Extensions
     {
         public static Color32 GetMaterialColorForType(this SimHashes material, string objectTypeName)
         {
-            var typeStandardColor = ColorHelper.GetTypeStandardColor(objectTypeName);
+            if (!ColorHelper.TryGetTypeStandardColor(objectTypeName, out var typeStandardColor))
+            {
+                if (State.ConfiguratorState.ShowMissingTypeColorOffsets)
+                {
+                    Debug.LogError($"Can't find <{objectTypeName}> type color");
+                    return typeStandardColor;
+                }
+            }
+
             var colorOffsetForWhite = typeStandardColor.TintToWhite();
 
             if (State.ConfiguratorState.ShowBuildingsAsWhite)
