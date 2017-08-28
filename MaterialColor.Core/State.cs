@@ -15,7 +15,7 @@ namespace MaterialColor.Core
 
         public static readonly List<string> TileNames = new List<string>
         {
-            "Tile", "MeshTile", "InsulationTile", "GasPermeableMembrane"
+            "Tile", "MeshTile", "InsulationTile", "GasPermeableMembrane", "TilePOI"
         };
     }
 }
