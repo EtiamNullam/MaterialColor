@@ -153,11 +153,11 @@
   },
   "IronOre": {
     "ColorMultiplier": {
-      "Red": 1.0,
-      "Green": 0.7,
-      "Blue": 0.6
+      "Red": 0.1,
+      "Green": 1.0,
+      "Blue": 0.7
     },
-    "Brightness": 0.8
+    "Brightness": 0.9
   },
   "Katairite": {
     "ColorMultiplier": {
