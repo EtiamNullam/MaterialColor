@@ -42,11 +42,6 @@ namespace MaterialColor.Injector
                 EnableConsole();
             }
 
-            // sprite test
-            //_csharpPublisher.MakeFieldPublic("KIconToggleMenu", "icons");
-            //_csharpPublisher.MakeMethodPublic("KIconToggleMenu", "RefreshButtons");
-            //
-
             InjectMain();
             InjectCellColorHandling();
             InjectBuildingsSpecialCasesHandling();
@@ -137,7 +132,6 @@ namespace MaterialColor.Injector
             // increase array size by one
             var firstInstruction = beforeFieldInit.Body.Instructions.First();
 
-            //ILProcessor.Replace(firstInstruction, Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)0x6D)); // old version
             ILProcessor.Replace(firstInstruction, Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)0x6F));
             //
             new InstructionInserter(ILProcessor).InsertAfter(lastKeybindingDeclarationEnd, instructionsToAdd);
@@ -175,7 +169,6 @@ namespace MaterialColor.Injector
             inserter.InsertAfter(lastAddInstruction, instructionsToAdd);
         }
 
-        // use only one entry point for initialization?
         // TODO: refactor
         private void AddLocalizationString()
         {
@@ -211,13 +204,10 @@ namespace MaterialColor.Injector
          //TODO: make it more flexible for future versions
         private void EnableConsole()
         {
-            // error needs to be around here
             _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
             _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
             _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
             _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
-
-            // see eventsource guid for supporting many versions
 
             _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 8);
             _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 8);
