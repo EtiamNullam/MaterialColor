@@ -12,9 +12,9 @@ $injectorFullPath = $outputPath + $injectorSubPath;
 $wpfSubPath = "OxygenNotIncluded_Data\MaterialColor.WPF";
 $wpfFullPath = $outputPath + $wpfSubPath;
 
-New-Item $outputPath -ItemType Directory -ErrorAction SilentlyContinue;
-New-Item $injectorFullPath -ItemType Directory -ErrorAction SilentlyContinue;
-New-Item $wpfFullPath -ItemType Directory -ErrorAction SilentlyContinue;
+New-Item $outputPath -ItemType Directory -Force | Out-Null;
+New-Item $injectorFullPath -ItemType Directory -Force | Out-Null;
+New-Item $wpfFullPath -ItemType Directory -Force | Out-Null;
 
 Copy-Item *injector.dll* $injectorFullPath -Force;
 Copy-Item Mono.Cecil.dll $injectorFullPath -Force;
