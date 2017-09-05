@@ -12,6 +12,7 @@ namespace MaterialColor.Injector.WPF.ViewModels
         {
             PatchCommand = new DelegateCommand(Patch);
             RestoreBackupCommand = new DelegateCommand(RestoreBackup, CanRestoreBackup);
+            ExitCommand = new DelegateCommand(App.Current.Shutdown);
 
             _stateManager = stateManager;
             _fileManager = fileManager;
@@ -22,6 +23,7 @@ namespace MaterialColor.Injector.WPF.ViewModels
 
         public DelegateCommand PatchCommand { get; private set; }
         public DelegateCommand RestoreBackupCommand { get; private set; }
+        public DelegateCommand ExitCommand { get; private set; }
 
         public string Status
         {
@@ -105,7 +107,7 @@ namespace MaterialColor.Injector.WPF.ViewModels
             }
             else
             {
-                Status = $"[{DateTime.Now.TimeOfDay}]Backup restore failed.";
+                Status = $"[{DateTime.Now.TimeOfDay}] Backup restore failed.";
             }
         }
 

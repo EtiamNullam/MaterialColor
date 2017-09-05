@@ -17,6 +17,7 @@ namespace MaterialColor.Configurator.WPF.ViewModels
             State = TryLoadLastAppState();
 
             ApplyCommand = new DelegateCommand(Apply);
+            ExitCommand = new DelegateCommand(App.Current.Shutdown);
         }
 
         public ConfiguratorState State
@@ -31,6 +32,7 @@ namespace MaterialColor.Configurator.WPF.ViewModels
         private ConfiguratorStateManager _stateManager;
 
         public DelegateCommand ApplyCommand { get; private set; }
+        public DelegateCommand ExitCommand { get; private set; }
 
         public string Status
         {
