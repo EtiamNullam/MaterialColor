@@ -3,7 +3,6 @@ using Mono.Cecil;
 
 namespace MaterialColor.Injector.IO
 {
-    // TODO: extract interfaces
     public class FileManager
     {
         public const string BackupString = ".backup";

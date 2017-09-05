@@ -246,4 +246,5 @@ MaterialColor.Common\BuildActions\OutputPath.txt
 
 # vim
 *.swp
+
 _output/

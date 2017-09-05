@@ -61,10 +61,12 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="BuildActions\PostBuild.ps1" />
-    <None Include="ElementColorInfos.json">
+    <None Include="Config\ConfiguratorState.json" />
+    <None Include="Config\ElementColorInfos.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="TypeColorOffsets.json">
+    <None Include="Config\InjectorState.json" />
+    <None Include="Config\TypeColorOffsets.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="UninstallMaterialColor.ps1">
