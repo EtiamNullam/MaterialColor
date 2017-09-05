@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterialColor.Core", "MaterialColor.Core\MaterialColor.Core.csproj", "{837986FE-5DB2-44FC-9F76-110C1D4178BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterialColor.Injector", "MaterialColor.Injector\MaterialColor.Injector.csproj", "{F991BA84-4FF5-4E77-A8A1-44C52AC4AB85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterialColor.Injector.WPF", "MaterialColor.Injector.WPF\MaterialColor.Injector.WPF.csproj", "{F0C5C699-1667-4BA3-8A7D-B51B74C8BABC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterialColor.Common", "MaterialColor.Common\MaterialColor.Common.csproj", "{EDA0CD77-3605-4C5A-ACA6-6BBDA16A24AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterialColor.Configurator.WPF", "MaterialColor.Configurator.WPF\MaterialColor.Configurator.WPF.csproj", "{BF703B3C-A111-48C9-A3AB-DAB272EE997B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{7FC11D0E-0429-4BA9-983F-D6EBBF371DBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonSorter.Console", "Tools\JsonSorter.Console\JsonSorter.Console.csproj", "{2C9D4A0D-84DB-4B65-8958-223F5B7B5E96}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{837986FE-5DB2-44FC-9F76-110C1D4178BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{837986FE-5DB2-44FC-9F76-110C1D4178BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{837986FE-5DB2-44FC-9F76-110C1D4178BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{837986FE-5DB2-44FC-9F76-110C1D4178BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F991BA84-4FF5-4E77-A8A1-44C52AC4AB85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F991BA84-4FF5-4E77-A8A1-44C52AC4AB85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F991BA84-4FF5-4E77-A8A1-44C52AC4AB85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F991BA84-4FF5-4E77-A8A1-44C52AC4AB85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0C5C699-1667-4BA3-8A7D-B51B74C8BABC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0C5C699-1667-4BA3-8A7D-B51B74C8BABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0C5C699-1667-4BA3-8A7D-B51B74C8BABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0C5C699-1667-4BA3-8A7D-B51B74C8BABC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDA0CD77-3605-4C5A-ACA6-6BBDA16A24AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDA0CD77-3605-4C5A-ACA6-6BBDA16A24AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDA0CD77-3605-4C5A-ACA6-6BBDA16A24AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDA0CD77-3605-4C5A-ACA6-6BBDA16A24AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF703B3C-A111-48C9-A3AB-DAB272EE997B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF703B3C-A111-48C9-A3AB-DAB272EE997B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF703B3C-A111-48C9-A3AB-DAB272EE997B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF703B3C-A111-48C9-A3AB-DAB272EE997B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C9D4A0D-84DB-4B65-8958-223F5B7B5E96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C9D4A0D-84DB-4B65-8958-223F5B7B5E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C9D4A0D-84DB-4B65-8958-223F5B7B5E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C9D4A0D-84DB-4B65-8958-223F5B7B5E96}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2C9D4A0D-84DB-4B65-8958-223F5B7B5E96} = {7FC11D0E-0429-4BA9-983F-D6EBBF371DBE}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BA811A5F-5BE2-4EB8-8407-EAC4D8C4BCA2}
+	EndGlobalSection
+EndGlobal
