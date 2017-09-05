@@ -10,6 +10,7 @@
         mc:Ignorable="d"
         Title="Configurator" Height="290" Width="360" MinHeight="290" MinWidth="300"
         prism:ViewModelLocator.AutoWireViewModel="True">
+    
     <Window.Resources>
         <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues" ObjectType="{x:Type system:Enum}">
             <ObjectDataProvider.MethodParameters>
@@ -17,6 +18,11 @@
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </Window.Resources>
+    
+    <Window.InputBindings>
+        <KeyBinding Key="Esc" Command="{Binding ExitCommand}"/>
+    </Window.InputBindings>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>

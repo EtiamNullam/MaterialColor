@@ -8,6 +8,11 @@
         mc:Ignorable="d"
         prism:ViewModelLocator.AutoWireViewModel="True"
         Title="Injector" Height="300" Width="300" MinWidth="300" MinHeight="220" ResizeMode="CanResizeWithGrip">
+    
+    <Window.InputBindings>
+        <KeyBinding Key="Esc" Command="{Binding ExitCommand}"/>
+    </Window.InputBindings>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
