@@ -1,15 +1,16 @@
-# MaterialColor
+# MaterialColor 1.2.3
 ## Functionality
 As it's hard to differentiate between, for example abyssalite and granite tile or gold amalgam and wolframite thermal regulator, I've decided to create a modification that changes color of buildings and tiles depending on material they are made of.
 
-http://i.imgur.com/GgILI2c.jpg
-http://i.imgur.com/wTPGxRZ.jpg
+![Thermoregulators](http://i.imgur.com/GgILI2c.jpg)
+![Sculptures](http://i.imgur.com/wTPGxRZ.jpg)
 
 ### Mesh, gas permeable tiles and tile blueprints
 Mesh tiles, gas permeable tiles and tile blueprints (tiles designated for construction)  are special. Instead of showing a color of material they are made of they show a color of gas inside them.
 
-http://i.imgur.com/xDKFLn5.jpg
-http://i.imgur.com/334CTvy.jpg
+![Mesh and insulated tiles](http://i.imgur.com/xDKFLn5.jpg)
+![As above but with oxygen overlay](http://i.imgur.com/334CTvy.jpg)
+![Tile blueprints](http://i.imgur.com/FgDNdPr.jpg)
 
 ## Tested on versions
 ### 1.2 - 1.2.3
@@ -20,6 +21,9 @@ http://i.imgur.com/334CTvy.jpg
 - 221865
 - 221697
 - 220993
+
+## Requirements
+- .NET Framework 4.5.2
 
 ## Installation
 Patching also creates backup of your "Assembly-CSharp.dll" that can be restored by pressing "Restore Backup" in "MaterialColor.Injector".
@@ -41,8 +45,8 @@ In case you want to get rid of this mod completely. Beware, mod configuration fi
 
 ## More examples
 
-http://i.imgur.com/FIOxRFa.jpg
-http://i.imgur.com/5s9w4fF.jpg
+![Geyser blocked off with abyssalite tiles](http://i.imgur.com/FIOxRFa.jpg)
+![Example room](http://i.imgur.com/5s9w4fF.jpg)
 
 ## Warranty
 I do not take any responsibility for broken saves, corrupted game or any other damage. Use this software at your own risk.
