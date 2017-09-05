@@ -1,0 +1,93 @@
+﻿using MaterialColor.Common.Data;
+using MaterialColor.Common.Json;
+using Prism.Commands;
+using Prism.Logging;
+using Prism.Mvvm;
+using System;
+
+namespace MaterialColor.Configurator.WPF.ViewModels
+{
+    public class ConfiguratorViewModel : BindableBase
+    {
+        public ConfiguratorViewModel(ConfiguratorStateManager stateManager, ILoggerFacade logger)
+        {
+            _stateManager = stateManager;
+            _logger = logger;
+
+            State = TryLoadLastAppState();
+
+            ApplyCommand = new DelegateCommand(Apply);
+            ExitCommand = new DelegateCommand(App.Current.Shutdown);
+        }
+
+        public ConfiguratorState State
+        {
+            get => _state;
+            set => SetProperty(ref _state, value);
+        }
+
+        private ConfiguratorState _state;
+
+        private ILoggerFacade _logger;
+        private ConfiguratorStateManager _stateManager;
+
+        public DelegateCommand ApplyCommand { get; private set; }
+        public DelegateCommand ExitCommand { get; private set; }
+
+        public string Status
+        {
+            get => _status;
+            set => SetProperty(ref _status, $"{_status}\n[{DateTime.Now.TimeOfDay}]: {value}".Trim());
+        }
+
+        private string _status;
+
+        private ConfiguratorState TryLoadLastAppState()
+        {
+            try
+            {
+                return _stateManager.LoadState();
+            }
+            catch (Exception e)
+            {
+                var message = "Can't load last state";
+                _logger.Log($"{message}\n{e.Message}\n{e.StackTrace}", Category.Exception, Priority.Low);
+
+                return new ConfiguratorState();
+            }
+        }
+
+        private void Apply()
+        {
+            try
+            {
+                Common.IOHelper.EnsureDirectoryExists(Common.Paths.Directory);
+            }
+            catch (Exception e)
+            {
+                var message = "Can't create or access directory for state to save.";
+
+                _logger.Log($"{message}\n{e.Message}\n{e.StackTrace}", Category.Exception, Priority.High);
+                Status = message;
+
+                return;
+            }
+
+            try
+            {
+                _stateManager.SaveState(State);
+            }
+            catch (Exception e)
+            {
+                var message = $"Can't save current state.";
+
+                _logger.Log($"{message}\n{e.Message}\n{e.StackTrace}", Category.Exception, Priority.High);
+                Status = message;
+
+                return;
+            }
+
+            Status = "State applied.";
+        }
+    }
+}
