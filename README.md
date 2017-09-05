@@ -73,19 +73,21 @@ As there are a lot of not implemented resources in the game I didn't bother to g
 
 ### Configurator
 
-http://i.imgur.com/SiMChAK.png
+![Configurator](http://i.imgur.com/SiMChAK.png)
 
 - `Show missing type color offsets` - If enabled and missing type color offset is requested resulting structure will be purple instead of white for easy identification. If debug log is enabled a name of missing color offset will be visible in game (lower left corner).
 - `Show missing element color infos` - Same as above but for element color infos.
 - `Apply white to colorable objects` - Element color info won't be applied (the resulting building will be white/gray) for easier color offset management.
 - `Show detailed informations about errors` - In case of any mod related error in game informations in debug log (if enabled) are more detailed (a stack trace is added).
 
-http://i.imgur.com/amgprSN.jpg
+![Error message example](http://i.imgur.com/amgprSN.jpg)
 
 ### Injector
 
-http://i.imgur.com/IMzhDop.jpg
+![Injector](http://i.imgur.com/IMzhDop.jpg)
 
 - `Enable debug log` - Shows any errors info in lower left corner of the screen (change requires repatch)
 - `Patch` - Creates backup of `OxygenNotIncluded_Data\Managed\Assembly-CSharp.dll` and injects mod into it.
 
+## Klei's forum post
+[Link](https://forums.kleientertainment.com/topic/81296-mod-materialcolor-123/)
