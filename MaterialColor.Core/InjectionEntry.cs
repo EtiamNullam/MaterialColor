@@ -180,8 +180,8 @@ namespace MaterialColor.Core
         {
             if (_jsonLoader.TryLoadElementColorInfos())
             {
-                Debug.LogError("Element color infos changed.");
                 ElementColorInfosChanged = true;
+                Debug.LogError("Element color infos changed.");
             }
         }
 
@@ -189,8 +189,8 @@ namespace MaterialColor.Core
         {
             if (_jsonLoader.TryLoadTypeColorOffsets())
             {
-                Debug.LogError("Type colors changed.");
                 TypeColorOffsetsChanged = true;
+                Debug.LogError("Type colors changed.");
             }
         }
 
@@ -198,8 +198,8 @@ namespace MaterialColor.Core
         {
             if (_jsonLoader.TryLoadConfiguratorState())
             {
-                Debug.LogError("Configurator state changed.");
                 ConfiguratorStateChanged = true;
+                Debug.LogError("Configurator state changed.");
             }
         }
 
