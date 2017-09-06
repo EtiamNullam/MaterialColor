@@ -248,3 +248,6 @@ MaterialColor.Common\BuildActions\OutputPath.txt
 *.swp
 
 _output/
+
+GameManaged
+GameManaged/
