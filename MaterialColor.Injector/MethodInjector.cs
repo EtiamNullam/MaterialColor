@@ -15,7 +15,10 @@ namespace MaterialColor.Injector
         private ModuleDefinition _sourceModule;
         private ModuleDefinition _targetModule;
 
-        public void InjectAsFirstInstruction(string sourceTypeName, string sourceMethodName, string targetTypeName, string targetMethodName, bool includeCallingObject = false, int includeArgumentCount = 0)
+        /// <param name="passArgumentsByRef">
+        /// Doesn't work on calling object
+        /// </param>
+        public void InjectAsFirstInstruction(string sourceTypeName, string sourceMethodName, string targetTypeName, string targetMethodName, bool includeCallingObject = false, int includeArgumentCount = 0, bool passArgumentsByRef = false)
         {
             var sourceMethod = CecilHelper.GetMethodDefinition(_sourceModule, sourceTypeName, sourceMethodName);
             var sourceMethodReference = CecilHelper.GetMethodReference(_targetModule, sourceMethod);
@@ -34,9 +37,11 @@ namespace MaterialColor.Injector
 
             if (includeArgumentCount > 0)
             {
+                var argumentOpCode = passArgumentsByRef ? OpCodes.Ldarga : OpCodes.Ldarg;
+
                 for (int i = includeArgumentCount; i > 0; i--)
                 {
-                    var argumentInstruction = Instruction.Create(OpCodes.Ldarg, targetMethod.Parameters[i-1]);
+                    var argumentInstruction = Instruction.Create(argumentOpCode, targetMethod.Parameters[i-1]);
                     methodILProcessor.InsertBefore(firstInstruction, argumentInstruction);
                 }
             }
