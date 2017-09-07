@@ -10,29 +10,35 @@ namespace MaterialColor.Injector
 {
     public class Injection
     {
-        public Injection(ModuleDefinition sourceModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
+        public Injection(ModuleDefinition materialModule, ModuleDefinition onionModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
         {
-            Initialize(sourceModule, csharpModule, firstPassModule);
+            Initialize(materialModule, onionModule, csharpModule, firstPassModule);
         }
 
-        private ModuleDefinition _sourceModule;
+        private ModuleDefinition _materialModule;
+        private ModuleDefinition _onionModule;
         private ModuleDefinition _csharpModule;
         private ModuleDefinition _firstPassModule;
 
-        private MethodInjector _sourceToCSharpInjector;
+        private MethodInjector _materialToCSharpInjector;
         private InstructionRemover _csharpInstructionRemover;
         private Publisher _csharpPublisher;
 
-        private void Initialize(ModuleDefinition sourceModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
+        private MethodInjector _onionToCSharpInjector;
+
+        private void Initialize(ModuleDefinition materialModule, ModuleDefinition onionModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
         {
-            _sourceModule = sourceModule;
+            _materialModule = materialModule;
+            _onionModule = onionModule;
             _csharpModule = csharpModule;
             _firstPassModule = firstPassModule;
 
             _csharpInstructionRemover = new InstructionRemover(csharpModule);
             _csharpPublisher = new Publisher(csharpModule);
             _csharpInstructionRemover = new InstructionRemover(csharpModule);
-            _sourceToCSharpInjector = new MethodInjector(sourceModule, csharpModule);
+            _materialToCSharpInjector = new MethodInjector(materialModule, csharpModule);
+
+            _onionToCSharpInjector = new MethodInjector(_onionModule, _csharpModule);
         }
 
         public void Inject(bool enableConsole)
@@ -46,15 +52,17 @@ namespace MaterialColor.Injector
             InjectCellColorHandling();
             InjectBuildingsSpecialCasesHandling();
             InjectToggleButton();
+
+            InjectRawOnionPatcher();
         }
 
         private void InjectMain()
         {
-            _sourceToCSharpInjector.InjectAsFirstInstruction(
+            _materialToCSharpInjector.InjectAsFirstInstruction(
                  "InjectionEntry", "EnterOnce",
                 "Game", "OnPrefabInit");
 
-            _sourceToCSharpInjector.InjectBefore(
+            _materialToCSharpInjector.InjectBefore(
                "InjectionEntry", "EnterEveryUpdate",
                "Game", "Update",
                5);
@@ -64,7 +72,7 @@ namespace MaterialColor.Injector
         {
             _csharpInstructionRemover.ClearAllButLast("BlockTileRenderer", "GetCellColor");
 
-            _sourceToCSharpInjector.InjectAsFirstInstruction(
+            _materialToCSharpInjector.InjectAsFirstInstruction(
                 "InjectionEntry", "EnterCell",
                 "BlockTileRenderer", "GetCellColor",
                 true, 1);
@@ -186,7 +194,7 @@ namespace MaterialColor.Injector
 
             inputBindings.Fields.Add(fieldDefinition);
 
-            _sourceToCSharpInjector.InjectAsFirstInstruction(
+            _materialToCSharpInjector.InjectAsFirstInstruction(
                 "InjectionEntry",
                 "SetLocalizationString",
                 "GlobalAssets",
@@ -201,7 +209,7 @@ namespace MaterialColor.Injector
          * OptionsMenuScreen.Update()
          * ReportErrorDialog.Update()
          */
-         //TODO: make it more flexible for future versions
+        //TODO: make it more flexible for future versions
         private void EnableConsole()
         {
             _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
@@ -229,12 +237,198 @@ namespace MaterialColor.Injector
 
             new InstructionInserter(OnToggleSelectMethod).InsertBefore(firstInstruction, instructionsToAdd);
 
-            _sourceToCSharpInjector.InjectAsFirstInstruction(
+            _materialToCSharpInjector.InjectAsFirstInstruction(
                 "InjectionEntry",
                 "EnterToggle",
                 "OverlayMenu",
                 "OnToggleSelect",
                 true, 1);
+        }
+
+        /// <summary>
+        /// WIP, not used yet 
+        /// </summary>
+        private void InjectOnionPatcher()
+        {
+            _onionToCSharpInjector.InjectAsFirstInstruction(
+                "Hooks",
+                "OnInitRandom",
+                "WorldGen",
+                "InitRandom",
+                false,
+                4,
+                true
+                );
+        }
+
+        /// <summary> Seems its working
+        /// <para>TODO: major refactor needed </para>
+        /// </summary>
+        private void InjectRawOnionPatcher()
+        {
+            /* Find all injection-points for Assembly-CSharp.dll */
+            MethodDefinition InitRandom = _csharpModule
+                .Types.First(T => T.Name == "WorldGen")
+                .Methods.First(F => F.Name == "InitRandom");
+
+
+            MethodDefinition OnInitRandom = _onionModule
+                .Types.First(T => T.Name == "Hooks")
+                .Methods.First(M => M.Name == "OnInitRandom");
+
+            MethodDefinition DoWorldGen = _csharpModule
+                .Types.First(T => T.Name == "OfflineWorldGen")
+                .Methods.First(F => F.Name == "DoWorldGen");
+
+            MethodDefinition DebugHandlerCTOR = _csharpModule
+                .Types.First(T => T.Name == "DebugHandler")
+                .Methods.First(F => F.Name == ".ctor");
+
+            Console.WriteLine(DebugHandlerCTOR.Name);
+
+
+            if (InitRandom == null && OnInitRandom == null)
+            {
+                Console.WriteLine("Missing MethodDefinitions");
+                return;
+            }
+
+            DoWorldGen.Body.Variables.Add(new VariableDefinition("w", _csharpModule.TypeSystem.Int32));
+            DoWorldGen.Body.Variables.Add(new VariableDefinition("h", _csharpModule.TypeSystem.Int32));
+
+            /* Write IL */
+            ILProcessor proc = InitRandom.Body.GetILProcessor();
+            Instruction IP = InitRandom.Body.Instructions[0];
+            try
+            {
+
+                byte slot_0 = 0;
+                byte slot_1 = 1;
+                byte slot_2 = 2;
+                byte slot_3 = 3;
+                byte slot_4 = 4;
+
+                // Add hook to Assembly-CSharp.Klei.WorldGen.InitRandom
+                proc.InsertBefore(IP, IP = proc.Create(OpCodes.Ldarga_S, slot_1)); // Load the address, since we are passing by ref.
+                // Update the compatability
+                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Ldarga_S, slot_2));
+                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Ldarga_S, slot_3));
+                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Ldarga_S, slot_4));
+                proc.InsertAfter // Add call to our dll
+                (
+                    IP,
+                    IP = proc.Create(OpCodes.Call, InitRandom.Module.Import(
+                        //typeof(OnionHooks.Hooks).GetMethod("OnInitRandom", new[] { typeof(int).MakeByRefType(), typeof(int).MakeByRefType(), typeof(int).MakeByRefType(), typeof(int).MakeByRefType() })
+                        CecilHelper.GetMethodReference(_onionModule, CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "OnInitRandom"))
+                    ))
+                );
+
+                // Add hook to <hook>
+                DoWorldGen.NoOptimization = true;
+                proc = DoWorldGen.Body.GetILProcessor();
+                IP = DoWorldGen.Body.Instructions[26];
+
+                proc.InsertAfter(proc.Body.Instructions[23], proc.Create(OpCodes.Stloc_2));
+                Instruction I = proc.Body.Instructions[26];
+                proc.InsertAfter(I, I = proc.Create(OpCodes.Stloc_3));
+                proc.InsertAfter(I, I = proc.Create(OpCodes.Ldloca_S, slot_2));
+                proc.InsertAfter(I, I = proc.Create(OpCodes.Ldloca_S, slot_3));
+
+                // is MakeByRefType required?
+                proc.InsertBefore(IP, IP = proc.Create(OpCodes.Call, DoWorldGen.Module.Import(
+                    //typeof(OnionHooks.Hooks).GetMethod("OnDoOfflineWorldGen",
+                    CecilHelper.GetMethodReference(_onionModule,
+                        CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "GetDebugEnabled")
+                    )
+                    //),
+                    //new[] { typeof(int).MakeByRefType(), typeof(int).MakeByRefType() })
+                    ))
+                );
+
+
+                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Ldloc_2));
+                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Ldloc_3));
+
+                FieldReference enabled = _csharpModule
+                .Types.First(T => T.Name == "DebugHandler").Fields.First(F => F.Name == "enabled");
+
+                FieldReference camera = _csharpModule
+                .Types.First(T => T.Name == "DebugHandler").Fields.First(F => F.Name == "FreeCameraMode");
+
+                Console.WriteLine(camera.Name);
+                // Add hook to <hook>
+
+                proc = DebugHandlerCTOR.Body.GetILProcessor();
+                IP = DebugHandlerCTOR.Body.Instructions.Last();
+
+
+                proc.InsertBefore(IP, IP = proc.Create(OpCodes.Ldarg_0));
+                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Call, DebugHandlerCTOR.Module.Import(
+                    //typeof(OnionHooks.Hooks).GetMethod("GetDebugEnabled")
+                   CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "GetDebugEnabled")
+                )));
+
+
+                //proc.InsertBefore(IP, IP = proc.Create(OpCodes.Ldc_I4_1));
+                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Stfld, enabled));
+
+
+
+                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Call, DebugHandlerCTOR.Module.Import(
+                    //typeof(OnionHooks.Hooks).GetMethod("GetDebugEnabled")
+                   CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "GetDebugEnabled")
+                )));
+
+
+                //proc.InsertAfter(IP, IP = proc.Create(OpCodes.Ldc_I4_1));
+                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Stsfld, camera));
+
+                // Hook
+
+                MethodDefinition CameraController = _csharpModule
+                       .Types.First(T => T.Name == "CameraController")
+                       .Methods.First(F => F.Name == ".ctor");
+
+                FieldReference MaxCameraDistance = _csharpModule
+                .Types.First(T => T.Name == "CameraController").Fields.First(F => F.Name == "maxOrthographicSize");
+
+                FieldReference MaxCameraDistance2 = _csharpModule
+                        .Types.First(T => T.Name == "CameraController").Fields.First(F => F.Name == "maxOrthographicSizeDebug");
+
+                proc = CameraController.Body.GetILProcessor();
+                IP = CameraController.Body.Instructions.Last();
+
+                proc.InsertBefore(IP, IP = proc.Create(OpCodes.Ldarg_0));
+                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Call, CameraController.Module.Import(
+                    //typeof(OnionHooks.Hooks).GetMethod("GetMaxCameraShow")
+                   CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "GetMaxCameraShow")
+                )));
+                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Stfld, MaxCameraDistance));
+
+                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Ldarg_0));
+                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Call, CameraController.Module.Import(
+                    //typeof(OnionHooks.Hooks).GetMethod("GetMaxCameraShow")
+                   CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "GetMaxCameraShow")
+                )));
+                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Stfld, MaxCameraDistance));
+
+
+                // Add OnionID which is a class that identifies if the Assembly-CSharp.dll has been patched.
+                var OnionPatched = new TypeDefinition("", "OnionPatched", TypeAttributes.Class, _csharpModule.TypeSystem.Object);
+                _csharpModule.Types.Add(OnionPatched);
+
+                //CSharp.Write(GetAssemblyDir() + Path.DirectorySeparatorChar + "Assembly-CSharp.dll");
+                //MessageBox.Show("Patch Complete!");
+
+                // TODO: use
+                //ValidateAssembly(GetAssemblyDir());
+            }
+            // temporal solution
+            catch (Exception ex)
+            {
+                throw ex;
+                //MessageBox.Show(ex.ToString());
+            }
         }
     }
 }
