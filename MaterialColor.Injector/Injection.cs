@@ -318,7 +318,6 @@ namespace MaterialColor.Injector
                 (
                     IP,
                     IP = proc.Create(OpCodes.Call, InitRandom.Module.Import(
-                        //typeof(OnionHooks.Hooks).GetMethod("OnInitRandom", new[] { typeof(int).MakeByRefType(), typeof(int).MakeByRefType(), typeof(int).MakeByRefType(), typeof(int).MakeByRefType() })
                         CecilHelper.GetMethodReference(_onionModule, CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "OnInitRandom"))
                     ))
                 );
@@ -334,14 +333,10 @@ namespace MaterialColor.Injector
                 proc.InsertAfter(I, I = proc.Create(OpCodes.Ldloca_S, slot_2));
                 proc.InsertAfter(I, I = proc.Create(OpCodes.Ldloca_S, slot_3));
 
-                // is MakeByRefType required?
                 proc.InsertBefore(IP, IP = proc.Create(OpCodes.Call, DoWorldGen.Module.Import(
-                    //typeof(OnionHooks.Hooks).GetMethod("OnDoOfflineWorldGen",
                     CecilHelper.GetMethodReference(_onionModule,
-                        CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "GetDebugEnabled")
+                        CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "OnDoOfflineWorldGen")
                     )
-                    //),
-                    //new[] { typeof(int).MakeByRefType(), typeof(int).MakeByRefType() })
                     ))
                 );
 
@@ -364,7 +359,6 @@ namespace MaterialColor.Injector
 
                 proc.InsertBefore(IP, IP = proc.Create(OpCodes.Ldarg_0));
                 proc.InsertAfter(IP, IP = proc.Create(OpCodes.Call, DebugHandlerCTOR.Module.Import(
-                    //typeof(OnionHooks.Hooks).GetMethod("GetDebugEnabled")
                    CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "GetDebugEnabled")
                 )));
 
@@ -375,7 +369,6 @@ namespace MaterialColor.Injector
 
 
                 proc.InsertAfter(IP, IP = proc.Create(OpCodes.Call, DebugHandlerCTOR.Module.Import(
-                    //typeof(OnionHooks.Hooks).GetMethod("GetDebugEnabled")
                    CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "GetDebugEnabled")
                 )));
 
@@ -400,14 +393,12 @@ namespace MaterialColor.Injector
 
                 proc.InsertBefore(IP, IP = proc.Create(OpCodes.Ldarg_0));
                 proc.InsertAfter(IP, IP = proc.Create(OpCodes.Call, CameraController.Module.Import(
-                    //typeof(OnionHooks.Hooks).GetMethod("GetMaxCameraShow")
                    CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "GetMaxCameraShow")
                 )));
                 proc.InsertAfter(IP, IP = proc.Create(OpCodes.Stfld, MaxCameraDistance));
 
                 proc.InsertAfter(IP, IP = proc.Create(OpCodes.Ldarg_0));
                 proc.InsertAfter(IP, IP = proc.Create(OpCodes.Call, CameraController.Module.Import(
-                    //typeof(OnionHooks.Hooks).GetMethod("GetMaxCameraShow")
                    CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "GetMaxCameraShow")
                 )));
                 proc.InsertAfter(IP, IP = proc.Create(OpCodes.Stfld, MaxCameraDistance));
