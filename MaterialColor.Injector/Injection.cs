@@ -53,12 +53,14 @@ namespace MaterialColor.Injector
             InjectBuildingsSpecialCasesHandling();
             InjectToggleButton();
 
-            InjectRawOnionPatcher();
+            InjectOnionPatcher();
+
+            InjectPatchedSign();
         }
 
         private void InjectMain()
         {
-            _materialToCSharpInjector.InjectAsFirstInstruction(
+            _materialToCSharpInjector.InjectAsFirst(
                  "InjectionEntry", "EnterOnce",
                 "Game", "OnPrefabInit");
 
@@ -72,7 +74,7 @@ namespace MaterialColor.Injector
         {
             _csharpInstructionRemover.ClearAllButLast("BlockTileRenderer", "GetCellColor");
 
-            _materialToCSharpInjector.InjectAsFirstInstruction(
+            _materialToCSharpInjector.InjectAsFirst(
                 "InjectionEntry", "EnterCell",
                 "BlockTileRenderer", "GetCellColor",
                 true, 1);
@@ -194,7 +196,7 @@ namespace MaterialColor.Injector
 
             inputBindings.Fields.Add(fieldDefinition);
 
-            _materialToCSharpInjector.InjectAsFirstInstruction(
+            _materialToCSharpInjector.InjectAsFirst(
                 "InjectionEntry",
                 "SetLocalizationString",
                 "GlobalAssets",
@@ -212,15 +214,15 @@ namespace MaterialColor.Injector
         //TODO: make it more flexible for future versions
         private void EnableConsole()
         {
-            _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
-            _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
-            _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
-            _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
+            _csharpInstructionRemover.RemoveAt("FrontEndManager", "LateUpdate", 0);
+            _csharpInstructionRemover.RemoveAt("FrontEndManager", "LateUpdate", 0);
+            _csharpInstructionRemover.RemoveAt("FrontEndManager", "LateUpdate", 0);
+            _csharpInstructionRemover.RemoveAt("FrontEndManager", "LateUpdate", 0);
 
-            _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 8);
-            _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 8);
-            _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 8);
-            _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 8);
+            _csharpInstructionRemover.RemoveAt("Game", "Update", 8);
+            _csharpInstructionRemover.RemoveAt("Game", "Update", 8);
+            _csharpInstructionRemover.RemoveAt("Game", "Update", 8);
+            _csharpInstructionRemover.RemoveAt("Game", "Update", 8);
         }
 
         private void AttachCustomActionToToggle()
@@ -237,7 +239,7 @@ namespace MaterialColor.Injector
 
             new InstructionInserter(OnToggleSelectMethod).InsertBefore(firstInstruction, instructionsToAdd);
 
-            _materialToCSharpInjector.InjectAsFirstInstruction(
+            _materialToCSharpInjector.InjectAsFirst(
                 "InjectionEntry",
                 "EnterToggle",
                 "OverlayMenu",
@@ -245,181 +247,61 @@ namespace MaterialColor.Injector
                 true, 1);
         }
 
-        /// <summary>
-        /// WIP, not used yet 
-        /// </summary>
         private void InjectOnionPatcher()
         {
-            _onionToCSharpInjector.InjectAsFirstInstruction(
-                "Hooks",
-                "OnInitRandom",
-                "WorldGen",
-                "InitRandom",
-                false,
-                4,
-                true
-                );
+            InjectOnionDoWorldGen();
+            InjectOnionCameraController();
+            InjectOnionDebugHandler();
         }
 
-        /// <summary> Seems its working
-        /// <para>TODO: major refactor needed </para>
-        /// </summary>
-        private void InjectRawOnionPatcher()
+        private void InjectOnionDoWorldGen()
         {
-            /* Find all injection-points for Assembly-CSharp.dll */
-            MethodDefinition InitRandom = _csharpModule
-                .Types.First(T => T.Name == "WorldGen")
-                .Methods.First(F => F.Name == "InitRandom");
+            var doWorldGenBody = CecilHelper.GetMethodDefinition(_csharpModule, "OfflineWorldGen", "DoWorldGen").Body;
 
+            // TODO: create variable add helper
+            doWorldGenBody.Variables.Add(new VariableDefinition("w", _csharpModule.TypeSystem.Int32));
+            doWorldGenBody.Variables.Add(new VariableDefinition("h", _csharpModule.TypeSystem.Int32));
 
-            MethodDefinition OnInitRandom = _onionModule
-                .Types.First(T => T.Name == "Hooks")
-                .Methods.First(M => M.Name == "OnInitRandom");
+            // is it needed?
+            //DoWorldGen.NoOptimization = true;
 
-            MethodDefinition DoWorldGen = _csharpModule
-                .Types.First(T => T.Name == "OfflineWorldGen")
-                .Methods.First(F => F.Name == "DoWorldGen");
+            var callResetInstruction = doWorldGenBody.Instructions.Reverse().Skip(2).First(instruction => instruction.OpCode == OpCodes.Call);
 
-            MethodDefinition DebugHandlerCTOR = _csharpModule
-                .Types.First(T => T.Name == "DebugHandler")
-                .Methods.First(F => F.Name == ".ctor");
+            var instructionInserter = new InstructionInserter(doWorldGenBody);
 
-            Console.WriteLine(DebugHandlerCTOR.Name);
+            instructionInserter.InsertBefore(callResetInstruction, Instruction.Create(OpCodes.Pop));
+            instructionInserter.InsertBefore(callResetInstruction, Instruction.Create(OpCodes.Pop));
 
+            _onionToCSharpInjector.InjectBefore(
+                "Hooks", "OnDoOfflineWorldGen",
+                doWorldGenBody,
+                callResetInstruction);
 
-            if (InitRandom == null && OnInitRandom == null)
-            {
-                Console.WriteLine("Missing MethodDefinitions");
-                return;
-            }
+            _csharpInstructionRemover.Remove(doWorldGenBody, callResetInstruction);
+        }
 
-            DoWorldGen.Body.Variables.Add(new VariableDefinition("w", _csharpModule.TypeSystem.Int32));
-            DoWorldGen.Body.Variables.Add(new VariableDefinition("h", _csharpModule.TypeSystem.Int32));
+        private void InjectOnionDebugHandler()
+        {
+            _csharpPublisher.MakeFieldPublic("DebugHandler", "enabled");
 
-            /* Write IL */
-            ILProcessor proc = InitRandom.Body.GetILProcessor();
-            Instruction IP = InitRandom.Body.Instructions[0];
-            try
-            {
+            var debugHandlerConstructorBody = CecilHelper.GetMethodDefinition(_csharpModule, "DebugHandler", ".ctor").Body;
 
-                byte slot_0 = 0;
-                byte slot_1 = 1;
-                byte slot_2 = 2;
-                byte slot_3 = 3;
-                byte slot_4 = 4;
+            var lastInstruction = debugHandlerConstructorBody.Instructions.Last();
 
-                // Add hook to Assembly-CSharp.Klei.WorldGen.InitRandom
-                proc.InsertBefore(IP, IP = proc.Create(OpCodes.Ldarga_S, slot_1)); // Load the address, since we are passing by ref.
-                // Update the compatability
-                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Ldarga_S, slot_2));
-                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Ldarga_S, slot_3));
-                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Ldarga_S, slot_4));
-                proc.InsertAfter // Add call to our dll
-                (
-                    IP,
-                    IP = proc.Create(OpCodes.Call, InitRandom.Module.Import(
-                        CecilHelper.GetMethodReference(_onionModule, CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "OnInitRandom"))
-                    ))
-                );
+            _onionToCSharpInjector.InjectBefore("Hooks", "OnDebugHandlerCtor", debugHandlerConstructorBody, lastInstruction, true);
 
-                // Add hook to <hook>
-                DoWorldGen.NoOptimization = true;
-                proc = DoWorldGen.Body.GetILProcessor();
-                IP = DoWorldGen.Body.Instructions[26];
+        }
 
-                proc.InsertAfter(proc.Body.Instructions[23], proc.Create(OpCodes.Stloc_2));
-                Instruction I = proc.Body.Instructions[26];
-                proc.InsertAfter(I, I = proc.Create(OpCodes.Stloc_3));
-                proc.InsertAfter(I, I = proc.Create(OpCodes.Ldloca_S, slot_2));
-                proc.InsertAfter(I, I = proc.Create(OpCodes.Ldloca_S, slot_3));
+        private void InjectOnionCameraController()
+        {
+            _csharpPublisher.MakeFieldPublic("CameraController", "maxOrthographicSize");
+            _csharpPublisher.MakeFieldPublic("CameraController", "maxOrthographicSizeDebug");
+        }
 
-                proc.InsertBefore(IP, IP = proc.Create(OpCodes.Call, DoWorldGen.Module.Import(
-                    CecilHelper.GetMethodReference(_onionModule,
-                        CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "OnDoOfflineWorldGen")
-                    )
-                    ))
-                );
-
-
-                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Ldloc_2));
-                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Ldloc_3));
-
-                FieldReference enabled = _csharpModule
-                .Types.First(T => T.Name == "DebugHandler").Fields.First(F => F.Name == "enabled");
-
-                FieldReference camera = _csharpModule
-                .Types.First(T => T.Name == "DebugHandler").Fields.First(F => F.Name == "FreeCameraMode");
-
-                Console.WriteLine(camera.Name);
-                // Add hook to <hook>
-
-                proc = DebugHandlerCTOR.Body.GetILProcessor();
-                IP = DebugHandlerCTOR.Body.Instructions.Last();
-
-
-                proc.InsertBefore(IP, IP = proc.Create(OpCodes.Ldarg_0));
-                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Call, DebugHandlerCTOR.Module.Import(
-                   CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "GetDebugEnabled")
-                )));
-
-
-                //proc.InsertBefore(IP, IP = proc.Create(OpCodes.Ldc_I4_1));
-                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Stfld, enabled));
-
-
-
-                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Call, DebugHandlerCTOR.Module.Import(
-                   CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "GetDebugEnabled")
-                )));
-
-
-                //proc.InsertAfter(IP, IP = proc.Create(OpCodes.Ldc_I4_1));
-                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Stsfld, camera));
-
-                // Hook
-
-                MethodDefinition CameraController = _csharpModule
-                       .Types.First(T => T.Name == "CameraController")
-                       .Methods.First(F => F.Name == ".ctor");
-
-                FieldReference MaxCameraDistance = _csharpModule
-                .Types.First(T => T.Name == "CameraController").Fields.First(F => F.Name == "maxOrthographicSize");
-
-                FieldReference MaxCameraDistance2 = _csharpModule
-                        .Types.First(T => T.Name == "CameraController").Fields.First(F => F.Name == "maxOrthographicSizeDebug");
-
-                proc = CameraController.Body.GetILProcessor();
-                IP = CameraController.Body.Instructions.Last();
-
-                proc.InsertBefore(IP, IP = proc.Create(OpCodes.Ldarg_0));
-                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Call, CameraController.Module.Import(
-                   CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "GetMaxCameraShow")
-                )));
-                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Stfld, MaxCameraDistance));
-
-                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Ldarg_0));
-                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Call, CameraController.Module.Import(
-                   CecilHelper.GetMethodDefinition(_onionModule, "Hooks", "GetMaxCameraShow")
-                )));
-                proc.InsertAfter(IP, IP = proc.Create(OpCodes.Stfld, MaxCameraDistance));
-
-
-                // Add OnionID which is a class that identifies if the Assembly-CSharp.dll has been patched.
-                var OnionPatched = new TypeDefinition("", "OnionPatched", TypeAttributes.Class, _csharpModule.TypeSystem.Object);
-                _csharpModule.Types.Add(OnionPatched);
-
-                //CSharp.Write(GetAssemblyDir() + Path.DirectorySeparatorChar + "Assembly-CSharp.dll");
-                //MessageBox.Show("Patch Complete!");
-
-                // TODO: use
-                //ValidateAssembly(GetAssemblyDir());
-            }
-            // temporal solution
-            catch (Exception ex)
-            {
-                throw ex;
-                //MessageBox.Show(ex.ToString());
-            }
+        private void InjectPatchedSign()
+        {
+            _csharpModule.Types.Add(new TypeDefinition("Mods", "Patched", TypeAttributes.Class, _csharpModule.TypeSystem.Object));
+            _firstPassModule.Types.Add(new TypeDefinition("Mods", "Patched", TypeAttributes.Class, _firstPassModule.TypeSystem.Object));
         }
     }
 }

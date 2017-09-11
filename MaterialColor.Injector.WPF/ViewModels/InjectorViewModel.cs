@@ -19,6 +19,16 @@ namespace MaterialColor.Injector.WPF.ViewModels
             _injector = injector;
 
             TryLoadLastAppState();
+
+            if (!IsCSharpPatched && CanRestoreCSharpBackup())
+            {
+                Status = "Warning: A backup for Assembly-CSharp.dll exists, but current assembly doesn't appear to be patched. Patching without restoring backup is advised.";
+            }
+
+            if (!IsFirstpassPatched && CanRestoreFirstpassBackup())
+            {
+                Status = "Warning: A backup for Assembly-CSharp-firstpass.dll exists, but current assembly doesn't appear to be patched. Patching without restoring backup is advised.";
+            }
         }
 
         public DelegateCommand PatchCommand { get; private set; }
@@ -45,22 +55,62 @@ namespace MaterialColor.Injector.WPF.ViewModels
         private bool _enableDebugConsole;
 
         public bool CanRestoreBackup()
-            => _fileManager.BackupForFileExists(Paths.DefaultAssemblyCSharpPath) | _fileManager.BackupForFileExists(Paths.DefaultAssemblyFirstPassPath);
+            //=> _fileManager.BackupForFileExists(Paths.DefaultAssemblyCSharpPath) | _fileManager.BackupForFileExists(Paths.DefaultAssemblyFirstPassPath);
+            => CanRestoreCSharpBackup() || CanRestoreFirstpassBackup();
+
+        public bool CanRestoreCSharpBackup()
+            => _fileManager.BackupForFileExists(Paths.DefaultAssemblyCSharpPath);
+
+        public bool CanRestoreFirstpassBackup()
+            => _fileManager.BackupForFileExists(Paths.DefaultAssemblyFirstPassPath);
+
+        public bool IsCSharpPatched
+            => _injector.IsCurrentAssemblyCSharpPatched();
+
+        public bool IsFirstpassPatched
+            => _injector.IsCurrentAssemblyFirstpassPatched();
 
         public void Patch()
         {
             Status = $"[{DateTime.Now.TimeOfDay}] Patching started.";
 
-            if (CanRestoreBackup())
+            if (CanRestoreCSharpBackup())
             {
-                if (TryRestoreBackup())
+                if (IsCSharpPatched)
                 {
-                    Status = "\tBackup restored.";
+                    if (TryRestoreCSharpBackup())
+                    {
+                        Status = "\tAssembly-CSharp.dll backup restored.";
+                    }
+                    else
+                    {
+                        Status = "\tAssembly-CSharp.dll backup failed.\n\tPatch cancelled.";
+                        return;
+                    }
                 }
                 else
                 {
-                    Status = "\tBackup failed.\n\tPatch cancelled.";
-                    return;
+                    Status = "\tAssembly-CSharp.dll backup restore SKIPPED.";
+                }
+            }
+
+            if (CanRestoreFirstpassBackup())
+            {
+                if (IsFirstpassPatched)
+                {
+                    if (TryRestoreFirstpassBackup())
+                    {
+                        Status = "\tAssembly-CSharp-firstpass.dll backup restored.";
+                    }
+                    else
+                    {
+                        Status = "\tAssembly-CSharp-firstpass.dll backup failed.\n\tPatch cancelled.";
+                        return;
+                    }
+                }
+                else
+                {
+                    Status = "\tAssembly-CSharp-firstpass.dll backup restore SKIPPED.";
                 }
             }
 
@@ -101,16 +151,75 @@ namespace MaterialColor.Injector.WPF.ViewModels
 
         public void RestoreBackup()
         {
-            if (TryRestoreBackup())
+            RestoreCSharpBackup();
+            RestoreFirstpassBackup();
+        }
+
+        public void RestoreCSharpBackup()
+        {
+            if (TryRestoreCSharpBackup())
             {
-                Status = $"[{DateTime.Now.TimeOfDay}] Backup restore successful.";
+                Status = $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp.dll backup restore successful.";
             }
             else
             {
-                Status = $"[{DateTime.Now.TimeOfDay}] Backup restore failed.";
+                Status = $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp.dll backup restore failed.";
             }
         }
 
+        public void RestoreFirstpassBackup()
+        {
+            if (TryRestoreFirstpassBackup())
+            {
+                Status = $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp-firstpass.dll backup restore successful.";
+            }
+            else
+            {
+                Status = $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp-firstpass.dll backup restore failed.";
+            }
+        }
+
+        public bool TryRestoreCSharpBackup()
+        {
+            bool result = false;
+
+            try
+            {
+                result = _fileManager.RestoreBackupForFile(Paths.DefaultAssemblyCSharpPath);
+            }
+            catch (Exception e)
+            {
+
+                Status = $"Can't restore Assembly-CSharp.dll backup.\n{e.Message}\n{e.StackTrace}";
+                result = false;
+            }
+
+            RestoreBackupCommand.RaiseCanExecuteChanged();
+
+            return result;
+        }
+
+        public bool TryRestoreFirstpassBackup()
+        {
+            bool result = false;
+
+            try
+            {
+                result = _fileManager.RestoreBackupForFile(Paths.DefaultAssemblyFirstPassPath);
+            }
+            catch (Exception e)
+            {
+
+                Status = $"Can't restore Assembly-CSharp-firstpass.dll backup.\n{e.Message}\n{e.StackTrace}";
+                result = false;
+            }
+
+            RestoreBackupCommand.RaiseCanExecuteChanged();
+
+            return result;
+        }
+
+        [Obsolete]
         public bool TryRestoreBackup()
         {
             bool result = false;

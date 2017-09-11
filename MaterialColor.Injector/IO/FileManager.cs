@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Mono.Cecil;
+using System;
 
 namespace MaterialColor.Injector.IO
 {
@@ -7,16 +8,16 @@ namespace MaterialColor.Injector.IO
     {
         public const string BackupString = ".backup";
 
-        public bool MakeBackup(string filePath)
+        public void MakeBackup(string filePath)
         {
             var backupPath = GetBackupPathForFile(filePath);
 
-            if (!BackupForFileExists(filePath))
+            if (BackupForFileExists(filePath))
             {
-                File.Move(filePath, backupPath);
-                return true;
+                File.Delete(backupPath);
             }
-            return false;
+
+            File.Move(filePath, backupPath);
         }
 
         public bool BackupForFileExists(string filePath)
