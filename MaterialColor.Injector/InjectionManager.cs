@@ -29,6 +29,17 @@ namespace MaterialColor.Injector
             BackupAndSaveFirstPassModule(firstPassModule);
         }
 
+        public bool IsCurrentAssemblyCSharpPatched()
+            => CecilHelper.GetModule(Paths.DefaultAssemblyCSharpPath, Paths.ManagedDirectoryPath).Types.Any(TypePatched);
+
+        public bool IsCurrentAssemblyFirstpassPatched()
+            => CecilHelper.GetModule(Paths.DefaultAssemblyFirstPassPath, Paths.ManagedDirectoryPath).Types.Any(TypePatched);
+
+        private bool TypePatched(TypeDefinition type)
+        {
+            return type.Namespace == "Mods" && type.Name == "Patched";
+        }
+
         private void BackupAndSaveCSharpModule(ModuleDefinition module)
         {
             var path = Paths.DefaultAssemblyCSharpPath;

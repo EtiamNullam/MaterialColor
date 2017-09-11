@@ -1,4 +1,5 @@
 ﻿using Mono.Cecil;
+using Mono.Cecil.Cil;
 using System.Linq;
 
 namespace MaterialColor.Injector
@@ -12,12 +13,17 @@ namespace MaterialColor.Injector
 
         ModuleDefinition _targetModule;
 
-        public void RemoveInstructionAt(string typeName, string methodName, int instructionIndex)
+        public void RemoveAt(string typeName, string methodName, int instructionIndex)
         {
             var method = CecilHelper.GetMethodDefinition(_targetModule, typeName, methodName);
             var methodBody = method.Body;
 
-            methodBody.GetILProcessor().Remove(methodBody.Instructions[instructionIndex]);
+            Remove(methodBody, methodBody.Instructions[instructionIndex]);
+        }
+
+        public void Remove(MethodBody methodBody, Instruction instruction)
+        {
+            methodBody.GetILProcessor().Remove(instruction);
         }
 
         public void ClearAllButLast(string typeName, string methodName)

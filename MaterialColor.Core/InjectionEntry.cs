@@ -20,6 +20,7 @@ namespace MaterialColor.Core
         private static FileChangeNotifier _fileChangeNotifier = new FileChangeNotifier();
 
         private static bool _firstUpdate = false;
+        private static bool _firstUpdateOnion = false;
 
         // TODO: merge with EnterEveryUpdate?
         public static void EnterOnce()
@@ -52,6 +53,7 @@ namespace MaterialColor.Core
             StartFileChangeNotifier();
             Initialized = true;
             _firstUpdate = true;
+            _firstUpdateOnion = true;
         }
 
         public static void EnterEveryUpdate()
@@ -69,6 +71,24 @@ namespace MaterialColor.Core
                 }
             }
 
+            if (_firstUpdateOnion)
+            {
+                var cameraController = CameraController.Instance;
+
+                if (cameraController != null)
+                {
+                    cameraController.maxOrthographicSize = OnionHooks.Hooks.conf.MaxCameraDistance;
+                    cameraController.maxOrthographicSizeDebug = OnionHooks.Hooks.conf.MaxCameraDistance;
+                    cameraController.SetOrthographicsSize(OnionHooks.Hooks.conf.MaxCameraDistance);
+
+                    _firstUpdateOnion = false;
+                }
+                else if (State.ConfiguratorState.ShowDetailedErrorInfo)
+                {
+                    Debug.LogError("CameraController.Instance is null");
+                }
+            }
+
             if (ElementColorInfosChanged || TypeColorOffsetsChanged || ConfiguratorStateChanged)
             {
                 UpdateBuildingsColors();
@@ -76,26 +96,6 @@ namespace MaterialColor.Core
                 ElementColorInfosChanged = TypeColorOffsetsChanged = ConfiguratorStateChanged = false;
             }
         }
-
-        //private static Texture2D duplicateTexture(Texture2D source)
-        //{
-        //    RenderTexture renderTex = RenderTexture.GetTemporary(
-        //                source.width,
-        //                source.height,
-        //                0,
-        //                RenderTextureFormat.Default,
-        //                RenderTextureReadWrite.Linear);
-
-        //    Graphics.Blit(source, renderTex);
-        //    RenderTexture previous = RenderTexture.active;
-        //    RenderTexture.active = renderTex;
-        //    Texture2D readableText = new Texture2D(source.width, source.height);
-        //    readableText.ReadPixels(new Rect(0, 0, renderTex.width, renderTex.height), 0, 0);
-        //    readableText.Apply();
-        //    RenderTexture.active = previous;
-        //    RenderTexture.ReleaseTemporary(renderTex);
-        //    return readableText;
-        //}
 
         public static Color EnterCell(Rendering.BlockTileRenderer blockRenderer, int cellIndex)
         {

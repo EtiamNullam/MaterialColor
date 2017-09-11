@@ -78,6 +78,10 @@
       <Project>{eda0cd77-3605-4c5a-aca6-6bbda16a24af}</Project>
       <Name>MaterialColor.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\onion-hooks\OnionHooks\OnionHooks.csproj">
+      <Project>{55af1803-0a1e-4794-9aa0-1118be5fe0c3}</Project>
+      <Name>OnionHooks</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
