@@ -43,7 +43,7 @@ namespace MaterialColor.Core.IO
             {
                 var message = "Can't load configurator state.\n" + ex.Message + '\n';
 
-                if (State.ConfiguratorState.ShowDetailedErrorInfo)
+                if (State.ConfiguratorState.Material.ShowDetailedErrorInfo)
                 {
                     message += '\n' + ex.StackTrace;
                 }
@@ -64,7 +64,7 @@ namespace MaterialColor.Core.IO
             {
                 var message = "Can't load ElementColorInfos\n" + e.Message + '\n';
 
-                if (State.ConfiguratorState.ShowDetailedErrorInfo)
+                if (State.ConfiguratorState.Material.ShowDetailedErrorInfo)
                 {
                     message += '\n' + e.StackTrace;
                 }
@@ -86,7 +86,7 @@ namespace MaterialColor.Core.IO
             {
                 var message = "Can't load TypeColorOffsets\n" + e.Message + '\n';
 
-                if (State.ConfiguratorState.ShowDetailedErrorInfo)
+                if (State.ConfiguratorState.Material.ShowDetailedErrorInfo)
                 {
                     message += '\n' + e.StackTrace;
                 }

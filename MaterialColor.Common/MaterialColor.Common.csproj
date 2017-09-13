@@ -51,6 +51,8 @@
     <Compile Include="Data\Color32Multiplier.cs" />
     <Compile Include="Data\ColorMode.cs" />
     <Compile Include="Data\ConfiguratorState.cs" />
+    <Compile Include="Data\MaterialColorState.cs" />
+    <Compile Include="Data\OnionConfig.cs" />
     <Compile Include="IDs.cs" />
     <Compile Include="Paths.cs" />
     <Compile Include="Data\ElementColorInfo.cs" />
