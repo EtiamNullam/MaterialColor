@@ -18,7 +18,7 @@ namespace MaterialColor.Core.Helpers
 
                 if (!State.Disabled)
                 {
-                    switch (State.ConfiguratorState.ColorMode)
+                    switch (State.ConfiguratorState.Material.ColorMode)
                     {
                         case Common.Data.ColorMode.Json:
                             color = material.GetMaterialColorForType(buildingName);
@@ -108,7 +108,7 @@ namespace MaterialColor.Core.Helpers
             }
             else
             {
-                standardColor = State.ConfiguratorState.ShowMissingTypeColorOffsets
+                standardColor = State.ConfiguratorState.Material.ShowMissingTypeColorOffsets
                     ? MissingDebugColor
                     : NoOffset;
 

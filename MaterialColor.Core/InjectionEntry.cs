@@ -39,7 +39,7 @@ namespace MaterialColor.Core
             {
                 var message = "Injection failed\n" + e.Message + '\n';
 
-                if (State.ConfiguratorState.ShowDetailedErrorInfo)
+                if (State.ConfiguratorState.Material.ShowDetailedErrorInfo)
                 {
                     message += '\n' + e.StackTrace;
                 }
@@ -65,7 +65,7 @@ namespace MaterialColor.Core
                     OverlayScreen.Instance.OnOverlayChanged += OnOverlayChanged;
                     _firstUpdate = false;
                 }
-                else if (State.ConfiguratorState.ShowDetailedErrorInfo)
+                else if (State.ConfiguratorState.Material.ShowDetailedErrorInfo)
                 {
                     Debug.LogError("OverlayScreen.Instance is null");
                 }
@@ -83,7 +83,7 @@ namespace MaterialColor.Core
 
                     _firstUpdateOnion = false;
                 }
-                else if (State.ConfiguratorState.ShowDetailedErrorInfo)
+                else if (State.ConfiguratorState.Material.ShowDetailedErrorInfo)
                 {
                     Debug.LogError("CameraController.Instance is null");
                 }
@@ -103,7 +103,7 @@ namespace MaterialColor.Core
 
             if (!State.Disabled)
             {
-                switch (State.ConfiguratorState.ColorMode)
+                switch (State.ConfiguratorState.Material.ColorMode)
                 {
                     case Common.Data.ColorMode.Json:
                         resultColor = ColorHelper.GetCellColorJson(cellIndex);
