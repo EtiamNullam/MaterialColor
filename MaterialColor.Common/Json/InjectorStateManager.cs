@@ -1,4 +1,6 @@
-﻿namespace MaterialColor.Common.Json
+﻿using System.Collections.Generic;
+
+namespace MaterialColor.Common.Json
 {
     public class InjectorStateManager
     {
@@ -9,12 +11,12 @@
 
         private JsonManager _manager;
 
-        public bool LoadState()
+        public List<bool> LoadState()
         {
-            return _manager.Deserialize<bool>(Paths.InjectorStatePath);
+            return _manager.Deserialize<List<bool>>(Paths.InjectorStatePath);
         }
 
-        public void SaveState(bool state)
+        public void SaveState(IEnumerable<bool> state)
         {
             _manager.Serialize(state, Paths.InjectorStatePath);
         }

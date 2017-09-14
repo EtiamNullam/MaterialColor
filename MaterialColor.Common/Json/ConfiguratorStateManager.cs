@@ -11,14 +11,24 @@ namespace MaterialColor.Common.Json
 
         private JsonManager _manager;
 
-        public ConfiguratorState LoadState()
+        public MaterialColorState LoadMaterialColorState()
         {
-            return _manager.Deserialize<ConfiguratorState>(Paths.ConfiguratorStatePath);
+            return _manager.Deserialize<MaterialColorState>(Paths.MaterialColorStatePath);
         }
 
-        public void SaveState(ConfiguratorState state)
+        public void SaveMaterialColorState(MaterialColorState state)
         {
-            _manager.Serialize(state, Paths.ConfiguratorStatePath);
+            _manager.Serialize(state, Paths.MaterialColorStatePath);
+        }
+
+        public OnionState LoadOnionState()
+        {
+            return _manager.Deserialize<OnionState>(Paths.OnionStatePath);
+        }
+
+        public void SaveOnionState(OnionState state)
+        {
+            _manager.Serialize(state, Paths.OnionStatePath);
         }
     }
 }

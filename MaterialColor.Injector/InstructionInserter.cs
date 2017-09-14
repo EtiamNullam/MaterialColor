@@ -12,6 +12,8 @@ namespace MaterialColor.Injector
     {
         public InstructionInserter(MethodDefinition targetMethod) : this(targetMethod.Body.GetILProcessor()) { }
 
+        public InstructionInserter(MethodBody targetMethodBody) : this(targetMethodBody.GetILProcessor()) { }
+
         public InstructionInserter(ILProcessor targetMethodILProcessor)
         {
             _ilProcessor = targetMethodILProcessor;
@@ -27,6 +29,11 @@ namespace MaterialColor.Injector
             }
         }
 
+        public void InsertBefore(Instruction targetInstruction, Instruction instruction)
+        {
+            _ilProcessor.InsertBefore(targetInstruction, instruction);
+        }
+
         public void InsertAfter(Instruction targetInstruction, IEnumerable<Instruction> instructions)
         {
             var reversedInstructions = instructions.Reverse();
@@ -35,6 +42,16 @@ namespace MaterialColor.Injector
             {
                 _ilProcessor.InsertAfter(targetInstruction, newInstruction);
             }
+        }
+
+        public void InsertAfter(int instructionIndex, Instruction instruction)
+        {
+            InsertAfter(_ilProcessor.Body.Instructions[instructionIndex], instruction);
+        }
+
+        public void InsertAfter(Instruction targetInstruction, Instruction instruction)
+        {
+            _ilProcessor.InsertAfter(targetInstruction, instruction);
         }
     }
 }

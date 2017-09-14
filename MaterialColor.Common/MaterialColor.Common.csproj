@@ -42,6 +42,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\GameManaged\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
     <Reference Include="UnityEngine">
       <HintPath>..\GameManaged\UnityEngine.dll</HintPath>
       <Private>False</Private>
@@ -50,11 +51,14 @@
   <ItemGroup>
     <Compile Include="Data\Color32Multiplier.cs" />
     <Compile Include="Data\ColorMode.cs" />
-    <Compile Include="Data\ConfiguratorState.cs" />
+    <Compile Include="Data\MaterialColorState.cs" />
+    <Compile Include="Data\OnionConfig.cs" />
     <Compile Include="IDs.cs" />
+    <Compile Include="IO\FileChangeNotifier.cs" />
+    <Compile Include="IO\Logger.cs" />
     <Compile Include="Paths.cs" />
     <Compile Include="Data\ElementColorInfo.cs" />
-    <Compile Include="IOHelper.cs" />
+    <Compile Include="IO\IOHelper.cs" />
     <Compile Include="Json\ConfiguratorStateManager.cs" />
     <Compile Include="Json\ElementColorInfosManager.cs" />
     <Compile Include="Json\JsonManager.cs" />

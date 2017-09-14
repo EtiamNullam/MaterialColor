@@ -10,51 +10,67 @@ namespace MaterialColor.Injector
 {
     public class Injection
     {
-        public Injection(ModuleDefinition sourceModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
+        public Injection(ModuleDefinition materialModule, ModuleDefinition onionModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
         {
-            Initialize(sourceModule, csharpModule, firstPassModule);
+            Initialize(materialModule, onionModule, csharpModule, firstPassModule);
         }
 
-        private ModuleDefinition _sourceModule;
+        private ModuleDefinition _materialModule;
+        private ModuleDefinition _onionModule;
         private ModuleDefinition _csharpModule;
         private ModuleDefinition _firstPassModule;
 
-        private MethodInjector _sourceToCSharpInjector;
+        private MethodInjector _materialToCSharpInjector;
         private InstructionRemover _csharpInstructionRemover;
         private Publisher _csharpPublisher;
 
-        private void Initialize(ModuleDefinition sourceModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
+        private MethodInjector _onionToCSharpInjector;
+
+        private void Initialize(ModuleDefinition materialModule, ModuleDefinition onionModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
         {
-            _sourceModule = sourceModule;
+            _materialModule = materialModule;
+            _onionModule = onionModule;
             _csharpModule = csharpModule;
             _firstPassModule = firstPassModule;
 
             _csharpInstructionRemover = new InstructionRemover(csharpModule);
             _csharpPublisher = new Publisher(csharpModule);
             _csharpInstructionRemover = new InstructionRemover(csharpModule);
-            _sourceToCSharpInjector = new MethodInjector(sourceModule, csharpModule);
+            _materialToCSharpInjector = new MethodInjector(materialModule, csharpModule);
+
+            _onionToCSharpInjector = new MethodInjector(_onionModule, _csharpModule);
         }
 
-        public void Inject(bool enableConsole)
+        public void Inject(bool injectMaterial, bool enableConsole, bool injectOnion)
         {
             if (enableConsole)
             {
                 EnableConsole();
             }
 
-            InjectMain();
-            InjectCellColorHandling();
-            InjectBuildingsSpecialCasesHandling();
-            InjectToggleButton();
+            if (injectMaterial)
+            {
+                InjectMain();
+                InjectCellColorHandling();
+                InjectBuildingsSpecialCasesHandling();
+                InjectToggleButton();
+            }
+
+            if (injectOnion)
+            {
+                InjectOnionPatcher();
+            }
+
+            InjectPatchedSign();
         }
 
         private void InjectMain()
         {
-            _sourceToCSharpInjector.InjectAsFirstInstruction(
+            _materialToCSharpInjector.InjectAsFirst(
                  "InjectionEntry", "EnterOnce",
                 "Game", "OnPrefabInit");
 
-            _sourceToCSharpInjector.InjectBefore(
+            _materialToCSharpInjector.InjectBefore(
                "InjectionEntry", "EnterEveryUpdate",
                "Game", "Update",
                5);
@@ -64,7 +80,7 @@ namespace MaterialColor.Injector
         {
             _csharpInstructionRemover.ClearAllButLast("BlockTileRenderer", "GetCellColor");
 
-            _sourceToCSharpInjector.InjectAsFirstInstruction(
+            _materialToCSharpInjector.InjectAsFirst(
                 "InjectionEntry", "EnterCell",
                 "BlockTileRenderer", "GetCellColor",
                 true, 1);
@@ -186,7 +202,7 @@ namespace MaterialColor.Injector
 
             inputBindings.Fields.Add(fieldDefinition);
 
-            _sourceToCSharpInjector.InjectAsFirstInstruction(
+            _materialToCSharpInjector.InjectAsFirst(
                 "InjectionEntry",
                 "SetLocalizationString",
                 "GlobalAssets",
@@ -201,25 +217,26 @@ namespace MaterialColor.Injector
          * OptionsMenuScreen.Update()
          * ReportErrorDialog.Update()
          */
-         //TODO: make it more flexible for future versions
+        //TODO: make it more flexible for future versions
         private void EnableConsole()
         {
-            _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
-            _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
-            _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
-            _csharpInstructionRemover.RemoveInstructionAt("FrontEndManager", "LateUpdate", 0);
+            _csharpInstructionRemover.RemoveAt("FrontEndManager", "LateUpdate", 0);
+            _csharpInstructionRemover.RemoveAt("FrontEndManager", "LateUpdate", 0);
+            _csharpInstructionRemover.RemoveAt("FrontEndManager", "LateUpdate", 0);
+            _csharpInstructionRemover.RemoveAt("FrontEndManager", "LateUpdate", 0);
 
-            _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 8);
-            _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 8);
-            _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 8);
-            _csharpInstructionRemover.RemoveInstructionAt("Game", "Update", 8);
+            _csharpInstructionRemover.RemoveAt("Game", "Update", 8);
+            _csharpInstructionRemover.RemoveAt("Game", "Update", 8);
+            _csharpInstructionRemover.RemoveAt("Game", "Update", 8);
+            _csharpInstructionRemover.RemoveAt("Game", "Update", 8);
         }
 
         private void AttachCustomActionToToggle()
         {
-            var OnToggleSelectMethod = CecilHelper.GetMethodDefinition(_csharpModule, "OverlayMenu", "OnToggleSelect");
+            var onToggleSelectMethod = CecilHelper.GetMethodDefinition(_csharpModule, "OverlayMenu", "OnToggleSelect");
+            var onToggleSelectMethodBody = onToggleSelectMethod.Body;
 
-            var firstInstruction = OnToggleSelectMethod.Body.Instructions.First();
+            var firstInstruction = onToggleSelectMethodBody.Instructions.First();
 
             var instructionsToAdd = new List<Instruction>
             {
@@ -227,14 +244,97 @@ namespace MaterialColor.Injector
                 Instruction.Create(OpCodes.Ret)
             };
 
-            new InstructionInserter(OnToggleSelectMethod).InsertBefore(firstInstruction, instructionsToAdd);
+            new InstructionInserter(onToggleSelectMethod).InsertBefore(firstInstruction, instructionsToAdd);
 
-            _sourceToCSharpInjector.InjectAsFirstInstruction(
+            _materialToCSharpInjector.InjectAsFirst(
                 "InjectionEntry",
                 "EnterToggle",
-                "OverlayMenu",
-                "OnToggleSelect",
+                onToggleSelectMethodBody,
                 true, 1);
+        }
+
+        private void InjectOnionPatcher()
+        {
+            InjectOnionDoWorldGen();
+            InjectOnionCameraController();
+            InjectOnionDebugHandler();
+            InjectOnionInitRandom();
+        }
+
+        private void InjectOnionInitRandom()
+        {
+            _onionToCSharpInjector.InjectAsFirst(
+                "Hooks", "OnInitRandom",
+                "WorldGen", "InitRandom",
+                false, 4, true
+                );
+        }
+
+        private void InjectOnionDoWorldGen()
+        {
+            var doWorldGenBody = CecilHelper.GetMethodDefinition(_csharpModule, "OfflineWorldGen", "DoWorldGen").Body;
+
+            // TODO: create variable add helper
+            doWorldGenBody.Variables.Add(new VariableDefinition("w", _csharpModule.TypeSystem.Int32));
+            doWorldGenBody.Variables.Add(new VariableDefinition("h", _csharpModule.TypeSystem.Int32));
+
+            // is it needed?
+            //DoWorldGen.NoOptimization = true;
+
+            var callResetInstruction = doWorldGenBody
+                .Instructions
+                .Where(instruction => instruction.OpCode == OpCodes.Call)
+                .Reverse()
+                .Skip(1)
+                .First();
+
+            var instructionInserter = new InstructionInserter(doWorldGenBody);
+
+            instructionInserter.InsertBefore(callResetInstruction, Instruction.Create(OpCodes.Pop));
+            instructionInserter.InsertBefore(callResetInstruction, Instruction.Create(OpCodes.Pop));
+
+            _onionToCSharpInjector.InjectBefore(
+                "Hooks", "OnDoOfflineWorldGen",
+                doWorldGenBody,
+                callResetInstruction);
+
+            _csharpInstructionRemover.Remove(doWorldGenBody, callResetInstruction);
+        }
+
+        private void InjectOnionDebugHandler()
+        {
+            _csharpPublisher.MakeFieldPublic("DebugHandler", "enabled");
+
+            var debugHandlerConstructorBody = CecilHelper.GetMethodDefinition(_csharpModule, "DebugHandler", ".ctor").Body;
+
+            var lastInstruction = debugHandlerConstructorBody.Instructions.Last();
+
+            _onionToCSharpInjector.InjectBefore("Hooks", "OnDebugHandlerCtor", debugHandlerConstructorBody, lastInstruction, true);
+
+        }
+
+        private void InjectOnionCameraController()
+        {
+            var typeName = "CameraController";
+
+            _csharpPublisher.MakeFieldPublic(typeName, "maxOrthographicSize");
+            _csharpPublisher.MakeFieldPublic(typeName, "maxOrthographicSizeDebug");
+
+            var cameraControllerOnSpawnBody = CecilHelper.GetMethodDefinition(_csharpModule, typeName, "OnSpawn").Body;
+            var restoreCall = cameraControllerOnSpawnBody.Instructions.Last(instruction => instruction.OpCode == OpCodes.Call);
+
+            _onionToCSharpInjector.InjectBefore(
+                "Hooks",
+                "OnCameraControllerCtor",
+                cameraControllerOnSpawnBody,
+                restoreCall,
+                true);
+        }
+
+        private void InjectPatchedSign()
+        {
+            _csharpModule.Types.Add(new TypeDefinition("Mods", "Patched", TypeAttributes.Class, _csharpModule.TypeSystem.Object));
+            _firstPassModule.Types.Add(new TypeDefinition("Mods", "Patched", TypeAttributes.Class, _firstPassModule.TypeSystem.Object));
         }
     }
 }

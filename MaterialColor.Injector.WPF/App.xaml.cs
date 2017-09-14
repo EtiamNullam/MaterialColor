@@ -32,15 +32,20 @@ namespace MaterialColor.Injector.WPF
 
             if (e.Args.Length != 0)
             {
-                bool inject = false;
+                bool injectMaterial = false;
+                bool injectOnion = false;
                 bool recover = false;
                 bool enableDebugConsole = false;
 
                 foreach (var argument in e.Args.Select(arg => arg.ToLower()).ToList())
                 {
-                    if (InjectArgumentAliases.Contains(argument))
+                    if (InjectMaterialArgumentAliases.Contains(argument))
                     {
-                        recover = inject = true;
+                        recover = injectMaterial = true;
+                    }
+                    else if (InjectOnionArgumentAliases.Contains(argument))
+                    {
+                        recover = injectOnion = true;
                     }
                     else if (RecoverArgumentAliases.Contains(argument))
                     {
@@ -52,14 +57,14 @@ namespace MaterialColor.Injector.WPF
                     }
                 }
 
-                if (inject || recover)
+                if (injectMaterial || injectOnion || recover)
                 {
                     Recover();
 
-                    if (inject)
+                    if (injectMaterial || injectOnion)
                     {
-                        Inject(enableDebugConsole);
-                        new InjectorStateManager(new JsonManager()).SaveState(enableDebugConsole);
+                        Inject(injectMaterial, enableDebugConsole, injectOnion);
+                        new InjectorStateManager(new JsonManager()).SaveState(new List<bool> { injectMaterial, enableDebugConsole, injectOnion });
                     }
 
                     Shutdown();
@@ -86,13 +91,14 @@ namespace MaterialColor.Injector.WPF
             fileManager.RestoreBackupForFile(IO.Paths.DefaultAssemblyFirstPassPath);
         }
 
-        private void Inject(bool enableDebugConsole)
+        private void Inject(bool injectMaterial, bool enableDebugConsole, bool injectOnion)
         {
-            new InjectionManager(FileManager).InjectDefaultAndBackup(enableDebugConsole);
+            new InjectionManager(FileManager).InjectDefaultAndBackup(injectMaterial, enableDebugConsole, injectOnion);
         }
 
         private List<string> RecoverArgumentAliases = new List<string> { "-r", "-recover" };
-        private List<string> InjectArgumentAliases = new List<string> { "-i", "-inject" };
+        private List<string> InjectMaterialArgumentAliases = new List<string> { "-m", "-material" };
+        private List<string> InjectOnionArgumentAliases = new List<string> { "-o", "-onion" };
         private List<string> EnableDebugArgumentAliases = new List<string> { "-d", "-enabledebug" };
     }
 }
