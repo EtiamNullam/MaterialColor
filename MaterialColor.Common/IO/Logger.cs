@@ -18,15 +18,15 @@ namespace MaterialColor.Common.IO
 
         public void Log(string message)
         {
-            IOHelper.EnsureDirectoryExists(Paths.LogsDirectory);
+            IOHelper.EnsureDirectoryExists(Paths.LogsPath);
 
-            var path = Paths.LogsDirectory + Path.DirectorySeparatorChar + _fileName;
+            var path = Paths.LogsPath + Path.DirectorySeparatorChar + _fileName;
 
             using (var writer = new StreamWriter(path, true))
             {
                 var now = System.DateTime.Now;
 
-                writer.WriteLine($"[{now.ToShortDateString()}, {now.ToShortTimeString()}] {message}");
+                writer.WriteLine($"[{now.ToShortDateString()}, {now.TimeOfDay}] {message}");
                 writer.Close();
             }
         }

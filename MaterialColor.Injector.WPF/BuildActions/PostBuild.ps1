@@ -6,10 +6,12 @@ if ([string]::IsNullOrWhiteSpace($outputPath))
     return;
 }
 
-$injectorSubPath = "OxygenNotIncluded_Data\MaterialColor.Injector";
+$assembliesSubPath = "Mods\MaterialColor\Assemblies\"
+
+$injectorSubPath = $assembliesSubPath + "Injector\";
 $injectorFullPath = $outputPath + $injectorSubPath;
 
-$wpfSubPath = "OxygenNotIncluded_Data\MaterialColor.WPF";
+$wpfSubPath = $assembliesSubPath + "WPF\";
 $wpfFullPath = $outputPath + $wpfSubPath;
 
 New-Item $outputPath -ItemType Directory -Force | Out-Null;
