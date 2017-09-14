@@ -46,7 +46,11 @@ namespace MaterialColor.Configurator.WPF.ViewModels
         public string Status
         {
             get => _status;
-            set => SetProperty(ref _status, $"{_status}\n[{DateTime.Now.TimeOfDay}]: {value}".Trim());
+            set
+            {
+                SetProperty(ref _status, $"{_status}\n[{DateTime.Now.TimeOfDay}]: {value}".Trim());
+                _logger.Log(value);
+            }
         }
 
         private string _status;
@@ -62,8 +66,9 @@ namespace MaterialColor.Configurator.WPF.ViewModels
             }
             catch (Exception e)
             {
-                var message = "Can't load last state";
-                _logger.Log($"{message}\n{e.Message}\n{e.StackTrace}");
+                Status = "Can't load last state";
+
+                _logger.Log(e);
 
                 MaterialState = new MaterialColorState();
                 OnionState = new OnionState();
@@ -77,13 +82,13 @@ namespace MaterialColor.Configurator.WPF.ViewModels
             try
             {
                 Common.IO.IOHelper.EnsureDirectoryExists(Common.Paths.MaterialConfigPath);
+                Common.IO.IOHelper.EnsureDirectoryExists(Common.Paths.OnionConfigPath);
             }
             catch (Exception e)
             {
-                var message = "Can't create or access directory for state to save.";
+                Status = "Can't create or access directory for state to save.";
 
-                _logger.Log($"{message}\n{e.Message}\n{e.StackTrace}");
-                Status = message;
+                _logger.Log(e);
 
                 return;
             }
@@ -95,10 +100,9 @@ namespace MaterialColor.Configurator.WPF.ViewModels
             }
             catch (Exception e)
             {
-                var message = $"Can't save current state.";
+                Status = $"Can't save current state.";
 
-                _logger.Log($"{message}\n{e.Message}\n{e.StackTrace}");
-                Status = message;
+                _logger.Log(e);
 
                 return;
             }

@@ -1,26 +1,45 @@
-.\MaterialColor.Injector.exe -r | Out-Null
+.\MaterialColor.Injector.exe -r | Out-Null;
 
-Remove-Item ".\README_MaterialColor.txt"
-Remove-Item ".\MaterialColorConfig" -Recurse
-Remove-Item ".\MaterialColor.Configurator.exe"
-Remove-Item ".\MaterialColor.Configurator.exe.config"
-Remove-Item ".\MaterialColor.Injector.exe"
-Remove-Item ".\MaterialColor.Injector.exe.config"
+Remove-Item ".\README_MaterialColor.txt";
+Remove-Item ".\MaterialColor.Configurator.exe";
+Remove-Item ".\MaterialColor.Configurator.exe.config";
+Remove-Item ".\MaterialColor.Injector.exe";
+Remove-Item ".\MaterialColor.Injector.exe.config";
 
-pushd ".\OxygenNotIncluded_Data"
+pushd ".\OxygenNotIncluded_Data\Managed";
 
-Remove-Item ".\MaterialColor.WPF" -Recurse
-Remove-Item ".\MaterialColor.Injector" -Recurse
+	Remove-Item ".\MaterialColor.Common.dll";
+	Remove-Item ".\MaterialColor.Core.dll";
+	Remove-Item ".\OnionHooks.dll";
 
-cd ".\Managed"
+popd;
 
-Remove-Item ".\MaterialColor.Common.dll"
-Remove-Item ".\MaterialColor.Core.dll"
+Write-Host "Do you want to remove configuration files? (y/n)";
 
-popd 
+$key = ([System.Console]::ReadKey($false));
 
-Remove-Item ".\UninstallMaterialColor.ps1"
+if ($key.Key -like 'y')
+{
+	Remove-Item ".\Mods" -Recurse;
+}
+else
+{
+	pushd ".\Mods";
+		Remove-Item ".\Logs" -Recurse;
 
-Write-Host "Press any key to continue..."
+		pushd ".\MaterialColor";
+			ls | % {
+				if ($_ -notlike "Config")
+				{
+					Remove-Item $_ -Recurse;
+				}
+			}
+		popd;
+	popd;
+}
 
-[System.Console]::ReadKey($true) | Out-Null
+Remove-Item ".\UninstallMaterialColor.ps1";
+
+Write-Host "Press any key to continue...";
+
+[System.Console]::ReadKey($true) | Out-Null;

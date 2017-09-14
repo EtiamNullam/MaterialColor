@@ -26,7 +26,7 @@ namespace MaterialColor.Common.IO
             {
                 var now = System.DateTime.Now;
 
-                writer.WriteLine($"[{now.ToShortDateString()}, {now.TimeOfDay}] {message}");
+                writer.WriteLine($"[{now.ToShortDateString()}, {now.TimeOfDay}] {message}\r\n");
                 writer.Close();
             }
         }

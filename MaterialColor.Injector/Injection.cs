@@ -41,19 +41,25 @@ namespace MaterialColor.Injector
             _onionToCSharpInjector = new MethodInjector(_onionModule, _csharpModule);
         }
 
-        public void Inject(bool enableConsole)
+        public void Inject(bool injectMaterial, bool enableConsole, bool injectOnion)
         {
             if (enableConsole)
             {
                 EnableConsole();
             }
 
-            InjectMain();
-            InjectCellColorHandling();
-            InjectBuildingsSpecialCasesHandling();
-            InjectToggleButton();
+            if (injectMaterial)
+            {
+                InjectMain();
+                InjectCellColorHandling();
+                InjectBuildingsSpecialCasesHandling();
+                InjectToggleButton();
+            }
 
-            InjectOnionPatcher();
+            if (injectOnion)
+            {
+                InjectOnionPatcher();
+            }
 
             InjectPatchedSign();
         }

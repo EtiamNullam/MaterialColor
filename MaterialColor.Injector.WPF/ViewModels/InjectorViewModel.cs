@@ -4,6 +4,7 @@ using MaterialColor.Injector.IO;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
+using System.Collections.Generic;
 
 namespace MaterialColor.Injector.WPF.ViewModels
 {
@@ -13,7 +14,7 @@ namespace MaterialColor.Injector.WPF.ViewModels
         {
             _logger = new Logger(Common.Paths.InjectorLogFileName);
 
-            PatchCommand = new DelegateCommand(Patch);
+            PatchCommand = new DelegateCommand(Patch, CanPatch);
             RestoreBackupCommand = new DelegateCommand(RestoreBackup, CanRestoreBackup);
             ExitCommand = new DelegateCommand(App.Current.Shutdown);
 
@@ -51,8 +52,36 @@ namespace MaterialColor.Injector.WPF.ViewModels
         public bool EnableDebugConsole
         {
             get => _enableDebugConsole;
-            set => SetProperty(ref _enableDebugConsole, value);
+            set
+            {
+                SetProperty(ref _enableDebugConsole, value);
+                PatchCommand.RaiseCanExecuteChanged();
+            }
         }
+
+        public bool InjectMaterialColor
+        {
+            get => _injectMaterialColor;
+            set
+            {
+                SetProperty(ref _injectMaterialColor, value);
+                PatchCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        public bool InjectOnionPatcher
+        {
+            get => _injectOnionPatcher;
+            set
+            {
+                SetProperty(ref _injectOnionPatcher, value);
+                PatchCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        private bool _injectMaterialColor = true;
+        private bool _enableDebugConsole = false;
+        private bool _injectOnionPatcher = true;
 
         private InjectorStateManager _stateManager;
         private FileManager _fileManager;
@@ -60,7 +89,6 @@ namespace MaterialColor.Injector.WPF.ViewModels
         private Logger _logger;
 
         private string _status;
-        private bool _enableDebugConsole;
 
         public bool CanRestoreBackup()
             => CanRestoreCSharpBackup() || CanRestoreFirstpassBackup();
@@ -76,6 +104,8 @@ namespace MaterialColor.Injector.WPF.ViewModels
 
         public bool IsFirstpassPatched
             => _injector.IsCurrentAssemblyFirstpassPatched();
+
+        public bool CanPatch() => InjectMaterialColor || InjectOnionPatcher || EnableDebugConsole;
 
         public void Patch()
         {
@@ -123,11 +153,13 @@ namespace MaterialColor.Injector.WPF.ViewModels
 
             try
             {
-                _injector.InjectDefaultAndBackup(EnableDebugConsole);
+                _injector.InjectDefaultAndBackup(InjectMaterialColor, EnableDebugConsole, InjectOnionPatcher);
             }
             catch (Exception e)
             {
-                Status = "\tInjection failed.\n" + e.Message + "\n" + e.StackTrace;
+                Status = "\tInjection failed.";
+                _logger.Log(e);
+
                 return;
             }
 
@@ -141,17 +173,21 @@ namespace MaterialColor.Injector.WPF.ViewModels
             }
             catch (Exception e)
             {
-                Status = "Can't create or access directory for state to save.\n" + e.Message + "\n" + e.StackTrace;
+                Status = "Can't create or access directory for state to save.";
+                _logger.Log(e);
+
                 return;
             }
 
             try
             {
-                _stateManager.SaveState(EnableDebugConsole);
+                _stateManager.SaveState(new List<bool> { InjectMaterialColor, EnableDebugConsole, InjectOnionPatcher });
             }
             catch (Exception e)
             {
-                Status = "Can't save app state.\n" + e.Message + "\n" + e.StackTrace;
+                Status = "Can't save app state.";
+                _logger.Log(e);
+
                 return;
             }
         }
@@ -197,7 +233,9 @@ namespace MaterialColor.Injector.WPF.ViewModels
             catch (Exception e)
             {
 
-                Status = $"Can't restore Assembly-CSharp.dll backup.\n{e.Message}\n{e.StackTrace}";
+                Status = "Can't restore Assembly-CSharp.dll backup.";
+                _logger.Log(e);
+
                 result = false;
             }
 
@@ -216,8 +254,9 @@ namespace MaterialColor.Injector.WPF.ViewModels
             }
             catch (Exception e)
             {
+                Status = "Can't restore Assembly-CSharp-firstpass.dll backup.";
+                _logger.Log(e);
 
-                Status = $"Can't restore Assembly-CSharp-firstpass.dll backup.\n{e.Message}\n{e.StackTrace}";
                 result = false;
             }
 
@@ -238,7 +277,9 @@ namespace MaterialColor.Injector.WPF.ViewModels
             }
             catch (Exception e)
             {
-                Status = $"Can't restore backup.\n{e.Message}\n{e.StackTrace}";
+                Status = $"Can't restore backup.";
+                _logger.Log(e);
+
                 result = false;
             }
 
@@ -251,11 +292,16 @@ namespace MaterialColor.Injector.WPF.ViewModels
         {
             try
             {
-                EnableDebugConsole = _stateManager.LoadState();
+                var state = _stateManager.LoadState();
+
+                InjectMaterialColor = state[0];
+                EnableDebugConsole = state[1];
+                InjectOnionPatcher = state[2];
             }
-            catch
+            catch (Exception e)
             {
                 Status = "Can't load last state.";
+                _logger.Log(e);
             }
         }
     }
