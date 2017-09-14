@@ -2,7 +2,8 @@
 {
     public static class Paths
     {
-        public static string DefaultSourceAssemblyPath = "OxygenNotIncluded_Data\\Managed\\MaterialColor.Core.dll";
+        public static string DefaultMaterialAssemblyPath = "OxygenNotIncluded_Data\\Managed\\MaterialColor.Core.dll";
+        public static string DefaultOnionAssemblyPath = "OxygenNotIncluded_Data\\Managed\\OnionHooks.dll";
         public static string DefaultAssemblyCSharpPath = "OxygenNotIncluded_Data\\Managed\\Assembly-CSharp.dll";
         public static string DefaultAssemblyFirstPassPath = "OxygenNotIncluded_Data\\Managed\\Assembly-CSharp-firstpass.dll";
 

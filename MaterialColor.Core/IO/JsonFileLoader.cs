@@ -36,7 +36,7 @@ namespace MaterialColor.Core.IO
         {
             try
             {
-                State.ConfiguratorState = _configuratorStateManager.LoadState();
+                State.ConfiguratorState = _configuratorStateManager.LoadMaterialColorState();
                 return true;
             }
             catch (Exception ex)
