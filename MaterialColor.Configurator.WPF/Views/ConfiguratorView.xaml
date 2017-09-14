@@ -87,37 +87,37 @@
             <RowDefinition Height="60"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical">
-            <TextBlock Text="MaterialColor:" Style="{StaticResource Header}"/>
+            <TextBlock Text="MaterialColor" Style="{StaticResource Header}"/>
 
             <StackPanel Orientation="Vertical" Style="{StaticResource Indented}">
-                <CheckBox Content="(_M) Enable" IsChecked="{Binding State.Material.Enabled}" />
+                <CheckBox Content="(_M) Enable" IsChecked="{Binding MaterialState.Enabled}" />
                 
                 <TextBlock Text="Color mode:" Margin="0,5"/>
-                <ComboBox x:Name="colorModeComboBox" Width="120" HorizontalAlignment="Left" Style="{StaticResource Indented}" IsEnabled="{Binding State.Material.MaterialColorEnabled}"
-                          SelectedItem="{Binding State.Material.ColorMode}" ItemsSource="{Binding Source={StaticResource dataFromEnum}}"/>
+                <ComboBox x:Name="colorModeComboBox" Width="120" HorizontalAlignment="Left" Style="{StaticResource Indented}" IsEnabled="{Binding MaterialState.MaterialColorEnabled}"
+                          SelectedItem="{Binding MaterialState.ColorMode}" ItemsSource="{Binding Source={StaticResource dataFromEnum}}"/>
                 
                 <TextBlock Text="Advanced:" Style="{StaticResource SectionHeader}"/>
 
                 <StackPanel Style="{StaticResource Indented}" >
-                    <CheckBox IsChecked="{Binding State.Material.ShowMissingElementColorInfos}" IsEnabled="{Binding State.Material.MaterialColorEnabled}" AutomationProperties.AcceleratorKey="c" >
+                    <CheckBox IsChecked="{Binding MaterialState.ShowMissingElementColorInfos}" IsEnabled="{Binding MaterialState.MaterialColorEnabled}" AutomationProperties.AcceleratorKey="c" >
                         <TextBlock>
                             Show missing <LineBreak/> element color infos
                         </TextBlock>
                     </CheckBox>
 
-                    <CheckBox IsChecked="{Binding State.Material.ShowMissingTypeColorOffsets}" IsEnabled="{Binding State.Material.MaterialColorEnabled}">
+                    <CheckBox IsChecked="{Binding MaterialState.ShowMissingTypeColorOffsets}" IsEnabled="{Binding MaterialState.MaterialColorEnabled}">
                         <TextBlock>
                             Show missing <LineBreak/> type color offsets
                         </TextBlock>
                     </CheckBox>
 
-                    <CheckBox IsChecked="{Binding State.Material.ShowBuildingsAsWhite}" IsEnabled="{Binding State.Material.MaterialColorEnabled}">
+                    <CheckBox IsChecked="{Binding MaterialState.ShowBuildingsAsWhite}" IsEnabled="{Binding MaterialState.MaterialColorEnabled}">
                         <TextBlock>
                             Apply white <LineBreak/> to colorable objects
                         </TextBlock> 
                     </CheckBox>
 
-                    <CheckBox IsChecked="{Binding State.Material.ShowDetailedErrorInfo}" IsEnabled="{Binding State.Material.MaterialColorEnabled}" AutomationProperties.AcceleratorKey="i">
+                    <CheckBox IsChecked="{Binding MaterialState.ShowDetailedErrorInfo}" IsEnabled="{Binding MaterialState.MaterialColorEnabled}" AutomationProperties.AcceleratorKey="i">
                         <TextBlock>
                             Show detailed <LineBreak/> informations about errors
                         </TextBlock>
@@ -127,18 +127,18 @@
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Grid.Column="1">
-            <TextBlock Text="OnionPatcher:" Style="{StaticResource Header}"/>
+            <TextBlock Text="OnionPatcher" Style="{StaticResource Header}"/>
 
             <StackPanel Orientation="Vertical" Style="{StaticResource Indented}">
-                <CheckBox Content="(_O) Enable" IsChecked="{Binding State.Onion.Enabled}"/>
-                <CheckBox Content="_Debug mode" IsChecked="{Binding State.Onion.Debug}" IsEnabled="{Binding State.Onion.Enabled}"/>
-                <CheckBox Content="_Free camera" IsChecked="{Binding State.Onion.FreeCamera}" IsEnabled="{Binding State.Onion.Enabled}"/>
-                <CheckBox Content="Log _seed" IsChecked="{Binding State.Onion.LogSeed}" IsEnabled="{Binding State.Onion.Enabled}"/>
+                <CheckBox Content="(_O) Enable" IsChecked="{Binding OnionState.Enabled}"/>
+                <CheckBox Content="_Debug mode" IsChecked="{Binding OnionState.Debug}" IsEnabled="{Binding OnionState.Enabled}"/>
+                <CheckBox Content="_Free camera" IsChecked="{Binding OnionState.FreeCamera}" IsEnabled="{Binding OnionState.Enabled}"/>
+                <CheckBox Content="Log _seed" IsChecked="{Binding OnionState.LogSeed}" IsEnabled="{Binding OnionState.Enabled}"/>
 
                 <TextBlock Text="Max camera distance:" Margin="0,3"/>
-                <TextBox Margin="10,2,5,2" Text="{Binding State.Onion.MaxCameraDistance}" IsEnabled="{Binding State.Onion.Enabled}"/>
+                <TextBox Margin="10,2,5,2" Text="{Binding OnionState.MaxCameraDistance}" IsEnabled="{Binding OnionState.Enabled}"/>
 
-                <TextBlock Text="World dimensions" Style="{StaticResource SectionHeader}" IsEnabled="{Binding State.Onion.Enabled}" />
+                <TextBlock Text="World dimensions" Style="{StaticResource SectionHeader}" IsEnabled="{Binding OnionState.Enabled}" />
 
                 <Grid Style="{StaticResource Indented}">
                     <Grid.ColumnDefinitions>
@@ -154,8 +154,8 @@
                     <TextBlock Text="Width:" />
                     <TextBlock Text="Height:" Grid.Row="1"/>
                     
-                    <TextBox Grid.Column="1" Text="{Binding State.Onion.Width}" IsEnabled="{Binding State.Onion.Enabled}"/>
-                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding State.Onion.Height}" IsEnabled="{Binding State.Onion.Enabled}"/>
+                    <TextBox Grid.Column="1" Text="{Binding OnionState.Width}" IsEnabled="{Binding OnionState.Enabled}"/>
+                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding OnionState.Height}" IsEnabled="{Binding OnionState.Enabled}"/>
                 </Grid>
                 <TextBlock Text="Custom seeds" Style="{StaticResource SectionHeader}"/>
 
@@ -177,10 +177,10 @@
                     <TextBlock Text="Terrain:" Grid.Row="2"/>
                     <TextBlock Text="Noise:" Grid.Row="3"/>
 
-                    <TextBox Grid.Column="1" Text="{Binding State.Onion.WorldSeed}" IsEnabled="{Binding State.Onion.Enabled}"/>
-                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding State.Onion.LayoutSeed}" IsEnabled="{Binding State.Onion.Enabled}"/>
-                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding State.Onion.TerrainSeed}" IsEnabled="{Binding State.Onion.Enabled}"/>
-                    <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding State.Onion.NoiseSeed}" IsEnabled="{Binding State.Onion.Enabled}"/>
+                    <TextBox Grid.Column="1" Text="{Binding OnionState.WorldSeed}" IsEnabled="{Binding OnionState.Enabled}"/>
+                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding OnionState.LayoutSeed}" IsEnabled="{Binding OnionState.Enabled}"/>
+                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding OnionState.TerrainSeed}" IsEnabled="{Binding OnionState.Enabled}"/>
+                    <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding OnionState.NoiseSeed}" IsEnabled="{Binding OnionState.Enabled}"/>
                 </Grid>
             </StackPanel>
         </StackPanel>

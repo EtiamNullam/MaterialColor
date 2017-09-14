@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MaterialColor.Common.Data
 {
-    public class OnionConfig
+    public class OnionState
     {
         public bool Enabled { get; set; } = true;
         public int Width { get; set; } = 256;

@@ -1,4 +1,5 @@
-﻿using MaterialColor.Common.Json;
+﻿using MaterialColor.Common.IO;
+using MaterialColor.Common.Json;
 using MaterialColor.Core.Extensions;
 using MaterialColor.Core.Helpers;
 using MaterialColor.Core.IO;
@@ -17,10 +18,8 @@ namespace MaterialColor.Core
         private static bool ConfiguratorStateChanged = false;
 
         private static JsonFileLoader _jsonLoader = new JsonFileLoader(new JsonManager());
-        private static FileChangeNotifier _fileChangeNotifier = new FileChangeNotifier();
 
         private static bool _firstUpdate = false;
-        private static bool _firstUpdateOnion = false;
 
         // TODO: merge with EnterEveryUpdate?
         public static void EnterOnce()
@@ -39,7 +38,7 @@ namespace MaterialColor.Core
             {
                 var message = "Injection failed\n" + e.Message + '\n';
 
-                if (State.ConfiguratorState.Material.ShowDetailedErrorInfo)
+                if (State.ConfiguratorState.ShowDetailedErrorInfo)
                 {
                     message += '\n' + e.StackTrace;
                 }
@@ -50,10 +49,9 @@ namespace MaterialColor.Core
 
         private static void Initialize()
         {
-            StartFileChangeNotifier();
+            SubscribeToFileChangeNotifier();
             Initialized = true;
             _firstUpdate = true;
-            _firstUpdateOnion = true;
         }
 
         public static void EnterEveryUpdate()
@@ -65,27 +63,9 @@ namespace MaterialColor.Core
                     OverlayScreen.Instance.OnOverlayChanged += OnOverlayChanged;
                     _firstUpdate = false;
                 }
-                else if (State.ConfiguratorState.Material.ShowDetailedErrorInfo)
+                else if (State.ConfiguratorState.ShowDetailedErrorInfo)
                 {
                     Debug.LogError("OverlayScreen.Instance is null");
-                }
-            }
-
-            if (_firstUpdateOnion)
-            {
-                var cameraController = CameraController.Instance;
-
-                if (cameraController != null)
-                {
-                    cameraController.maxOrthographicSize = OnionHooks.Hooks.conf.MaxCameraDistance;
-                    cameraController.maxOrthographicSizeDebug = OnionHooks.Hooks.conf.MaxCameraDistance;
-                    cameraController.SetOrthographicsSize(OnionHooks.Hooks.conf.MaxCameraDistance);
-
-                    _firstUpdateOnion = false;
-                }
-                else if (State.ConfiguratorState.Material.ShowDetailedErrorInfo)
-                {
-                    Debug.LogError("CameraController.Instance is null");
                 }
             }
 
@@ -103,7 +83,7 @@ namespace MaterialColor.Core
 
             if (!State.Disabled)
             {
-                switch (State.ConfiguratorState.Material.ColorMode)
+                switch (State.ConfiguratorState.ColorMode)
                 {
                     case Common.Data.ColorMode.Json:
                         resultColor = ColorHelper.GetCellColorJson(cellIndex);
@@ -161,11 +141,11 @@ namespace MaterialColor.Core
             }
         }
 
-        private static void StartFileChangeNotifier()
+        private static void SubscribeToFileChangeNotifier()
         {
-            _fileChangeNotifier.ElementColorInfosChanged += OnElementColorsInfosChanged;
-            _fileChangeNotifier.TypeColorOffsetsChanged += OnTypeColorOffsetsChanged;
-            _fileChangeNotifier.ConfiguratorStateChanged += OnConfiguratorStateChanged;
+            FileChangeNotifier.StartFileWatch(Common.Paths.ElementColorInfosFilePath, Common.Paths.ConfigDirectory, OnElementColorsInfosChanged);
+            FileChangeNotifier.StartFileWatch(Common.Paths.TypeColorsFilePath, Common.Paths.ConfigDirectory, OnTypeColorOffsetsChanged);
+            FileChangeNotifier.StartFileWatch(Common.Paths.MaterialColorStateFilePath, Common.Paths.ConfigDirectory, OnMaterialStateChanged);
         }
 
         private static void UpdateBuildingsColors()
@@ -194,7 +174,7 @@ namespace MaterialColor.Core
             }
         }
 
-        private static void OnConfiguratorStateChanged(object sender, FileSystemEventArgs e)
+        private static void OnMaterialStateChanged(object sender, FileSystemEventArgs e)
         {
             if (_jsonLoader.TryLoadConfiguratorState())
             {

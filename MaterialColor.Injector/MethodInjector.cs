@@ -15,62 +15,42 @@ namespace MaterialColor.Injector
         private ModuleDefinition _sourceModule;
         private ModuleDefinition _targetModule;
 
-        /// <summary>
-        /// TODO: Improve error handling
-        /// </summary>
         /// <param name="passArgumentsByRef">
         /// Doesn't work on calling object
         /// </param>
         public void InjectAsFirst(string sourceTypeName, string sourceMethodName, string targetTypeName, string targetMethodName,
             bool includeCallingObject = false, int includeArgumentCount = 0, bool passArgumentsByRef = false)
         {
-            var sourceMethod = CecilHelper.GetMethodDefinition(_sourceModule, sourceTypeName, sourceMethodName);
-            var sourceMethodReference = CecilHelper.GetMethodReference(_targetModule, sourceMethod);
-
-            var targetMethod = CecilHelper.GetMethodDefinition(_targetModule, targetTypeName, targetMethodName);
-            var targetMethodBody = targetMethod.Body;
-
-            var firstInstruction = targetMethodBody.Instructions.First();
-
-            if (includeCallingObject)
-            {
-                IncludeCallingObject(firstInstruction, targetMethodBody);
-            }
-
-            var methodILProcessor = targetMethodBody.GetILProcessor();
-
-            if (includeArgumentCount > 0)
-            {
-                var argumentOpCode = passArgumentsByRef ? OpCodes.Ldarga : OpCodes.Ldarg;
-
-                for (int i = includeArgumentCount; i > 0; i--)
-                {
-                    var argumentInstruction = Instruction.Create(argumentOpCode, targetMethod.Parameters[i-1]);
-                    methodILProcessor.InsertBefore(firstInstruction, argumentInstruction);
-                }
-            }
-
-            var targetInstruction = Instruction.Create(OpCodes.Call, sourceMethodReference);
-            methodILProcessor.InsertBefore(firstInstruction, targetInstruction);
+            InjectBefore(sourceTypeName, sourceMethodName, targetTypeName, targetMethodName, 0, includeCallingObject, includeArgumentCount, passArgumentsByRef);
         }
 
-        public void InjectBefore(string sourceTypeName, string sourceMethodName, string targetTypeName, string targetMethodName, int instructionIndex)
+        public void InjectAsFirst(string sourceTypeName, string sourceMethodName, MethodBody targetMethodBody,
+            bool includeCallingObject = false, int includeArgumentCount = 0, bool passArgumentsByRef = false)
+        {
+            InjectBefore(sourceTypeName, sourceMethodName, targetMethodBody, targetMethodBody.Instructions.First(),
+                includeCallingObject, includeArgumentCount, passArgumentsByRef);
+        }
+
+        public void InjectBefore(string sourceTypeName, string sourceMethodName, string targetTypeName, string targetMethodName,
+            int instructionIndex, bool includeCallingObject = false, int includeArgumentCount = 0, bool passArgumentsByRef = false)
         {
             var targetMethodBody = CecilHelper.GetMethodDefinition(_targetModule, targetTypeName, targetMethodName).Body;
             var instruction = targetMethodBody.Instructions[instructionIndex];
 
-            InjectBefore(sourceTypeName, sourceMethodName, targetMethodBody, instruction);
+            InjectBefore(sourceTypeName, sourceMethodName, targetMethodBody, instruction, includeCallingObject, includeArgumentCount, passArgumentsByRef);
         }
 
-        public void InjectBefore(string sourceTypeName, string sourceMethodName, MethodBody targetMethodBody, Instruction targetInstruction, bool includeCallingObject = false)
+        public void InjectBefore(string sourceTypeName, string sourceMethodName, MethodBody targetMethodBody,
+            Instruction targetInstruction, bool includeCallingObject = false, int includeArgumentCount = 0, bool passArgumentsByRef = false)
         {
             var sourceMethod = CecilHelper.GetMethodDefinition(_sourceModule, sourceTypeName, sourceMethodName);
             var sourceMethodReference = CecilHelper.GetMethodReference(_targetModule, sourceMethod);
 
-            InjectBefore(sourceMethodReference, targetMethodBody, targetInstruction, includeCallingObject);
+            InjectBefore(sourceMethodReference, targetMethodBody, targetInstruction, includeCallingObject, includeArgumentCount, passArgumentsByRef);
         }
 
-        public void InjectBefore(MethodReference sourceMethodReference, MethodBody targetMethodBody, Instruction targetInstruction, bool includeCallingObject = false)
+        public void InjectBefore(MethodReference sourceMethodReference, MethodBody targetMethodBody,
+            Instruction targetInstruction, bool includeCallingObject = false, int includeArgumentCount = 0, bool passArgumentsByRef = false)
         {
             var methodILProcessor = targetMethodBody.GetILProcessor();
 
@@ -79,8 +59,22 @@ namespace MaterialColor.Injector
                 IncludeCallingObject(targetInstruction, targetMethodBody);
             }
 
+            if (includeArgumentCount > 0)
+            {
+                var argumentOpCode = passArgumentsByRef ? OpCodes.Ldarga : OpCodes.Ldarg;
+
+                for (int i = includeArgumentCount; i > 0; i--)
+                {
+                    var argumentInstruction = Instruction.Create(argumentOpCode, targetMethodBody.Method.Parameters[i-1]);
+                    methodILProcessor.InsertBefore(targetInstruction, argumentInstruction);
+                }
+            }
+
             methodILProcessor.InsertBefore(targetInstruction, Instruction.Create(OpCodes.Call, sourceMethodReference));
         }
+
+        private MethodBody GetMethodBody(string typeName, string methodName)
+            => CecilHelper.GetMethodDefinition(_targetModule, typeName, methodName).Body;
 
         private void IncludeCallingObject(Instruction nextInstruction, MethodBody methodBody)
         {

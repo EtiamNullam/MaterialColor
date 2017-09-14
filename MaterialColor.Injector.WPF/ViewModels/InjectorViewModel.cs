@@ -130,7 +130,7 @@ namespace MaterialColor.Injector.WPF.ViewModels
 
             try
             {
-                Common.IOHelper.EnsureDirectoryExists(Common.Paths.Directory);
+                Common.IO.IOHelper.EnsureDirectoryExists(Common.Paths.ConfigDirectory);
             }
             catch (Exception e)
             {

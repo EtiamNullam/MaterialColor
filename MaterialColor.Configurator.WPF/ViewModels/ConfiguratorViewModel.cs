@@ -14,19 +14,27 @@ namespace MaterialColor.Configurator.WPF.ViewModels
             _stateManager = stateManager;
             _logger = logger;
 
-            State = TryLoadLastAppState();
+            TryLoadLastAppState();
 
             ApplyCommand = new DelegateCommand(Apply);
             ExitCommand = new DelegateCommand(App.Current.Shutdown);
         }
 
-        public ConfiguratorState State
+        public MaterialColorState MaterialState
         {
-            get => _state;
-            set => SetProperty(ref _state, value);
+            get => _materialState;
+            set => SetProperty(ref _materialState, value);
         }
 
-        private ConfiguratorState _state;
+        private MaterialColorState _materialState;
+
+        public OnionState OnionState
+        {
+            get => _onionState;
+            set => SetProperty(ref _onionState, value);
+        }
+
+        private OnionState _onionState;
 
         private ILoggerFacade _logger;
         private ConfiguratorStateManager _stateManager;
@@ -42,18 +50,24 @@ namespace MaterialColor.Configurator.WPF.ViewModels
 
         private string _status;
 
-        private ConfiguratorState TryLoadLastAppState()
+        private bool TryLoadLastAppState()
         {
             try
             {
-                return _stateManager.LoadState();
+                MaterialState = _stateManager.LoadMaterialColorState();
+                OnionState = _stateManager.LoadOnionState();
+
+                return true;
             }
             catch (Exception e)
             {
                 var message = "Can't load last state";
                 _logger.Log($"{message}\n{e.Message}\n{e.StackTrace}", Category.Exception, Priority.Low);
 
-                return new ConfiguratorState();
+                MaterialState = new MaterialColorState();
+                OnionState = new OnionState();
+
+                return false;
             }
         }
 
@@ -61,7 +75,7 @@ namespace MaterialColor.Configurator.WPF.ViewModels
         {
             try
             {
-                Common.IOHelper.EnsureDirectoryExists(Common.Paths.Directory);
+                Common.IO.IOHelper.EnsureDirectoryExists(Common.Paths.ConfigDirectory);
             }
             catch (Exception e)
             {
@@ -75,7 +89,8 @@ namespace MaterialColor.Configurator.WPF.ViewModels
 
             try
             {
-                _stateManager.SaveState(State);
+                _stateManager.SaveMaterialColorState(MaterialState);
+                _stateManager.SaveOnionState(OnionState);
             }
             catch (Exception e)
             {
