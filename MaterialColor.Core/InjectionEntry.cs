@@ -1,4 +1,5 @@
-﻿using MaterialColor.Common.IO;
+﻿using MaterialColor.Common;
+using MaterialColor.Common.IO;
 using MaterialColor.Common.Json;
 using MaterialColor.Core.Extensions;
 using MaterialColor.Core.Helpers;
@@ -18,6 +19,20 @@ namespace MaterialColor.Core
         private static bool ConfiguratorStateChanged = false;
 
         private static JsonFileLoader _jsonLoader = new JsonFileLoader(new JsonManager());
+        private static Common.IO.Logger Logger
+        {
+            get
+            {
+                if (_logger == null)
+                {
+                    _logger = new Common.IO.Logger(Paths.MaterialCoreLogFileName);
+                }
+
+                return _logger;
+            }
+        }
+
+        private static Common.IO.Logger _logger;
 
         private static bool _firstUpdate = false;
 
@@ -38,10 +53,8 @@ namespace MaterialColor.Core
             {
                 var message = "Injection failed\n" + e.Message + '\n';
 
-                if (State.ConfiguratorState.ShowDetailedErrorInfo)
-                {
-                    message += '\n' + e.StackTrace;
-                }
+                Logger.Log(message);
+                Logger.Log(e);
 
                 Debug.LogError(message);
             }
@@ -63,10 +76,7 @@ namespace MaterialColor.Core
                     OverlayScreen.Instance.OnOverlayChanged += OnOverlayChanged;
                     _firstUpdate = false;
                 }
-                else if (State.ConfiguratorState.ShowDetailedErrorInfo)
-                {
-                    Debug.LogError("OverlayScreen.Instance is null");
-                }
+                else Logger.Log("OverlayScreen.Instance is null");
             }
 
             if (ElementColorInfosChanged || TypeColorOffsetsChanged || ConfiguratorStateChanged)
@@ -143,9 +153,9 @@ namespace MaterialColor.Core
 
         private static void SubscribeToFileChangeNotifier()
         {
-            FileChangeNotifier.StartFileWatch(Common.Paths.ElementColorInfosFilePath, Common.Paths.ConfigDirectory, OnElementColorsInfosChanged);
-            FileChangeNotifier.StartFileWatch(Common.Paths.TypeColorsFilePath, Common.Paths.ConfigDirectory, OnTypeColorOffsetsChanged);
-            FileChangeNotifier.StartFileWatch(Common.Paths.MaterialColorStateFilePath, Common.Paths.ConfigDirectory, OnMaterialStateChanged);
+            FileChangeNotifier.StartFileWatch(Common.Paths.ElementColorInfosFileName, Common.Paths.ConfigDirectory, OnElementColorsInfosChanged);
+            FileChangeNotifier.StartFileWatch(Common.Paths.TypeColorsFileName, Common.Paths.ConfigDirectory, OnTypeColorOffsetsChanged);
+            FileChangeNotifier.StartFileWatch(Common.Paths.MaterialColorStateFileName, Common.Paths.ConfigDirectory, OnMaterialStateChanged);
         }
 
         private static void UpdateBuildingsColors()
@@ -161,7 +171,11 @@ namespace MaterialColor.Core
             if (_jsonLoader.TryLoadElementColorInfos())
             {
                 ElementColorInfosChanged = true;
-                Debug.LogError("Element color infos changed.");
+
+                var message = "Element color infos changed.";
+
+                Logger.Log(message);
+                Debug.LogError(message);
             }
         }
 
@@ -170,7 +184,11 @@ namespace MaterialColor.Core
             if (_jsonLoader.TryLoadTypeColorOffsets())
             {
                 TypeColorOffsetsChanged = true;
-                Debug.LogError("Type colors changed.");
+
+                var message = "Type colors changed.";
+
+                Logger.Log(message);
+                Debug.LogError(message);
             }
         }
 
@@ -179,7 +197,11 @@ namespace MaterialColor.Core
             if (_jsonLoader.TryLoadConfiguratorState())
             {
                 ConfiguratorStateChanged = true;
-                Debug.LogError("Configurator state changed.");
+
+                var message = "Configurator state changed.";
+
+                Logger.Log(message);
+                Debug.LogError(message);
             }
         }
 

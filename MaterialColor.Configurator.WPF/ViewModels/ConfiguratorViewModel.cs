@@ -1,7 +1,7 @@
-﻿using MaterialColor.Common.Data;
+﻿using MaterialColor.Common;
+using MaterialColor.Common.Data;
 using MaterialColor.Common.Json;
 using Prism.Commands;
-using Prism.Logging;
 using Prism.Mvvm;
 using System;
 
@@ -9,10 +9,11 @@ namespace MaterialColor.Configurator.WPF.ViewModels
 {
     public class ConfiguratorViewModel : BindableBase
     {
-        public ConfiguratorViewModel(ConfiguratorStateManager stateManager, ILoggerFacade logger)
+        public ConfiguratorViewModel(ConfiguratorStateManager stateManager)
         {
             _stateManager = stateManager;
-            _logger = logger;
+
+            _logger = new Common.IO.Logger(Paths.ConfiguratorLogFileName);
 
             TryLoadLastAppState();
 
@@ -36,7 +37,7 @@ namespace MaterialColor.Configurator.WPF.ViewModels
 
         private OnionState _onionState;
 
-        private ILoggerFacade _logger;
+        private Common.IO.Logger _logger;
         private ConfiguratorStateManager _stateManager;
 
         public DelegateCommand ApplyCommand { get; private set; }
@@ -62,7 +63,7 @@ namespace MaterialColor.Configurator.WPF.ViewModels
             catch (Exception e)
             {
                 var message = "Can't load last state";
-                _logger.Log($"{message}\n{e.Message}\n{e.StackTrace}", Category.Exception, Priority.Low);
+                _logger.Log($"{message}\n{e.Message}\n{e.StackTrace}");
 
                 MaterialState = new MaterialColorState();
                 OnionState = new OnionState();
@@ -81,7 +82,7 @@ namespace MaterialColor.Configurator.WPF.ViewModels
             {
                 var message = "Can't create or access directory for state to save.";
 
-                _logger.Log($"{message}\n{e.Message}\n{e.StackTrace}", Category.Exception, Priority.High);
+                _logger.Log($"{message}\n{e.Message}\n{e.StackTrace}");
                 Status = message;
 
                 return;
@@ -96,7 +97,7 @@ namespace MaterialColor.Configurator.WPF.ViewModels
             {
                 var message = $"Can't save current state.";
 
-                _logger.Log($"{message}\n{e.Message}\n{e.StackTrace}", Category.Exception, Priority.High);
+                _logger.Log($"{message}\n{e.Message}\n{e.StackTrace}");
                 Status = message;
 
                 return;

@@ -1,4 +1,5 @@
-﻿using MaterialColor.Common.Json;
+﻿using MaterialColor.Common.IO;
+using MaterialColor.Common.Json;
 using MaterialColor.Injector.IO;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -10,6 +11,8 @@ namespace MaterialColor.Injector.WPF.ViewModels
     {
         public InjectorViewModel(InjectorStateManager stateManager, FileManager fileManager, InjectionManager injector)
         {
+            _logger = new Logger(Common.Paths.InjectorLogFileName);
+
             PatchCommand = new DelegateCommand(Patch);
             RestoreBackupCommand = new DelegateCommand(RestoreBackup, CanRestoreBackup);
             ExitCommand = new DelegateCommand(App.Current.Shutdown);
@@ -38,7 +41,11 @@ namespace MaterialColor.Injector.WPF.ViewModels
         public string Status
         {
             get => _status;
-            set => SetProperty(ref _status, $"{_status}\n{value}".Trim());
+            set
+            {
+                SetProperty(ref _status, $"{_status}\n{value}".Trim());
+                _logger.Log(value);
+            }
         }
 
         public bool EnableDebugConsole
@@ -50,12 +57,12 @@ namespace MaterialColor.Injector.WPF.ViewModels
         private InjectorStateManager _stateManager;
         private FileManager _fileManager;
         private InjectionManager _injector;
+        private Logger _logger;
 
         private string _status;
         private bool _enableDebugConsole;
 
         public bool CanRestoreBackup()
-            //=> _fileManager.BackupForFileExists(Paths.DefaultAssemblyCSharpPath) | _fileManager.BackupForFileExists(Paths.DefaultAssemblyFirstPassPath);
             => CanRestoreCSharpBackup() || CanRestoreFirstpassBackup();
 
         public bool CanRestoreCSharpBackup()
