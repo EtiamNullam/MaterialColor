@@ -9,7 +9,7 @@ namespace MaterialColor.Core
         public static Dictionary<string, Color32> TypeColorOffsets = new Dictionary<string, Color32>();
         public static Dictionary<SimHashes, ElementColorInfo> ElementColorInfos = new Dictionary<SimHashes, ElementColorInfo>();
 
-        public static ConfiguratorState ConfiguratorState = new ConfiguratorState();
+        public static MaterialColorState ConfiguratorState = new MaterialColorState();
 
         public static bool Disabled = false;
 

@@ -10,7 +10,7 @@ namespace MaterialColor.Core.Extensions
         {
             if (!ColorHelper.TryGetTypeStandardColor(objectTypeName, out var typeStandardColor))
             {
-                if (State.ConfiguratorState.Material.ShowMissingTypeColorOffsets)
+                if (State.ConfiguratorState.ShowMissingTypeColorOffsets)
                 {
                     Debug.LogError($"Can't find <{objectTypeName}> type color");
                     return typeStandardColor;
@@ -19,7 +19,7 @@ namespace MaterialColor.Core.Extensions
 
             var colorOffsetForWhite = typeStandardColor.TintToWhite();
 
-            if (State.ConfiguratorState.Material.ShowBuildingsAsWhite)
+            if (State.ConfiguratorState.ShowBuildingsAsWhite)
             {
                 return colorOffsetForWhite;
             }
@@ -34,7 +34,7 @@ namespace MaterialColor.Core.Extensions
         {
             if (!State.ElementColorInfos.TryGetValue(materialHash, out ElementColorInfo elementColorInfo))
             {
-                if (State.ConfiguratorState.Material.ShowMissingElementColorInfos)
+                if (State.ConfiguratorState.ShowMissingElementColorInfos)
                 {
                     Debug.LogError($"Can't find <{materialHash}> color info");
                     return new ElementColorInfo(new Color32Multiplier(1, 0, 1), 1);

@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace MaterialColor.Common
+namespace MaterialColor.Common.IO
 {
     public static class IOHelper
     {

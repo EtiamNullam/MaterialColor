@@ -227,9 +227,10 @@ namespace MaterialColor.Injector
 
         private void AttachCustomActionToToggle()
         {
-            var OnToggleSelectMethod = CecilHelper.GetMethodDefinition(_csharpModule, "OverlayMenu", "OnToggleSelect");
+            var onToggleSelectMethod = CecilHelper.GetMethodDefinition(_csharpModule, "OverlayMenu", "OnToggleSelect");
+            var onToggleSelectMethodBody = onToggleSelectMethod.Body;
 
-            var firstInstruction = OnToggleSelectMethod.Body.Instructions.First();
+            var firstInstruction = onToggleSelectMethodBody.Instructions.First();
 
             var instructionsToAdd = new List<Instruction>
             {
@@ -237,13 +238,12 @@ namespace MaterialColor.Injector
                 Instruction.Create(OpCodes.Ret)
             };
 
-            new InstructionInserter(OnToggleSelectMethod).InsertBefore(firstInstruction, instructionsToAdd);
+            new InstructionInserter(onToggleSelectMethod).InsertBefore(firstInstruction, instructionsToAdd);
 
             _materialToCSharpInjector.InjectAsFirst(
                 "InjectionEntry",
                 "EnterToggle",
-                "OverlayMenu",
-                "OnToggleSelect",
+                onToggleSelectMethodBody,
                 true, 1);
         }
 
@@ -252,6 +252,16 @@ namespace MaterialColor.Injector
             InjectOnionDoWorldGen();
             InjectOnionCameraController();
             InjectOnionDebugHandler();
+            InjectOnionInitRandom();
+        }
+
+        private void InjectOnionInitRandom()
+        {
+            _onionToCSharpInjector.InjectAsFirst(
+                "Hooks", "OnInitRandom",
+                "WorldGen", "InitRandom",
+                false, 4, true
+                );
         }
 
         private void InjectOnionDoWorldGen()
@@ -265,7 +275,12 @@ namespace MaterialColor.Injector
             // is it needed?
             //DoWorldGen.NoOptimization = true;
 
-            var callResetInstruction = doWorldGenBody.Instructions.Reverse().Skip(2).First(instruction => instruction.OpCode == OpCodes.Call);
+            var callResetInstruction = doWorldGenBody
+                .Instructions
+                .Where(instruction => instruction.OpCode == OpCodes.Call)
+                .Reverse()
+                .Skip(1)
+                .First();
 
             var instructionInserter = new InstructionInserter(doWorldGenBody);
 
@@ -294,8 +309,20 @@ namespace MaterialColor.Injector
 
         private void InjectOnionCameraController()
         {
-            _csharpPublisher.MakeFieldPublic("CameraController", "maxOrthographicSize");
-            _csharpPublisher.MakeFieldPublic("CameraController", "maxOrthographicSizeDebug");
+            var typeName = "CameraController";
+
+            _csharpPublisher.MakeFieldPublic(typeName, "maxOrthographicSize");
+            _csharpPublisher.MakeFieldPublic(typeName, "maxOrthographicSizeDebug");
+
+            var cameraControllerOnSpawnBody = CecilHelper.GetMethodDefinition(_csharpModule, typeName, "OnSpawn").Body;
+            var restoreCall = cameraControllerOnSpawnBody.Instructions.Last(instruction => instruction.OpCode == OpCodes.Call);
+
+            _onionToCSharpInjector.InjectBefore(
+                "Hooks",
+                "OnCameraControllerCtor",
+                cameraControllerOnSpawnBody,
+                restoreCall,
+                true);
         }
 
         private void InjectPatchedSign()
