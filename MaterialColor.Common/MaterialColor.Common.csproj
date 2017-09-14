@@ -55,6 +55,7 @@
     <Compile Include="Data\OnionConfig.cs" />
     <Compile Include="IDs.cs" />
     <Compile Include="IO\FileChangeNotifier.cs" />
+    <Compile Include="IO\Logger.cs" />
     <Compile Include="Paths.cs" />
     <Compile Include="Data\ElementColorInfo.cs" />
     <Compile Include="IO\IOHelper.cs" />
