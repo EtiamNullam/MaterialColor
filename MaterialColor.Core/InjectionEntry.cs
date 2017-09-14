@@ -153,9 +153,9 @@ namespace MaterialColor.Core
 
         private static void SubscribeToFileChangeNotifier()
         {
-            FileChangeNotifier.StartFileWatch(Common.Paths.ElementColorInfosFileName, Common.Paths.ConfigDirectory, OnElementColorsInfosChanged);
-            FileChangeNotifier.StartFileWatch(Common.Paths.TypeColorsFileName, Common.Paths.ConfigDirectory, OnTypeColorOffsetsChanged);
-            FileChangeNotifier.StartFileWatch(Common.Paths.MaterialColorStateFileName, Common.Paths.ConfigDirectory, OnMaterialStateChanged);
+            FileChangeNotifier.StartFileWatch(Common.Paths.ElementColorInfosFileName, Common.Paths.MaterialConfigPath, OnElementColorsInfosChanged);
+            FileChangeNotifier.StartFileWatch(Common.Paths.TypeColorsFileName, Common.Paths.MaterialConfigPath, OnTypeColorOffsetsChanged);
+            FileChangeNotifier.StartFileWatch(Common.Paths.MaterialColorStateFileName, Common.Paths.MaterialConfigPath, OnMaterialStateChanged);
         }
 
         private static void UpdateBuildingsColors()

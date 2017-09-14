@@ -26,6 +26,8 @@ namespace MaterialColor.Common.IO
 
             if (watcherInfo == null)
             {
+                IOHelper.EnsureDirectoryExists(parentDirectory);
+
                 watcherInfo = new FileWatcherInfo(new FileSystemWatcher(parentDirectory, filter), callback);
 
                 InitializeWatcher(watcherInfo.FileWatcher);

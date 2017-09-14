@@ -76,7 +76,7 @@ namespace MaterialColor.Configurator.WPF.ViewModels
         {
             try
             {
-                Common.IO.IOHelper.EnsureDirectoryExists(Common.Paths.ConfigDirectory);
+                Common.IO.IOHelper.EnsureDirectoryExists(Common.Paths.MaterialConfigPath);
             }
             catch (Exception e)
             {
