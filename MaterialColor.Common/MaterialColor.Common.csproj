@@ -52,7 +52,7 @@
     <Compile Include="Data\Color32Multiplier.cs" />
     <Compile Include="Data\ColorMode.cs" />
     <Compile Include="Data\MaterialColorState.cs" />
-    <Compile Include="Data\OnionConfig.cs" />
+    <Compile Include="Data\OnionState.cs" />
     <Compile Include="IDs.cs" />
     <Compile Include="IO\FileChangeNotifier.cs" />
     <Compile Include="IO\Logger.cs" />
