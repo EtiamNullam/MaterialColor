@@ -8,7 +8,7 @@
         xmlns:commonData="clr-namespace:MaterialColor.Common.Data;assembly=MaterialColor.Common"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Configurator" Height="455" Width="390"
+        Title="Configurator" Height="435" Width="400"
         prism:ViewModelLocator.AutoWireViewModel="True" ResizeMode="NoResize">
     
     <Window.Resources>
@@ -130,15 +130,15 @@
             <TextBlock Text="OnionPatcher" Style="{StaticResource Header}"/>
 
             <StackPanel Orientation="Vertical" Style="{StaticResource Indented}">
-                <CheckBox Content="(_O) Enable" IsChecked="{Binding OnionState.Enabled}"/>
-                <CheckBox Content="_Debug mode" IsChecked="{Binding OnionState.Debug}" IsEnabled="{Binding OnionState.Enabled}"/>
-                <CheckBox Content="_Free camera" IsChecked="{Binding OnionState.FreeCamera}" IsEnabled="{Binding OnionState.Enabled}"/>
-                <CheckBox Content="Log _seed" IsChecked="{Binding OnionState.LogSeed}" IsEnabled="{Binding OnionState.Enabled}"/>
+                <CheckBox Content="(_O) Enable" IsChecked="{Binding OnionEnabled}"/>
+                <CheckBox Content="_Debug mode" IsChecked="{Binding OnionState.Debug}" IsEnabled="{Binding OnionEnabled}"/>
+                <CheckBox Content="_Free camera" IsChecked="{Binding OnionState.FreeCamera}" IsEnabled="{Binding OnionEnabled}"/>
+                <CheckBox Content="Log _seed" IsChecked="{Binding OnionState.LogSeed}" IsEnabled="{Binding OnionEnabled}"/>
 
-                <TextBlock Text="Max camera distance:" Margin="0,3"/>
-                <TextBox Margin="10,2,5,2" Text="{Binding OnionState.MaxCameraDistance}" IsEnabled="{Binding OnionState.Enabled}"/>
+                <CheckBox Content="Custom max camera distance" Margin="0,3" IsChecked="{Binding OnionCustomMaxCamera}" IsEnabled="{Binding OnionEnabled}"/>
+                <TextBox Margin="10,2,5,2" Text="{Binding OnionState.MaxCameraDistance}" IsEnabled="{Binding OnionCustomMaxCameraEnabled}"/>
 
-                <TextBlock Text="World dimensions" Style="{StaticResource SectionHeader}" IsEnabled="{Binding OnionState.Enabled}" />
+                <CheckBox Content="Custom world dimensions" IsChecked="{Binding OnionCustomWorldSize}" IsEnabled="{Binding OnionEnabled}" />
 
                 <Grid Style="{StaticResource Indented}">
                     <Grid.ColumnDefinitions>
@@ -154,10 +154,11 @@
                     <TextBlock Text="Width:" />
                     <TextBlock Text="Height:" Grid.Row="1"/>
                     
-                    <TextBox Grid.Column="1" Text="{Binding OnionState.Width}" IsEnabled="{Binding OnionState.Enabled}"/>
-                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding OnionState.Height}" IsEnabled="{Binding OnionState.Enabled}"/>
+                    <TextBox Grid.Column="1" Text="{Binding OnionState.Width}" IsEnabled="{Binding OnionCustomWorldSizeEnabled}"/>
+                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding OnionState.Height}" IsEnabled="{Binding OnionCustomWorldSizeEnabled}"/>
                 </Grid>
-                <TextBlock Text="Custom seeds" Style="{StaticResource SectionHeader}"/>
+                
+                <CheckBox Content="Custom seeds" IsChecked="{Binding OnionCustomSeeds}" IsEnabled="{Binding OnionEnabled}"/>
 
                 <Grid Style="{StaticResource Indented}">
                     <Grid.ColumnDefinitions>
@@ -177,10 +178,10 @@
                     <TextBlock Text="Terrain:" Grid.Row="2"/>
                     <TextBlock Text="Noise:" Grid.Row="3"/>
 
-                    <TextBox Grid.Column="1" Text="{Binding OnionState.WorldSeed}" IsEnabled="{Binding OnionState.Enabled}"/>
-                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding OnionState.LayoutSeed}" IsEnabled="{Binding OnionState.Enabled}"/>
-                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding OnionState.TerrainSeed}" IsEnabled="{Binding OnionState.Enabled}"/>
-                    <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding OnionState.NoiseSeed}" IsEnabled="{Binding OnionState.Enabled}"/>
+                    <TextBox Grid.Column="1" Text="{Binding OnionState.WorldSeed}" IsEnabled="{Binding OnionCustomSeedsEnabled}"/>
+                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding OnionState.LayoutSeed}" IsEnabled="{Binding OnionCustomSeedsEnabled}"/>
+                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding OnionState.TerrainSeed}" IsEnabled="{Binding OnionCustomSeedsEnabled}"/>
+                    <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding OnionState.NoiseSeed}" IsEnabled="{Binding OnionCustomSeedsEnabled}"/>
                 </Grid>
             </StackPanel>
         </StackPanel>

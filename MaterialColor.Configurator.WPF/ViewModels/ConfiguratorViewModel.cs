@@ -37,6 +37,76 @@ namespace MaterialColor.Configurator.WPF.ViewModels
 
         private OnionState _onionState;
 
+        public bool OnionEnabled
+        {
+            get
+            {
+                return _onionState.Enabled;
+            }
+            set
+            {
+                _onionState.Enabled = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(OnionCustomWorldSizeEnabled));
+                RaisePropertyChanged(nameof(OnionCustomSeedsEnabled));
+                RaisePropertyChanged(nameof(OnionCustomMaxCameraEnabled));
+            }
+        }
+
+        public bool OnionCustomMaxCameraEnabled
+        {
+            get => _onionState.Enabled && OnionCustomMaxCamera;
+        }
+
+        public bool OnionCustomMaxCamera
+        {
+            get => _onionState.CustomMaxCameraDistance;
+            set
+            {
+                _onionState.CustomMaxCameraDistance = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(OnionCustomMaxCameraEnabled));
+            }
+        }
+
+        public bool OnionCustomWorldSizeEnabled
+        {
+            get
+            {
+                return _onionState.Enabled && OnionCustomWorldSize;
+            }
+        }
+
+        public bool OnionCustomWorldSize
+        {
+            get
+            {
+                return _onionState.CustomWorldSize;
+            }
+            set
+            {
+                _onionState.CustomWorldSize = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(OnionCustomWorldSizeEnabled));
+            }
+        }
+
+        public bool OnionCustomSeedsEnabled
+        {
+            get => _onionState.Enabled && OnionCustomSeeds;
+        }
+
+        public bool OnionCustomSeeds
+        {
+            get => _onionState.CustomSeeds;
+            set
+            {
+                _onionState.CustomSeeds = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(OnionCustomSeedsEnabled));
+            }
+        }
+
         private Common.IO.Logger _logger;
         private ConfiguratorStateManager _stateManager;
 
