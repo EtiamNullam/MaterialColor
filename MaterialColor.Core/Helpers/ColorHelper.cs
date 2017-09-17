@@ -16,7 +16,7 @@ namespace MaterialColor.Core.Helpers
 
                 Color32 color;
 
-                if (!State.Disabled)
+                if (State.ConfiguratorState.Enabled)
                 {
                     switch (State.ConfiguratorState.ColorMode)
                     {

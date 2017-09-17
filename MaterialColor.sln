@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterialColor.Core", "MaterialColor.Core\MaterialColor.Core.csproj", "{837986FE-5DB2-44FC-9F76-110C1D4178BE}"
 EndProject
@@ -18,6 +18,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonSorter.Console", "Tools\JsonSorter.Console\JsonSorter.Console.csproj", "{2C9D4A0D-84DB-4B65-8958-223F5B7B5E96}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnionHooks", "onion-hooks\OnionHooks\OnionHooks.csproj", "{55AF1803-0A1E-4794-9AA0-1118BE5FE0C3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9B1E30B1-026D-44AE-819E-FD036DC03A43} = {9B1E30B1-026D-44AE-819E-FD036DC03A43}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{9B1E30B1-026D-44AE-819E-FD036DC03A43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +58,10 @@ Global
 		{55AF1803-0A1E-4794-9AA0-1118BE5FE0C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55AF1803-0A1E-4794-9AA0-1118BE5FE0C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55AF1803-0A1E-4794-9AA0-1118BE5FE0C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B1E30B1-026D-44AE-819E-FD036DC03A43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B1E30B1-026D-44AE-819E-FD036DC03A43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B1E30B1-026D-44AE-819E-FD036DC03A43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B1E30B1-026D-44AE-819E-FD036DC03A43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

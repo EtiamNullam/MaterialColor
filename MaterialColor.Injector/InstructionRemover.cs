@@ -13,17 +13,17 @@ namespace MaterialColor.Injector
 
         ModuleDefinition _targetModule;
 
-        public void RemoveAt(string typeName, string methodName, int instructionIndex)
+        public void ReplaceByNopAt(string typeName, string methodName, int instructionIndex)
         {
             var method = CecilHelper.GetMethodDefinition(_targetModule, typeName, methodName);
             var methodBody = method.Body;
 
-            Remove(methodBody, methodBody.Instructions[instructionIndex]);
+            ReplaceByNop(methodBody, methodBody.Instructions[instructionIndex]);
         }
 
-        public void Remove(MethodBody methodBody, Instruction instruction)
+        public void ReplaceByNop(MethodBody methodBody, Instruction instruction)
         {
-            methodBody.GetILProcessor().Remove(instruction);
+            methodBody.GetILProcessor().Replace(instruction, Instruction.Create(OpCodes.Nop));
         }
 
         public void ClearAllButLast(string typeName, string methodName)
