@@ -10,34 +10,49 @@ namespace MaterialColor.Injector
 {
     public class Injection
     {
-        public Injection(ModuleDefinition materialModule, ModuleDefinition onionModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
+        public Injection(ModuleDefinition coreModule, ModuleDefinition materialModule, ModuleDefinition onionModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
         {
-            Initialize(materialModule, onionModule, csharpModule, firstPassModule);
+            Initialize(coreModule, materialModule, onionModule, csharpModule, firstPassModule);
         }
 
+        private ModuleDefinition _coreModule;
         private ModuleDefinition _materialModule;
         private ModuleDefinition _onionModule;
         private ModuleDefinition _csharpModule;
         private ModuleDefinition _firstPassModule;
 
+        private MethodInjector _coreToCSharpInjector;
         private MethodInjector _materialToCSharpInjector;
+        private MethodInjector _onionToCSharpInjector;
+
         private InstructionRemover _csharpInstructionRemover;
         private Publisher _csharpPublisher;
 
-        private MethodInjector _onionToCSharpInjector;
 
-        private void Initialize(ModuleDefinition materialModule, ModuleDefinition onionModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
+        private void Initialize(ModuleDefinition coreModule, ModuleDefinition materialModule, ModuleDefinition onionModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
         {
+            _coreModule = coreModule;
             _materialModule = materialModule;
             _onionModule = onionModule;
             _csharpModule = csharpModule;
             _firstPassModule = firstPassModule;
 
-            _csharpInstructionRemover = new InstructionRemover(csharpModule);
-            _csharpPublisher = new Publisher(csharpModule);
-            _csharpInstructionRemover = new InstructionRemover(csharpModule);
-            _materialToCSharpInjector = new MethodInjector(materialModule, csharpModule);
+            InitializeHelpers();
+        }
 
+        private void InitializeHelpers()
+        {
+            _csharpInstructionRemover = new InstructionRemover(_csharpModule);
+            _csharpPublisher = new Publisher(_csharpModule);
+            _csharpInstructionRemover = new InstructionRemover(_csharpModule);
+
+            InitializeMethodInjectors();
+        }
+
+        private void InitializeMethodInjectors()
+        {
+            _coreToCSharpInjector = new MethodInjector(_coreModule, _csharpModule);
+            _materialToCSharpInjector = new MethodInjector(_materialModule, _csharpModule);
             _onionToCSharpInjector = new MethodInjector(_onionModule, _csharpModule);
         }
 
@@ -47,6 +62,8 @@ namespace MaterialColor.Injector
             {
                 EnableConsole();
             }
+
+            InjectCore();
 
             if (injectMaterial)
             {
@@ -62,6 +79,15 @@ namespace MaterialColor.Injector
             }
 
             InjectPatchedSign();
+            FixGameUpdateExceptionHandling();
+        }
+
+        private void InjectCore()
+        {
+            _coreToCSharpInjector.InjectBefore(
+               "UpdateQueueManager", "OnGameUpdate",
+               "Game", "Update",
+               5);
         }
 
         private void InjectMain()
@@ -220,15 +246,34 @@ namespace MaterialColor.Injector
         //TODO: make it more flexible for future versions
         private void EnableConsole()
         {
-            _csharpInstructionRemover.RemoveAt("FrontEndManager", "LateUpdate", 0);
-            _csharpInstructionRemover.RemoveAt("FrontEndManager", "LateUpdate", 0);
-            _csharpInstructionRemover.RemoveAt("FrontEndManager", "LateUpdate", 0);
-            _csharpInstructionRemover.RemoveAt("FrontEndManager", "LateUpdate", 0);
+            _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 0);
+            _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 1);
+            _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 2);
+            _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 3);
 
-            _csharpInstructionRemover.RemoveAt("Game", "Update", 8);
-            _csharpInstructionRemover.RemoveAt("Game", "Update", 8);
-            _csharpInstructionRemover.RemoveAt("Game", "Update", 8);
-            _csharpInstructionRemover.RemoveAt("Game", "Update", 8);
+            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 8);
+            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 9);
+            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 10);
+            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 11);
+        }
+
+        private void FixGameUpdateExceptionHandling()
+        {
+            var handler = new ExceptionHandler(ExceptionHandlerType.Finally);
+            var methodBody = CecilHelper.GetMethodDefinition(_csharpModule, "Game", "Update").Body;
+            var methodInstructions = methodBody.Instructions;
+
+            handler.TryStart = methodInstructions.First(instruction => instruction.OpCode == OpCodes.Ldsfld);
+
+            var tryEndInstruction = methodInstructions.Last(instruction => instruction.OpCode == OpCodes.Ldloca_S);
+
+            handler.TryEnd = tryEndInstruction;
+            handler.HandlerStart = tryEndInstruction;
+            handler.HandlerEnd = methodInstructions.Last();
+            handler.CatchType = _csharpModule.Import(typeof(Exception));
+
+            methodBody.ExceptionHandlers.Clear();
+            methodBody.ExceptionHandlers.Add(handler);
         }
 
         private void AttachCustomActionToToggle()
@@ -298,7 +343,7 @@ namespace MaterialColor.Injector
                 doWorldGenBody,
                 callResetInstruction);
 
-            _csharpInstructionRemover.Remove(doWorldGenBody, callResetInstruction);
+            _csharpInstructionRemover.ReplaceByNop(doWorldGenBody, callResetInstruction);
         }
 
         private void InjectOnionDebugHandler()

@@ -6,10 +6,10 @@ if ([string]::IsNullOrWhiteSpace($outputPath))
     return;
 }
 
-New-Item $outputPath -ItemType Directory -Force | Out-Null;
+$managedSubPath = "OxygenNotIncluded_Data\Managed";
+$managedFullPath = $outputPath + $managedSubPath;
 
-(ls *.exe*) |
-% {
-	$newFilename = $_.Name.Replace("WPF.", [string]::Empty);
-	Copy-Item $_ ($outputPath + $newFilename) -Force
-}
+New-Item $outputPath -ItemType Directory -Force | Out-Null;
+New-Item $managedFullPath -ItemType Directory -Force | Out-Null;
+
+Copy-Item Core.dll $managedFullPath -Force;

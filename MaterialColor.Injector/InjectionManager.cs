@@ -18,12 +18,13 @@ namespace MaterialColor.Injector
 
         public void InjectDefaultAndBackup(bool injectMaterial, bool enableConsole, bool injectOnion)
         {
+            var coreModule = CecilHelper.GetModule(Paths.DefaultCoreAssemblyPath, Paths.ManagedDirectoryPath);
             var materialModule = CecilHelper.GetModule(Paths.DefaultMaterialAssemblyPath, Paths.ManagedDirectoryPath);
             var onionModule = CecilHelper.GetModule(Paths.DefaultOnionAssemblyPath, Paths.ManagedDirectoryPath);
             var csharpModule = CecilHelper.GetModule(Paths.DefaultAssemblyCSharpPath, Paths.ManagedDirectoryPath);
             var firstPassModule = CecilHelper.GetModule(Paths.DefaultAssemblyFirstPassPath, Paths.ManagedDirectoryPath);
 
-            new Injection(materialModule, onionModule, csharpModule, firstPassModule).Inject(injectMaterial, enableConsole, injectOnion);
+            new Injection(coreModule, materialModule, onionModule, csharpModule, firstPassModule).Inject(injectMaterial, enableConsole, injectOnion);
 
             BackupAndSaveCSharpModule(csharpModule);
             BackupAndSaveFirstPassModule(firstPassModule);

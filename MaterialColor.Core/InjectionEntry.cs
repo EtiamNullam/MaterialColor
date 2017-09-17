@@ -18,7 +18,6 @@ namespace MaterialColor.Core
         private static bool TypeColorOffsetsChanged = false;
         private static bool ConfiguratorStateChanged = false;
 
-        private static JsonFileLoader _jsonLoader = new JsonFileLoader(new JsonManager());
         private static Common.IO.Logger Logger
         {
             get
@@ -42,8 +41,6 @@ namespace MaterialColor.Core
             try
             {
                 Components.BuildingCompletes.OnAdd += OnBuildingsCompletesAdd;
-
-                _jsonLoader.ReloadAll();
 
                 if (!Initialized) Initialize();
 
@@ -91,7 +88,7 @@ namespace MaterialColor.Core
         {
             Color resultColor;
 
-            if (!State.Disabled)
+            if (State.ConfiguratorState.Enabled)
             {
                 switch (State.ConfiguratorState.ColorMode)
                 {
@@ -120,7 +117,7 @@ namespace MaterialColor.Core
             if (toggleInfo.userData is SimViewMode userDataAsSimViewMode
                 && userDataAsSimViewMode == (SimViewMode)Common.IDs.ToggleMaterialColorOverlayID)
             {
-                State.Disabled = !State.Disabled;
+                State.ConfiguratorState.Enabled = !State.ConfiguratorState.Enabled;
                 UpdateBuildingsColors();
                 RebuildAllTiles();
 
@@ -145,7 +142,7 @@ namespace MaterialColor.Core
 
         private static void OnOverlayChanged(SimViewMode obj)
         {
-            if (!State.Disabled && obj == SimViewMode.None)
+            if (State.ConfiguratorState.Enabled && obj == SimViewMode.None)
             {
                 UpdateBuildingsColors();
             }
@@ -168,7 +165,7 @@ namespace MaterialColor.Core
 
         private static void OnElementColorsInfosChanged(object sender, FileSystemEventArgs e)
         {
-            if (_jsonLoader.TryLoadElementColorInfos())
+            if (State.TryReloadElementColorInfos())
             {
                 ElementColorInfosChanged = true;
 
@@ -181,7 +178,7 @@ namespace MaterialColor.Core
 
         private static void OnTypeColorOffsetsChanged(object sender, FileSystemEventArgs e)
         {
-            if (_jsonLoader.TryLoadTypeColorOffsets())
+            if (State.TryReloadTypeColorOffsets())
             {
                 TypeColorOffsetsChanged = true;
 
@@ -194,7 +191,7 @@ namespace MaterialColor.Core
 
         private static void OnMaterialStateChanged(object sender, FileSystemEventArgs e)
         {
-            if (_jsonLoader.TryLoadConfiguratorState())
+            if (State.TryReloadConfiguratorState())
             {
                 ConfiguratorStateChanged = true;
 
