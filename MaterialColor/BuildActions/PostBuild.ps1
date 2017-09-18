@@ -12,4 +12,6 @@ $managedFullPath = $outputPath + $managedSubPath;
 New-Item $outputPath -ItemType Directory -Force | Out-Null;
 New-Item $managedFullPath -ItemType Directory -Force | Out-Null;
 
-Copy-Item Core.dll $managedFullPath -Force;
+Copy-Item MaterialColor.dll $managedFullPath -Force;
+
+Copy-Item UninstallMaterialColor.ps1 $outputPath -Force

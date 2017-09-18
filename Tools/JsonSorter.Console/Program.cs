@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using MaterialColor.Common.Data;
+using Common.Data;
 using UnityEngine;
-using MaterialColor.Common.Json;
+using Common.Json;
 
 namespace JsonSorter.Console
 {
