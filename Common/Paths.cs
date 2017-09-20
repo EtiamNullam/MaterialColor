@@ -18,13 +18,16 @@ namespace Common
         public static readonly string MaterialMainPath = ModsDirectory + Path.DirectorySeparatorChar + "MaterialColor";
         public static readonly string MaterialConfigPath = MaterialMainPath + Path.DirectorySeparatorChar + "Config";
 
-        public const string ElementColorInfosFileName = "ElementColorInfos.json";
-        public const string TypeColorsFileName = "TypeColorOffsets.json";
+        public const string DefaultElementColorInfosFileName = "0-default.json";
+        public const string DefaultTypeColorOffsetsFileName = "0-default.json";
         public const string InjectorStateFileName = "InjectorState.json";
         public const string MaterialColorStateFileName = "MaterialColorState.json";
 
-        public static readonly string ElementColorInfosPath = MaterialConfigPath + Path.DirectorySeparatorChar + ElementColorInfosFileName;
-        public static readonly string TypeColorsPath = MaterialConfigPath + Path.DirectorySeparatorChar + TypeColorsFileName;
+        public static readonly string ElementColorInfosDirectory = MaterialConfigPath + Path.DirectorySeparatorChar + "ElementColorInfos";
+        public static readonly string TypeColorOffsetsDirectory = MaterialConfigPath + Path.DirectorySeparatorChar + "TypeColorOffsets";
+
+        public static readonly string DefaultElementColorInfosPath = ElementColorInfosDirectory + Path.DirectorySeparatorChar + DefaultElementColorInfosFileName;
+        public static readonly string DefaultTypeColorOffsetsPath = TypeColorOffsetsDirectory + Path.DirectorySeparatorChar + DefaultTypeColorOffsetsFileName;
         public static readonly string InjectorStatePath = MaterialConfigPath + Path.DirectorySeparatorChar + InjectorStateFileName;
         public static readonly string MaterialColorStatePath = MaterialConfigPath + Path.DirectorySeparatorChar + MaterialColorStateFileName;
 

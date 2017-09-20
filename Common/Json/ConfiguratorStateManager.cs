@@ -1,15 +1,11 @@
 ﻿using Common.Data;
+using Common.IO;
 
 namespace Common.Json
 {
-    public class ConfiguratorStateManager
+    public class ConfiguratorStateManager : BaseManager
     {
-        public ConfiguratorStateManager(JsonManager manager)
-        {
-            _manager = manager;
-        }
-
-        private JsonManager _manager;
+        public ConfiguratorStateManager(JsonManager manager, Logger logger = null) : base(manager, logger) { }
 
         public MaterialColorState LoadMaterialColorState()
         {

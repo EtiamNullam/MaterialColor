@@ -124,7 +124,7 @@ namespace Common.IO
 
         private static void InitializeWatcher(FileSystemWatcher watcher)
         {
-            watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.Attributes;
+            watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.Attributes | NotifyFilters.FileName | NotifyFilters.DirectoryName;
             watcher.EnableRaisingEvents = true;
         }
     }

@@ -11,10 +11,14 @@ namespace MaterialColor.IO
 {
     public class JsonFileLoader
     {
-        public JsonFileLoader(JsonManager jsonManager)
+        public JsonFileLoader(JsonManager jsonManager, Common.IO.Logger logger = null)
         {
+            _logger = logger;
+
             InitializeManagers(jsonManager);
         }
+
+        private Common.IO.Logger _logger;
 
         private ConfiguratorStateManager _configuratorStateManager;
         private ElementColorInfosManager _elementColorInfosManager;
@@ -22,9 +26,9 @@ namespace MaterialColor.IO
 
         private void InitializeManagers(JsonManager manager)
         {
-            _configuratorStateManager = new ConfiguratorStateManager(manager);
-            _elementColorInfosManager = new ElementColorInfosManager(manager);
-            _typeColorOffsetsManager = new TypeColorOffsetsManager(manager);
+            _configuratorStateManager = new ConfiguratorStateManager(manager, _logger);
+            _elementColorInfosManager = new ElementColorInfosManager(manager, _logger);
+            _typeColorOffsetsManager = new TypeColorOffsetsManager(manager, _logger);
         }
 
         public bool TryLoadConfiguratorState(out MaterialColorState state)
@@ -54,7 +58,7 @@ namespace MaterialColor.IO
         {
             try
             {
-                elementColorInfos = _elementColorInfosManager.LoadElementColorInfos();
+                elementColorInfos = _elementColorInfosManager.LoadElementColorInfosDirectory();
                 return true;
             }
             catch (Exception e)
@@ -77,7 +81,7 @@ namespace MaterialColor.IO
         {
             try
             {
-                typeColorOffsets = _typeColorOffsetsManager.LoadTypeColorOffsets();
+                typeColorOffsets = _typeColorOffsetsManager.LoadTypeColorOffsetsDirectory();
                 return true;
             }
             catch (Exception e)
