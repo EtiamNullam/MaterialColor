@@ -9,9 +9,9 @@ namespace Configurator.WPF.ViewModels
 {
     public class ConfiguratorViewModel : BindableBase
     {
-        public ConfiguratorViewModel(ConfiguratorStateManager stateManager)
+        public ConfiguratorViewModel(JsonManager jsonManager)
         {
-            _stateManager = stateManager;
+            _stateManager = new ConfiguratorStateManager(jsonManager, _logger);
 
             _logger = new Common.IO.Logger(Paths.ConfiguratorLogFileName);
 
