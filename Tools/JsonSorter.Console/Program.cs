@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using MaterialColor.Common.Data;
+using Common.Data;
 using UnityEngine;
-using MaterialColor.Common.Json;
+using Common.Json;
 
 namespace JsonSorter.Console
 {
@@ -14,13 +14,13 @@ namespace JsonSorter.Console
     {
         static void Main(string[] args)
         {
-            if (args.Length <= 2)
-            {
-                _filePath = args[1];
-            }
-            else if (args.Length <= 0)
+            if (args.Length <= 0)
             {
                 return;
+            }
+            else if (args.Length <= 2)
+            {
+                _filePath = args[1];
             }
 
             var mode = ElementArgAliases.Contains(args[0].ToLower())
@@ -77,7 +77,7 @@ namespace JsonSorter.Console
 
         private static void SortElementColorInfos()
         {
-            var elementColorInfos = _elementColorInfosManager.LoadElementColorInfos(_filePath).ToList();
+            var elementColorInfos = _elementColorInfosManager.LoadSingleElementColorInfosFile(_filePath).ToList();
 
             elementColorInfos.Sort(new Comparison<KeyValuePair<SimHashes, ElementColorInfo>>(CompareElementColorInfoDictionaryPairs));
 
@@ -86,7 +86,7 @@ namespace JsonSorter.Console
 
         private static void SortTypeColorOffsets()
         {
-            var typeColorOffsets = _typeColorOffsetsManager.LoadTypeColorOffsets(_filePath).ToList();
+            var typeColorOffsets = _typeColorOffsetsManager.LoadSingleTypeColorOffsetsFile(_filePath).ToList();
 
             typeColorOffsets.Sort(new Comparison<KeyValuePair<string, Color32>>(CompareTypeColorOffsetDictionaryPairs));
 
