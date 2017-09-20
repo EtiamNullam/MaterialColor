@@ -77,7 +77,7 @@ namespace JsonSorter.Console
 
         private static void SortElementColorInfos()
         {
-            var elementColorInfos = _elementColorInfosManager.LoadElementColorInfos(_filePath).ToList();
+            var elementColorInfos = _elementColorInfosManager.LoadSingleElementColorInfosFile(_filePath).ToList();
 
             elementColorInfos.Sort(new Comparison<KeyValuePair<SimHashes, ElementColorInfo>>(CompareElementColorInfoDictionaryPairs));
 
@@ -86,7 +86,7 @@ namespace JsonSorter.Console
 
         private static void SortTypeColorOffsets()
         {
-            var typeColorOffsets = _typeColorOffsetsManager.LoadTypeColorOffsets(_filePath).ToList();
+            var typeColorOffsets = _typeColorOffsetsManager.LoadSingleTypeColorOffsetsFile(_filePath).ToList();
 
             typeColorOffsets.Sort(new Comparison<KeyValuePair<string, Color32>>(CompareTypeColorOffsetDictionaryPairs));
 

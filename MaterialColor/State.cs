@@ -1,4 +1,5 @@
-﻿using Common.Data;
+﻿using Common;
+using Common.Data;
 using Common.Json;
 using MaterialColor.IO;
 using System.Collections.Generic;
@@ -8,7 +9,23 @@ namespace MaterialColor
 {
     public static class State
     {
-        private static JsonFileLoader _jsonLoader = new JsonFileLoader(new JsonManager());
+        private static JsonFileLoader _jsonLoader = new JsonFileLoader(new JsonManager(), Logger);
+
+        public static Common.IO.Logger Logger
+        {
+            get
+            {
+                if (_logger == null)
+                {
+                    _logger = new Common.IO.Logger(Paths.MaterialCoreLogFileName);
+                }
+
+                return _logger;
+            }
+        }
+
+        private static Common.IO.Logger _logger;
+
         public static Dictionary<string, Color32> TypeColorOffsets
         {
             get

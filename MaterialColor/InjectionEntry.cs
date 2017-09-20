@@ -18,21 +18,6 @@ namespace MaterialColor
         private static bool TypeColorOffsetsChanged = false;
         private static bool ConfiguratorStateChanged = false;
 
-        private static Common.IO.Logger Logger
-        {
-            get
-            {
-                if (_logger == null)
-                {
-                    _logger = new Common.IO.Logger(Paths.MaterialCoreLogFileName);
-                }
-
-                return _logger;
-            }
-        }
-
-        private static Common.IO.Logger _logger;
-
         private static bool _firstUpdate = false;
 
         // TODO: merge with EnterEveryUpdate?
@@ -50,8 +35,8 @@ namespace MaterialColor
             {
                 var message = "Injection failed\n" + e.Message + '\n';
 
-                Logger.Log(message);
-                Logger.Log(e);
+                State.Logger.Log(message);
+                State.Logger.Log(e);
 
                 Debug.LogError(message);
             }
@@ -73,7 +58,7 @@ namespace MaterialColor
                     OverlayScreen.Instance.OnOverlayChanged += OnOverlayChanged;
                     _firstUpdate = false;
                 }
-                else Logger.Log("OverlayScreen.Instance is null");
+                else State.Logger.Log("OverlayScreen.Instance is null");
             }
 
             if (ElementColorInfosChanged || TypeColorOffsetsChanged || ConfiguratorStateChanged)
@@ -150,9 +135,12 @@ namespace MaterialColor
 
         private static void SubscribeToFileChangeNotifier()
         {
-            FileChangeNotifier.StartFileWatch(Common.Paths.ElementColorInfosFileName, Common.Paths.MaterialConfigPath, OnElementColorsInfosChanged);
-            FileChangeNotifier.StartFileWatch(Common.Paths.TypeColorsFileName, Common.Paths.MaterialConfigPath, OnTypeColorOffsetsChanged);
-            FileChangeNotifier.StartFileWatch(Common.Paths.MaterialColorStateFileName, Common.Paths.MaterialConfigPath, OnMaterialStateChanged);
+            var jsonFilter = "*.json";
+
+            FileChangeNotifier.StartFileWatch(jsonFilter, Paths.ElementColorInfosDirectory, OnElementColorsInfosChanged);
+            FileChangeNotifier.StartFileWatch(jsonFilter, Paths.TypeColorOffsetsDirectory, OnTypeColorOffsetsChanged);
+
+            FileChangeNotifier.StartFileWatch(Paths.MaterialColorStateFileName, Paths.MaterialConfigPath, OnMaterialStateChanged);
         }
 
         private static void UpdateBuildingsColors()
@@ -171,7 +159,7 @@ namespace MaterialColor
 
                 var message = "Element color infos changed.";
 
-                Logger.Log(message);
+                State.Logger.Log(message);
                 Debug.LogError(message);
             }
         }
@@ -184,7 +172,7 @@ namespace MaterialColor
 
                 var message = "Type colors changed.";
 
-                Logger.Log(message);
+                State.Logger.Log(message);
                 Debug.LogError(message);
             }
         }
@@ -197,7 +185,7 @@ namespace MaterialColor
 
                 var message = "Configurator state changed.";
 
-                Logger.Log(message);
+                State.Logger.Log(message);
                 Debug.LogError(message);
             }
         }
