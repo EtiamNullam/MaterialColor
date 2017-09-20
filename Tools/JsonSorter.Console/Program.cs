@@ -14,13 +14,13 @@ namespace JsonSorter.Console
     {
         static void Main(string[] args)
         {
-            if (args.Length <= 2)
-            {
-                _filePath = args[1];
-            }
-            else if (args.Length <= 0)
+            if (args.Length <= 0)
             {
                 return;
+            }
+            else if (args.Length <= 2)
+            {
+                _filePath = args[1];
             }
 
             var mode = ElementArgAliases.Contains(args[0].ToLower())
