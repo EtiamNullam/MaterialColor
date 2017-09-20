@@ -1,4 +1,5 @@
-﻿using Common.IO;
+﻿using Common.Data;
+using Common.IO;
 using Common.Json;
 using Injector.IO;
 using Prism.Commands;
@@ -22,7 +23,7 @@ namespace Injector.WPF.ViewModels
             _fileManager = fileManager;
             _injector = injector;
 
-            TryLoadLastAppState();
+            State = TryLoadLastAppState();
 
             if (!IsCSharpPatched && CanRestoreCSharpBackup())
             {
@@ -49,39 +50,17 @@ namespace Injector.WPF.ViewModels
             }
         }
 
-        public bool EnableDebugConsole
+        public InjectorState State
         {
-            get => _enableDebugConsole;
+            get => _state;
             set
             {
-                SetProperty(ref _enableDebugConsole, value);
+                SetProperty(ref _state, value);
                 PatchCommand.RaiseCanExecuteChanged();
             }
         }
 
-        public bool InjectMaterialColor
-        {
-            get => _injectMaterialColor;
-            set
-            {
-                SetProperty(ref _injectMaterialColor, value);
-                PatchCommand.RaiseCanExecuteChanged();
-            }
-        }
-
-        public bool InjectOnionPatcher
-        {
-            get => _injectOnionPatcher;
-            set
-            {
-                SetProperty(ref _injectOnionPatcher, value);
-                PatchCommand.RaiseCanExecuteChanged();
-            }
-        }
-
-        private bool _injectMaterialColor = true;
-        private bool _enableDebugConsole = false;
-        private bool _injectOnionPatcher = true;
+        private InjectorState _state;
 
         private InjectorStateManager _stateManager;
         private FileManager _fileManager;
@@ -105,7 +84,7 @@ namespace Injector.WPF.ViewModels
         public bool IsFirstpassPatched
             => _injector.IsCurrentAssemblyFirstpassPatched();
 
-        public bool CanPatch() => InjectMaterialColor || InjectOnionPatcher || EnableDebugConsole;
+        public bool CanPatch() => State.InjectMaterialColor || State.InjectOnion || State.EnableDebugConsole;
 
         public void Patch()
         {
@@ -153,7 +132,7 @@ namespace Injector.WPF.ViewModels
 
             try
             {
-                _injector.InjectDefaultAndBackup(InjectMaterialColor, EnableDebugConsole, InjectOnionPatcher);
+                _injector.InjectDefaultAndBackup(State);
             }
             catch (Exception e)
             {
@@ -169,7 +148,7 @@ namespace Injector.WPF.ViewModels
 
             try
             {
-                Common.IO.IOHelper.EnsureDirectoryExists(Common.Paths.MaterialConfigPath);
+                IOHelper.EnsureDirectoryExists(Common.Paths.MaterialConfigPath);
             }
             catch (Exception e)
             {
@@ -181,7 +160,7 @@ namespace Injector.WPF.ViewModels
 
             try
             {
-                _stateManager.SaveState(new List<bool> { InjectMaterialColor, EnableDebugConsole, InjectOnionPatcher });
+                _stateManager.SaveState(State);
             }
             catch (Exception e)
             {
@@ -288,20 +267,18 @@ namespace Injector.WPF.ViewModels
             return result;
         }
 
-        private void TryLoadLastAppState()
+        private InjectorState TryLoadLastAppState()
         {
             try
             {
-                var state = _stateManager.LoadState();
-
-                InjectMaterialColor = state[0];
-                EnableDebugConsole = state[1];
-                InjectOnionPatcher = state[2];
+                return _stateManager.LoadState();
             }
             catch (Exception e)
             {
                 Status = "Can't load last state.";
                 _logger.Log(e);
+
+                return new InjectorState();
             }
         }
     }

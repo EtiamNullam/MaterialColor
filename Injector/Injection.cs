@@ -1,4 +1,5 @@
-﻿using Mono.Cecil;
+﻿using Common.Data;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
@@ -56,16 +57,16 @@ namespace Injector
             _onionToCSharpInjector = new MethodInjector(_onionModule, _csharpModule);
         }
 
-        public void Inject(bool injectMaterial, bool enableConsole, bool injectOnion)
+        public void Inject(InjectorState injectorState)
         {
-            if (enableConsole)
+            if (injectorState.EnableDebugConsole)
             {
                 EnableConsole();
             }
 
             InjectCore();
 
-            if (injectMaterial)
+            if (injectorState.InjectMaterialColor)
             {
                 InjectMain();
                 InjectCellColorHandling();
@@ -73,7 +74,7 @@ namespace Injector
                 InjectToggleButton();
             }
 
-            if (injectOnion)
+            if (injectorState.InjectOnion)
             {
                 InjectOnionPatcher();
             }

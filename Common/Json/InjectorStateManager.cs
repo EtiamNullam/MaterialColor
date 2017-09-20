@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Common.Data;
+using System.Collections.Generic;
 
 namespace Common.Json
 {
@@ -11,12 +12,12 @@ namespace Common.Json
 
         private JsonManager _manager;
 
-        public List<bool> LoadState()
+        public InjectorState LoadState()
         {
-            return _manager.Deserialize<List<bool>>(Paths.InjectorStatePath);
+            return _manager.Deserialize<InjectorState>(Paths.InjectorStatePath);
         }
 
-        public void SaveState(IEnumerable<bool> state)
+        public void SaveState(InjectorState state)
         {
             _manager.Serialize(state, Paths.InjectorStatePath);
         }

@@ -37,9 +37,9 @@
                     </Setter>
                 </Style>
             </StackPanel.Resources>
-            <CheckBox Content="Inject _MaterialColor" IsChecked="{Binding InjectMaterialColor, Mode=TwoWay}"/>
-            <CheckBox Content="Inject _OnionPatcher" IsChecked="{Binding InjectOnionPatcher, Mode=TwoWay}"/>
-            <CheckBox Content="Enable _debug log" IsChecked="{Binding EnableDebugConsole, Mode=TwoWay}" />
+            <CheckBox Content="Inject _MaterialColor" IsChecked="{Binding State.InjectMaterialColor, Mode=TwoWay}"/>
+            <CheckBox Content="Inject _OnionPatcher" IsChecked="{Binding State.InjectOnion, Mode=TwoWay}"/>
+            <CheckBox Content="Enable _debug log" IsChecked="{Binding State.EnableDebugConsole, Mode=TwoWay}" />
         </StackPanel>
 
         <Button Command="{Binding PatchCommand}" Grid.Row="1" Content="_Patch" Margin="10" MaxWidth="400" IsDefault="True"/>

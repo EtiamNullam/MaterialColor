@@ -4,6 +4,7 @@ using System.Linq;
 using Mono.Cecil.Cil;
 using System.Collections.Generic;
 using Injector.IO;
+using Common.Data;
 
 namespace Injector
 {
@@ -16,7 +17,7 @@ namespace Injector
 
         private FileManager _fileManager;
 
-        public void InjectDefaultAndBackup(bool injectMaterial, bool enableConsole, bool injectOnion)
+        public void InjectDefaultAndBackup(InjectorState injectorState)
         {
             var coreModule = CecilHelper.GetModule(Paths.DefaultCoreAssemblyPath, Paths.ManagedDirectoryPath);
             var materialModule = CecilHelper.GetModule(Paths.DefaultMaterialAssemblyPath, Paths.ManagedDirectoryPath);
@@ -24,7 +25,7 @@ namespace Injector
             var csharpModule = CecilHelper.GetModule(Paths.DefaultAssemblyCSharpPath, Paths.ManagedDirectoryPath);
             var firstPassModule = CecilHelper.GetModule(Paths.DefaultAssemblyFirstPassPath, Paths.ManagedDirectoryPath);
 
-            new Injection(coreModule, materialModule, onionModule, csharpModule, firstPassModule).Inject(injectMaterial, enableConsole, injectOnion);
+            new Injection(coreModule, materialModule, onionModule, csharpModule, firstPassModule).Inject(injectorState);
 
             BackupAndSaveCSharpModule(csharpModule);
             BackupAndSaveFirstPassModule(firstPassModule);

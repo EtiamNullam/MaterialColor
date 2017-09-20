@@ -3,6 +3,7 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using Common.Json;
+using Common.Data;
 
 namespace Injector.WPF
 {
@@ -63,8 +64,16 @@ namespace Injector.WPF
 
                     if (injectMaterial || injectOnion)
                     {
-                        Inject(injectMaterial, enableDebugConsole, injectOnion);
-                        new InjectorStateManager(new JsonManager()).SaveState(new List<bool> { injectMaterial, enableDebugConsole, injectOnion });
+                        var state = new InjectorState
+                        {
+                            InjectMaterialColor = injectMaterial,
+                            InjectOnion = injectOnion,
+                            EnableDebugConsole = enableDebugConsole
+                        };
+
+                        Inject(state);
+
+                        new InjectorStateManager(new JsonManager()).SaveState(state); 
                     }
 
                     Shutdown();
@@ -91,9 +100,9 @@ namespace Injector.WPF
             fileManager.RestoreBackupForFile(IO.Paths.DefaultAssemblyFirstPassPath);
         }
 
-        private void Inject(bool injectMaterial, bool enableDebugConsole, bool injectOnion)
+        private void Inject(InjectorState state)
         {
-            new InjectionManager(FileManager).InjectDefaultAndBackup(injectMaterial, enableDebugConsole, injectOnion);
+            new InjectionManager(FileManager).InjectDefaultAndBackup(state);
         }
 
         private List<string> RecoverArgumentAliases = new List<string> { "-r", "-recover" };
