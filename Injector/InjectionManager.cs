@@ -22,10 +22,12 @@ namespace Injector
             var coreModule = CecilHelper.GetModule(Paths.DefaultCoreAssemblyPath, Paths.ManagedDirectoryPath);
             var materialModule = CecilHelper.GetModule(Paths.DefaultMaterialAssemblyPath, Paths.ManagedDirectoryPath);
             var onionModule = CecilHelper.GetModule(Paths.DefaultOnionAssemblyPath, Paths.ManagedDirectoryPath);
+            var remoteModule = CecilHelper.GetModule(Paths.RemoteAssemblyPath, Paths.ManagedDirectoryPath);
+
             var csharpModule = CecilHelper.GetModule(Paths.DefaultAssemblyCSharpPath, Paths.ManagedDirectoryPath);
             var firstPassModule = CecilHelper.GetModule(Paths.DefaultAssemblyFirstPassPath, Paths.ManagedDirectoryPath);
 
-            new Injection(coreModule, materialModule, onionModule, csharpModule, firstPassModule).Inject(injectorState);
+            new Injection(coreModule, materialModule, onionModule, remoteModule, csharpModule, firstPassModule).Inject(injectorState);
 
             BackupAndSaveCSharpModule(csharpModule);
             BackupAndSaveFirstPassModule(firstPassModule);

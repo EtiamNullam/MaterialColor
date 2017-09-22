@@ -124,7 +124,10 @@
                     </CheckBox>
                 </StackPanel>
             </StackPanel>
+            <TextBlock Text="Remote doors" Style="{StaticResource Header}"/>
+            <CheckBox Content="Enabled" IsChecked="{Binding MaterialState.RemoteDoorsEnabled}" Style="{StaticResource Indented}"/>
         </StackPanel>
+
 
         <StackPanel Orientation="Vertical" Grid.Column="1">
             <TextBlock Text="OnionPatcher" Style="{StaticResource Header}"/>
