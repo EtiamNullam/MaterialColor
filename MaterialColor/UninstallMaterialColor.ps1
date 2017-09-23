@@ -12,6 +12,7 @@ pushd ".\OxygenNotIncluded_Data\Managed";
 	Remove-Item ".\Common.dll";
 	Remove-Item ".\MaterialColor.dll";
 	Remove-Item ".\OnionHooks.dll";
+	Remove-Item ".\RemoteDoors.dll";
 
 popd;
 
