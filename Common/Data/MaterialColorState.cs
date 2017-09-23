@@ -17,6 +17,6 @@ namespace Common.Data
         public bool ShowBuildingsAsWhite { get; set; }
         public bool ShowDetailedErrorInfo { get; set; }
 
-        public bool RemoteDoorsEnabled { get; set; } = true;
+        public bool RemoteDoorsEnabled { get; set; } = false;
     }
 }

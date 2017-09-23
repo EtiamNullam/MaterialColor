@@ -23,6 +23,8 @@ namespace Injector.WPF.ViewModels
             _fileManager = fileManager;
             _injector = injector;
 
+            _injector.Logger = _logger;
+
             State = TryLoadLastAppState();
 
             if (!IsCSharpPatched && CanRestoreCSharpBackup())
