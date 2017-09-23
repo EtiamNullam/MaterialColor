@@ -122,7 +122,7 @@ namespace MaterialColor
         // merge with EnterOnce?
         public static void SetLocalizationString()
         {
-            STRINGS.INPUT_BINDINGS.ROOT.OVERLAY12 = "Toggle_MaterialColor_Overlay";
+            //STRINGS.INPUT_BINDINGS.ROOT.OVERLAY12 = "Toggle_MaterialColor_Overlay";
         }
 
         private static void OnOverlayChanged(SimViewMode obj)
