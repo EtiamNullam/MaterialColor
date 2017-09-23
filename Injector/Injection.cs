@@ -16,6 +16,8 @@ namespace Injector
             Initialize(coreModule, materialModule, onionModule, remoteModule, csharpModule, firstPassModule);
         }
 
+        public Common.IO.Logger Logger { get; set; }
+
         private ModuleDefinition _coreModule;
         private ModuleDefinition _materialModule;
         private ModuleDefinition _onionModule;
@@ -78,7 +80,19 @@ namespace Injector
                 InjectMain();
                 InjectCellColorHandling();
                 InjectBuildingsSpecialCasesHandling();
-                InjectToggleButton();
+
+                //try
+                //{
+                //    InjectToggleButton();
+                //}
+                //catch (Exception e)
+                //{
+                //    if (Logger != null)
+                //    {
+                //        Logger.Log("Overlay menu button injection failed");
+                //        Logger.Log(e);
+                //    }
+                //}
             }
 
             if (injectorState.InjectOnion)
@@ -325,44 +339,43 @@ namespace Injector
 
         private void InjectOnionDoWorldGen()
         {
-            var doWorldGenBody = CecilHelper.GetMethodDefinition(_csharpModule, "OfflineWorldGen", "DoWorldGen").Body;
+            var doWorldGenInitialiseBody = CecilHelper.GetMethodDefinition(_csharpModule, "OfflineWorldGen", "DoWordGenInitialise").Body;
 
-            // TODO: create variable add helper
-            doWorldGenBody.Variables.Add(new VariableDefinition("w", _csharpModule.TypeSystem.Int32));
-            doWorldGenBody.Variables.Add(new VariableDefinition("h", _csharpModule.TypeSystem.Int32));
-
-            // is it needed?
-            //DoWorldGen.NoOptimization = true;
-
-            var callResetInstruction = doWorldGenBody
+            var callResetInstruction = doWorldGenInitialiseBody
                 .Instructions
                 .Where(instruction => instruction.OpCode == OpCodes.Call)
                 .Reverse()
-                .Skip(1)
+                .Skip(3)
                 .First();
 
-            var instructionInserter = new InstructionInserter(doWorldGenBody);
+            var instructionInserter = new InstructionInserter(doWorldGenInitialiseBody);
 
             instructionInserter.InsertBefore(callResetInstruction, Instruction.Create(OpCodes.Pop));
             instructionInserter.InsertBefore(callResetInstruction, Instruction.Create(OpCodes.Pop));
 
             _onionToCSharpInjector.InjectBefore(
                 "Hooks", "OnDoOfflineWorldGen",
-                doWorldGenBody,
+                doWorldGenInitialiseBody,
                 callResetInstruction);
 
-            _csharpInstructionRemover.ReplaceByNop(doWorldGenBody, callResetInstruction);
+            _csharpInstructionRemover.ReplaceByNop(doWorldGenInitialiseBody, callResetInstruction);
         }
 
         private void InjectOnionDebugHandler()
         {
-            _csharpPublisher.MakeFieldPublic("DebugHandler", "enabled");
+            _csharpModule
+                .Types
+                .First(type => type.Name == "DebugHandler")
+                .Properties
+                .First(property => property.Name == "enabled")
+                .SetMethod
+                .IsPublic = true;
 
             var debugHandlerConstructorBody = CecilHelper.GetMethodDefinition(_csharpModule, "DebugHandler", ".ctor").Body;
 
             var lastInstruction = debugHandlerConstructorBody.Instructions.Last();
 
-            _onionToCSharpInjector.InjectBefore("Hooks", "OnDebugHandlerCtor", debugHandlerConstructorBody, lastInstruction, true);
+            _onionToCSharpInjector.InjectBefore("Hooks", "OnDebugHandlerCtor", debugHandlerConstructorBody, lastInstruction);
 
         }
 

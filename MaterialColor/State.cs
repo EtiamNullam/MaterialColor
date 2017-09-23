@@ -121,7 +121,7 @@ namespace MaterialColor
 
         public static readonly List<string> TileNames = new List<string>
         {
-            "Tile", "MeshTile", "InsulationTile", "GasPermeableMembrane", "TilePOI"
+            "Tile", "MeshTile", "InsulationTile", "GasPermeableMembrane", "TilePOI", "PlasticTile"
         };
     }
 }
