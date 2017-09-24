@@ -81,19 +81,19 @@ namespace Injector
                 InjectCellColorHandling();
                 InjectBuildingsSpecialCasesHandling();
 
-                //try
-                //{
-                //    InjectToggleButton();
-                //}
-                //catch (Exception e)
-                //{
-                //    if (Logger != null)
-                //    {
-                //        Logger.Log("Overlay menu button injection failed");
-                //        Logger.Log(e);
-                //    }
-                //}
+                try
+                {
+                    InjectToggleButton();
             }
+                catch (Exception e)
+            {
+                if (Logger != null)
+                {
+                    Logger.Log("Overlay menu button injection failed");
+                    Logger.Log(e);
+                }
+            }
+        }
 
             if (injectorState.InjectOnion)
             {
@@ -156,15 +156,50 @@ namespace Injector
 
         private void InjectToggleButton()
         {
+            ExtendMaxActionCount();
             InjectKeybindings();
-            AddLocalizationString();
+
             AddOverlayButton();
             AttachCustomActionToToggle();
         }
 
+        // TODO: notify user when injection fails
+        private void ExtendMaxActionCount()
+        {
+            const int MaxActionCount = 1000;
+
+            var kInputController = _firstPassModule.Types.FirstOrDefault(type => type.Name == "KInputController");
+
+            if (kInputController != null)
+            {
+                var keyDef = kInputController.NestedTypes.FirstOrDefault(nestedType => nestedType.Name == "KeyDef");
+
+                if (keyDef != null)
+                {
+                    var keyDefConstructorBody = keyDef.Methods.First(method => method.Name == ".ctor").Body;
+
+                    keyDefConstructorBody.Instructions.Last(instruction => instruction.OpCode == OpCodes.Ldc_I4)
+                        .Operand = MaxActionCount;
+
+                    var kInputControllerConstructorBody = CecilHelper.GetMethodDefinition(_firstPassModule, kInputController, ".ctor").Body;
+
+                    kInputControllerConstructorBody.Instructions.First(instruction => instruction.OpCode == OpCodes.Ldc_I4)
+                        .Operand = MaxActionCount;
+                }
+                else
+                {
+                    Logger.Log("Can't find type KInputController.KeyDef");
+                }
+            }
+            else
+            {
+                Logger.Log("Can't find type KInputController");
+            }
+        }
+
         private void InjectKeybindings()
         {
-            AddDefaultKeybinding(_csharpModule, _firstPassModule, KKeyCode.F6, Modifier.Alt, Action.Overlay12);
+            AddDefaultKeybinding(_csharpModule, _firstPassModule, KKeyCode.F6, Modifier.Alt, (Action)Common.IDs.ToggleMaterialColorOverlayAction);
         }
 
         // make it read and increase index, instead of hard values
@@ -204,57 +239,49 @@ namespace Injector
         // TODO: use other sprite, refactor
         private void AddOverlayButton()
         {
+            _csharpPublisher.MakeFieldPublic("OverlayMenu", "overlay_toggle_infos");
+
             var overlayMenu = _csharpModule.Types.First(type => type.Name == "OverlayMenu");
+
+            overlayMenu.NestedTypes.First(nestedType => nestedType.Name == "OverlayToggleInfo").IsPublic = true;
+
+            var onPrefabInitBody = CecilHelper.GetMethodDefinition(_csharpModule, overlayMenu, "OnPrefabInit").Body;
+
+            var loadOverlayToggleInfosInstuction = onPrefabInitBody.Instructions.First(instruction => instruction.OpCode == OpCodes.Ldfld);
+
+            _coreToCSharpInjector.InjectBefore(
+                "OverlayMenuManager", "OnOverlayMenuPrefabInit",
+                onPrefabInitBody, loadOverlayToggleInfosInstuction.Next, true);
+
+            return;
             var initializeTogglesMethod = overlayMenu.Methods.First(method => method.Name == "InitializeToggles");
             var lastAddInstruction = initializeTogglesMethod.Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Callvirt);
 
-            var toggleInfoConstructor = _csharpModule.Types.First(type => type.Name == "KIconToggleMenu")
-                .NestedTypes.First(type => type.Name == "ToggleInfo")
-                .Methods.First(method => method.Name == ".ctor");
+            var overlayToggleInfoConstructorReference = _csharpModule.Import(overlayMenu
+                .NestedTypes.First(nestedType => nestedType.Name == "OverlayToggleInfo")
+                .Methods.First(method => method.IsConstructor));
 
-            var boxToSimViewMode = initializeTogglesMethod.Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Box);
+            Logger.Log(overlayToggleInfoConstructorReference.FullName);
 
             var instructionsToAdd = new List<Instruction>
             {
                 Instruction.Create(OpCodes.Ldloc_0),
                 Instruction.Create(OpCodes.Ldstr, "Toggle MaterialColor"),
-                Instruction.Create(OpCodes.Ldstr, "overlay_materialcolor"), // probably wrong, reuse other sprite
+                Instruction.Create(OpCodes.Ldstr, "overlay_materialcolor"), // reuse other sprite
                 Instruction.Create(OpCodes.Ldc_I4, Common.IDs.ToggleMaterialColorOverlayID),
-                boxToSimViewMode,
-                Instruction.Create(OpCodes.Ldc_I4, (int)Action.Overlay12),
+                Instruction.Create(OpCodes.Box, _csharpModule.Import(CecilHelper.GetTypeDefinition(_csharpModule, "SimViewMode"))),
+                Instruction.Create(OpCodes.Ldstr, string.Empty),
+                Instruction.Create(OpCodes.Ldc_I4, Common.IDs.ToggleMaterialColorOverlayAction),
+                Instruction.Create(OpCodes.Box, _csharpModule.Import(CecilHelper.GetTypeDefinition(_firstPassModule, "Action"))),
                 Instruction.Create(OpCodes.Ldstr, "Toggles MaterialColor overlay"),
-                Instruction.Create(OpCodes.Ldstr, "MaterialColor"), // new version only
-                Instruction.Create(OpCodes.Newobj, toggleInfoConstructor),
+                Instruction.Create(OpCodes.Ldstr, "MaterialColor"),
+                Instruction.Create(OpCodes.Newobj, overlayToggleInfoConstructorReference),
                 lastAddInstruction
             };
 
             var inserter = new InstructionInserter(initializeTogglesMethod);
 
             inserter.InsertAfter(lastAddInstruction, instructionsToAdd);
-        }
-
-        // TODO: refactor
-        private void AddLocalizationString()
-        {
-            var inputBindings = _csharpModule
-                .Types
-                .First(type => type.Name == "INPUT_BINDINGS")
-                    .NestedTypes
-                    .First(type => type.Name == "ROOT");
-
-            var fieldDefinition = new FieldDefinition(
-                    "OVERLAY12",
-                    FieldAttributes.Static | FieldAttributes.Public,
-                    CecilHelper.GetTypeDefinition(_csharpModule, "LocString")
-                );
-
-            inputBindings.Fields.Add(fieldDefinition);
-
-            _materialToCSharpInjector.InjectAsFirst(
-                "InjectionEntry",
-                "SetLocalizationString",
-                "GlobalAssets",
-                "Awake");
         }
 
         /*
