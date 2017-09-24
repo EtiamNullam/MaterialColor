@@ -54,6 +54,7 @@
     <Compile Include="Data\InjectorState.cs" />
     <Compile Include="Data\MaterialColorState.cs" />
     <Compile Include="Data\OnionState.cs" />
+    <Compile Include="EventHashes.cs" />
     <Compile Include="IDs.cs" />
     <Compile Include="IO\FileChangeNotifier.cs" />
     <Compile Include="IO\Logger.cs" />

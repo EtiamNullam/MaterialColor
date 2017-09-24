@@ -97,10 +97,9 @@ namespace MaterialColor
                     : resultColor;
         }
 
-        public static bool EnterToggle(OverlayMenu overlayMenu, KIconToggleMenu.ToggleInfo toggleInfo)
+        public static bool EnterToggle(OverlayMenu overlayMenu, OverlayMenu.OverlayToggleInfo toggleInfo)
         {
-            if (toggleInfo.userData is SimViewMode userDataAsSimViewMode
-                && userDataAsSimViewMode == (SimViewMode)Common.IDs.ToggleMaterialColorOverlayID)
+            if (toggleInfo.simView == (SimViewMode)Common.IDs.ToggleMaterialColorOverlayID)
             {
                 State.ConfiguratorState.Enabled = !State.ConfiguratorState.Enabled;
                 UpdateBuildingsColors();
@@ -108,7 +107,10 @@ namespace MaterialColor
 
                 return true;
             }
-            else return false;
+            else
+            {
+                return false;
+            }
         }
 
         private static void RebuildAllTiles()
@@ -117,12 +119,6 @@ namespace MaterialColor
             {
                 World.Instance.blockTileRenderer.Rebuild(ObjectLayer.FoundationTile, i);
             }
-        }
-
-        // merge with EnterOnce?
-        public static void SetLocalizationString()
-        {
-            //STRINGS.INPUT_BINDINGS.ROOT.OVERLAY12 = "Toggle_MaterialColor_Overlay";
         }
 
         private static void OnOverlayChanged(SimViewMode obj)
