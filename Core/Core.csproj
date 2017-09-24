@@ -33,6 +33,17 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\GameManaged\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\GameManaged\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="System">
     </Reference>
     <Reference Include="System.Core">
@@ -45,11 +56,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KeybindingsManager.cs" />
+    <Compile Include="OverlayMenuManager.cs" />
     <Compile Include="UpdateQueueManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BuildActions\PostBuild.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{eda0cd77-3605-4c5a-aca6-6bbda16a24af}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

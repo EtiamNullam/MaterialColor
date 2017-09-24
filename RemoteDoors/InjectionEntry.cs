@@ -24,7 +24,6 @@ namespace RemoteDoors
                 {
                     if (door.IsOpen())
                     {
-                        // go to closing, locking or closedelay state? or closeblocked?
                         door.Close();
                     }
 
@@ -38,7 +37,6 @@ namespace RemoteDoors
                 {
                     if (!door.IsOpen())
                     {
-                        // go to unlocking or opening state?
                         door.Open();
                     }
 
