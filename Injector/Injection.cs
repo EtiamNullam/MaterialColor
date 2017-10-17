@@ -34,6 +34,14 @@ namespace Injector
         private InstructionRemover _csharpInstructionRemover;
         private Publisher _csharpPublisher;
 
+        // TODO: use
+        private bool _haveFailed;
+
+        public bool HaveFailed
+        {
+            get { return _haveFailed; }
+            set { _haveFailed = value; }
+        }
 
         private void Initialize(ModuleDefinition coreModule, ModuleDefinition materialModule, ModuleDefinition onionModule, ModuleDefinition remoteModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
         {
@@ -72,6 +80,25 @@ namespace Injector
                 EnableConsole();
             }
 
+            // temporary, debug
+            //try
+            //{
+            //    var method = CecilHelper.GetMethodDefinition(_csharpModule, "Grid", "InitializeCells");
+            //    method.Body.ExceptionHandlers.Add(new ExceptionHandler(ExceptionHandlerType.Catch)
+            //    {
+            //        TryStart = method.Body.Instructions.First(instr => instr.OpCode == OpCodes.Ldarg_0),
+            //        TryEnd = method.Body.Instructions.First(instr => instr.OpCode == OpCodes.Stelem_I2),
+            //        //HandlerStartEnd = ,
+            //        //HandlerEnd = ,
+            //    });
+            //}
+            //catch (Exception e)
+            //{
+            //    Logger.Log("Test event handler injection failed");
+            //    Logger.Log(e);
+            //}
+            //
+
             InjectCore();
             InjectRemoteDoors();
 
@@ -103,6 +130,16 @@ namespace Injector
             InjectPatchedSign();
             FixGameUpdateExceptionHandling();
         }
+
+        public enum State
+        {
+            NotFinished,
+            Successful,
+            Error
+        }
+
+        private State CurrentState => Injection.State.NotFinished;
+            
 
         private void InjectCore()
         {
@@ -390,15 +427,44 @@ namespace Injector
 
         private void InjectOnionDebugHandler()
         {
-            _csharpModule
+            var debugHandler = _csharpModule
                 .Types
-                .First(type => type.Name == "DebugHandler")
-                .Properties
-                .First(property => property.Name == "enabled")
-                .SetMethod
-                .IsPublic = true;
+                .FirstOrDefault(type => type.Name == "DebugHandler");
 
-            var debugHandlerConstructorBody = CecilHelper.GetMethodDefinition(_csharpModule, "DebugHandler", ".ctor").Body;
+            if (debugHandler != null)
+            {
+                // Switch to this code if enabled is reverted back to static
+                //var debugHandlerEnabledProperty = debugHandler
+                //    .Properties
+                //    .FirstOrDefault(property => property.Name == "enabled");
+
+                //if (debugHandlerEnabledProperty != null)
+                //{
+                //    debugHandlerEnabledProperty
+                //        .SetMethod
+                //        .IsPublic = true;
+                //}
+                //else
+                //{
+                    //Logger.Log("Can't find property DebugHandler.enabled");
+
+                    try
+                    {
+                        _csharpPublisher.MakeFieldPublic("DebugHandler", "enabled");
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log("Can't publish field DebugHandler.enabled");
+                        Logger.Log(e);
+                    }
+                //}
+            }
+            else
+            {
+                Logger.Log("Can't find type DebugHandler");
+            }
+
+            var debugHandlerConstructorBody = CecilHelper.GetMethodDefinition(_csharpModule, debugHandler, ".ctor").Body;
 
             var lastInstruction = debugHandlerConstructorBody.Instructions.Last();
 

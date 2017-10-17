@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Configurator.WPF.Views
@@ -7,7 +8,19 @@ namespace Configurator.WPF.Views
     {
         public ConfiguratorView()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
+            }
+            catch (Exception e)
+            {
+                var logger = new Common.IO.Logger(Common.Paths.ConfiguratorLogFileName);
+
+                logger.Log("ConfiguratorView init failed.");
+                logger.Log(e);
+
+                Application.Current.Shutdown(2);
+            }
         }
 
         private void OnStatusChanged(object sender, TextChangedEventArgs e)

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Injector.WPF.Views
@@ -7,7 +8,19 @@ namespace Injector.WPF.Views
     {
         public InjectorView()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
+            }
+            catch (Exception e)
+            {
+                var logger = new Common.IO.Logger(Common.Paths.InjectorLogFileName);
+
+                logger.Log("InjectorView init failed.");
+                logger.Log(e);
+
+                Application.Current.Shutdown(2);
+            }
         }
 
         private void OnStatusChanged(object sender, TextChangedEventArgs e)
