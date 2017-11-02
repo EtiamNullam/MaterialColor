@@ -433,31 +433,16 @@ namespace Injector
 
             if (debugHandler != null)
             {
-                // Switch to this code if enabled is reverted back to static
-                //var debugHandlerEnabledProperty = debugHandler
-                //    .Properties
-                //    .FirstOrDefault(property => property.Name == "enabled");
+                var debugHandlerEnabledProperty = debugHandler
+                    .Properties
+                    .FirstOrDefault(property => property.Name == "enabled");
 
-                //if (debugHandlerEnabledProperty != null)
-                //{
-                //    debugHandlerEnabledProperty
-                //        .SetMethod
-                //        .IsPublic = true;
-                //}
-                //else
-                //{
-                    //Logger.Log("Can't find property DebugHandler.enabled");
-
-                    try
-                    {
-                        _csharpPublisher.MakeFieldPublic("DebugHandler", "enabled");
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Log("Can't publish field DebugHandler.enabled");
-                        Logger.Log(e);
-                    }
-                //}
+                if (debugHandlerEnabledProperty != null)
+                {
+                    debugHandlerEnabledProperty
+                        .SetMethod
+                        .IsPublic = true;
+                }
             }
             else
             {
@@ -469,7 +454,6 @@ namespace Injector
             var lastInstruction = debugHandlerConstructorBody.Instructions.Last();
 
             _onionToCSharpInjector.InjectBefore("Hooks", "OnDebugHandlerCtor", debugHandlerConstructorBody, lastInstruction);
-
         }
 
         private void InjectOnionCameraController()
