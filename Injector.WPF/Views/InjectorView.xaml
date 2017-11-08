@@ -19,7 +19,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="80"/>
+            <RowDefinition Height="90"/>
             <RowDefinition Height="80"/>
             <RowDefinition Height="28"/>
             <RowDefinition/>
@@ -38,6 +38,7 @@
                 </Style>
             </StackPanel.Resources>
             <CheckBox Content="Inject _MaterialColor" IsChecked="{Binding State.InjectMaterialColor, Mode=TwoWay}"/>
+            <CheckBox Content="Inject overlay button and _hotkey" Margin="10,0,0,0" IsChecked="{Binding State.InjectMaterialColorOverlayButton, Mode=TwoWay}"/>
             <CheckBox Content="Inject _OnionPatcher" IsChecked="{Binding State.InjectOnion, Mode=TwoWay}"/>
             <CheckBox Content="Enable _debug log" IsChecked="{Binding State.EnableDebugConsole, Mode=TwoWay}" />
         </StackPanel>

@@ -80,25 +80,6 @@ namespace Injector
                 EnableConsole();
             }
 
-            // temporary, debug
-            //try
-            //{
-            //    var method = CecilHelper.GetMethodDefinition(_csharpModule, "Grid", "InitializeCells");
-            //    method.Body.ExceptionHandlers.Add(new ExceptionHandler(ExceptionHandlerType.Catch)
-            //    {
-            //        TryStart = method.Body.Instructions.First(instr => instr.OpCode == OpCodes.Ldarg_0),
-            //        TryEnd = method.Body.Instructions.First(instr => instr.OpCode == OpCodes.Stelem_I2),
-            //        //HandlerStartEnd = ,
-            //        //HandlerEnd = ,
-            //    });
-            //}
-            //catch (Exception e)
-            //{
-            //    Logger.Log("Test event handler injection failed");
-            //    Logger.Log(e);
-            //}
-            //
-
             InjectCore();
             InjectRemoteDoors();
 
@@ -108,19 +89,22 @@ namespace Injector
                 InjectCellColorHandling();
                 InjectBuildingsSpecialCasesHandling();
 
-                try
+                if (injectorState.InjectMaterialColorOverlayButton)
                 {
-                    InjectToggleButton();
-            }
-                catch (Exception e)
-            {
-                if (Logger != null)
-                {
-                    Logger.Log("Overlay menu button injection failed");
-                    Logger.Log(e);
+                    try
+                    {
+                        InjectToggleButton();
+                    }
+                    catch (Exception e)
+                    {
+                        if (Logger != null)
+                        {
+                            Logger.Log("Overlay menu button injection failed");
+                            Logger.Log(e);
+                        }
+                    }
                 }
             }
-        }
 
             if (injectorState.InjectOnion)
             {
@@ -138,8 +122,8 @@ namespace Injector
             Error
         }
 
+        // TODO: start using it to inform user about the injection result
         private State CurrentState => Injection.State.NotFinished;
-            
 
         private void InjectCore()
         {
