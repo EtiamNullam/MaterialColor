@@ -232,29 +232,45 @@ namespace Injector
             var stoBindingEntryInstruction = beforeFieldInit.Body.Instructions.First(instruction => instruction.OpCode == OpCodes.Stobj);
             var newBindingEntryInstruction = beforeFieldInit.Body.Instructions.First(instruction => instruction.OpCode == OpCodes.Newobj);
 
-            var instructionsToAdd = new List<Instruction>
+            var lastDupInstruction = beforeFieldInit.Body.Instructions.FirstOrDefault(instr => instr.OpCode == OpCodes.Dup);
+
+            if (lastDupInstruction != null)
             {
-                Instruction.Create(OpCodes.Dup),
-                Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)0x6E), // index 
-                Instruction.Create(OpCodes.Ldelema, (TypeReference)stoBindingEntryInstruction.Operand),
-                Instruction.Create(OpCodes.Ldstr, screen),
-                Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)16), // gamepad button
-                Instruction.Create(OpCodes.Ldc_I4, (int)keyCode),
-                Instruction.Create(OpCodes.Ldc_I4, (int)keyModifier),
-                Instruction.Create(OpCodes.Ldc_I4, (int)action),
-                Instruction.Create(OpCodes.Ldc_I4_1), // rebindable = true
-                newBindingEntryInstruction, // create new object
-                stoBindingEntryInstruction // store in array
-            };
+                var lastEntryIndex = (int)lastDupInstruction.Next.Operand;
 
-            var ILProcessor = beforeFieldInit.Body.GetILProcessor();
+                var instructionsToAdd = new List<Instruction>
+                {
+                    Instruction.Create(OpCodes.Dup),
+                    //Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)0x6E), // index 
+                    Instruction.Create(OpCodes.Ldc_I4, lastEntryIndex + 1), // index 
+                    Instruction.Create(OpCodes.Ldelema, (TypeReference)stoBindingEntryInstruction.Operand),
+                    Instruction.Create(OpCodes.Ldstr, screen),
+                    Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)16), // gamepad button
+                    Instruction.Create(OpCodes.Ldc_I4, (int)keyCode),
+                    Instruction.Create(OpCodes.Ldc_I4, (int)keyModifier),
+                    Instruction.Create(OpCodes.Ldc_I4, (int)action),
+                    Instruction.Create(OpCodes.Ldc_I4_1), // rebindable = true
+                    newBindingEntryInstruction, // create new object
+                    stoBindingEntryInstruction // store in array
+                };
 
-            // increase array size by one
-            var firstInstruction = beforeFieldInit.Body.Instructions.First();
+                var ILProcessor = beforeFieldInit.Body.GetILProcessor();
 
-            ILProcessor.Replace(firstInstruction, Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)0x6F));
-            //
-            new InstructionInserter(ILProcessor).InsertAfter(lastKeybindingDeclarationEnd, instructionsToAdd);
+                // increase array size by one
+                    var arraySizeSetInstruction = beforeFieldInit.Body.Instructions.First();
+
+                    //
+                    ILProcessor.Replace(arraySizeSetInstruction, Instruction.Create(OpCodes.Ldc_I4, (int)arraySizeSetInstruction.Operand + 1));
+                    //
+                //
+
+                new InstructionInserter(ILProcessor).InsertAfter(lastKeybindingDeclarationEnd, instructionsToAdd);
+            }
+            else
+            {
+                Logger.Log("Can't find last duplication instruction at GameInputMapping.cctor");
+            }
+
         }
 
         // TODO: use other sprite, refactor
