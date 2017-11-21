@@ -147,11 +147,11 @@ namespace Injector
 
         private void InjectCellColorHandling()
         {
-            _csharpInstructionRemover.ClearAllButLast("BlockTileRenderer", "GetCellColor");
+            _csharpInstructionRemover.ClearAllButLast("BlockTileRenderer", "GetCellColour");
 
             _materialToCSharpInjector.InjectAsFirst(
                 "InjectionEntry", "EnterCell",
-                "BlockTileRenderer", "GetCellColor",
+                "BlockTileRenderer", "GetCellColour",
                 true, 1);
 
             _csharpPublisher.MakeFieldPublic("BlockTileRenderer", "selectedCell");
