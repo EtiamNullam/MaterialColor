@@ -336,11 +336,16 @@ namespace Injector
             _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 1);
             _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 2);
             _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 3);
+            _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 4);
+            _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 5);
+            _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 6);
 
-            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 8);
-            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 9);
             _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 10);
             _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 11);
+            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 12);
+            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 13);
+            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 14);
+            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 15);
         }
 
         private void FixGameUpdateExceptionHandling()
