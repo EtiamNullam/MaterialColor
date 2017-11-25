@@ -34,6 +34,14 @@ namespace Injector
         private InstructionRemover _csharpInstructionRemover;
         private Publisher _csharpPublisher;
 
+        // TODO: use
+        private bool _haveFailed;
+
+        public bool HaveFailed
+        {
+            get { return _haveFailed; }
+            set { _haveFailed = value; }
+        }
 
         private void Initialize(ModuleDefinition coreModule, ModuleDefinition materialModule, ModuleDefinition onionModule, ModuleDefinition remoteModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
         {
@@ -81,19 +89,22 @@ namespace Injector
                 InjectCellColorHandling();
                 InjectBuildingsSpecialCasesHandling();
 
-                try
+                if (injectorState.InjectMaterialColorOverlayButton)
                 {
-                    InjectToggleButton();
-            }
-                catch (Exception e)
-            {
-                if (Logger != null)
-                {
-                    Logger.Log("Overlay menu button injection failed");
-                    Logger.Log(e);
+                    try
+                    {
+                        InjectToggleButton();
+                    }
+                    catch (Exception e)
+                    {
+                        if (Logger != null)
+                        {
+                            Logger.Log("Overlay menu button injection failed");
+                            Logger.Log(e);
+                        }
+                    }
                 }
             }
-        }
 
             if (injectorState.InjectOnion)
             {
@@ -103,6 +114,16 @@ namespace Injector
             InjectPatchedSign();
             FixGameUpdateExceptionHandling();
         }
+
+        public enum State
+        {
+            NotFinished,
+            Successful,
+            Error
+        }
+
+        // TODO: start using it to inform user about the injection result
+        private State CurrentState => Injection.State.NotFinished;
 
         private void InjectCore()
         {
@@ -126,11 +147,11 @@ namespace Injector
 
         private void InjectCellColorHandling()
         {
-            _csharpInstructionRemover.ClearAllButLast("BlockTileRenderer", "GetCellColor");
+            _csharpInstructionRemover.ClearAllButLast("BlockTileRenderer", "GetCellColour");
 
             _materialToCSharpInjector.InjectAsFirst(
                 "InjectionEntry", "EnterCell",
-                "BlockTileRenderer", "GetCellColor",
+                "BlockTileRenderer", "GetCellColour",
                 true, 1);
 
             _csharpPublisher.MakeFieldPublic("BlockTileRenderer", "selectedCell");
@@ -202,7 +223,6 @@ namespace Injector
             AddDefaultKeybinding(_csharpModule, _firstPassModule, KKeyCode.F6, Modifier.Alt, (Action)Common.IDs.ToggleMaterialColorOverlayAction);
         }
 
-        // make it read and increase index, instead of hard values
         private void AddDefaultKeybinding(ModuleDefinition CSharpModule, ModuleDefinition FirstPassModule, KKeyCode keyCode, Modifier keyModifier, Action action, string screen = "Root")
         {
             var beforeFieldInit = CecilHelper.GetMethodDefinition(FirstPassModule, CecilHelper.GetTypeDefinition(FirstPassModule, "GameInputMapping"), ".cctor");
@@ -211,29 +231,42 @@ namespace Injector
             var stoBindingEntryInstruction = beforeFieldInit.Body.Instructions.First(instruction => instruction.OpCode == OpCodes.Stobj);
             var newBindingEntryInstruction = beforeFieldInit.Body.Instructions.First(instruction => instruction.OpCode == OpCodes.Newobj);
 
-            var instructionsToAdd = new List<Instruction>
+            var lastDupInstruction = beforeFieldInit.Body.Instructions.LastOrDefault(instr => instr.OpCode == OpCodes.Dup);
+
+            if (lastDupInstruction != null)
             {
-                Instruction.Create(OpCodes.Dup),
-                Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)0x6E), // index 
-                Instruction.Create(OpCodes.Ldelema, (TypeReference)stoBindingEntryInstruction.Operand),
-                Instruction.Create(OpCodes.Ldstr, screen),
-                Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)16), // gamepad button
-                Instruction.Create(OpCodes.Ldc_I4, (int)keyCode),
-                Instruction.Create(OpCodes.Ldc_I4, (int)keyModifier),
-                Instruction.Create(OpCodes.Ldc_I4, (int)action),
-                Instruction.Create(OpCodes.Ldc_I4_1), // rebindable = true
-                newBindingEntryInstruction, // create new object
-                stoBindingEntryInstruction // store in array
-            };
+                var lastEntryIndex = Convert.ToInt32(lastDupInstruction.Next.Operand);
 
-            var ILProcessor = beforeFieldInit.Body.GetILProcessor();
+                var instructionsToAdd = new List<Instruction>
+                {
+                    Instruction.Create(OpCodes.Dup),
+                    Instruction.Create(OpCodes.Ldc_I4, lastEntryIndex + 1), // index 
+                    Instruction.Create(OpCodes.Ldelema, (TypeReference)stoBindingEntryInstruction.Operand),
+                    Instruction.Create(OpCodes.Ldstr, screen),
+                    Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)16), // gamepad button
+                    Instruction.Create(OpCodes.Ldc_I4, (int)keyCode),
+                    Instruction.Create(OpCodes.Ldc_I4, (int)keyModifier),
+                    Instruction.Create(OpCodes.Ldc_I4, (int)action),
+                    Instruction.Create(OpCodes.Ldc_I4_1), // rebindable = true
+                    Instruction.Create(OpCodes.Ldc_I4_1), // ignore root conflicts = true
+                    newBindingEntryInstruction, // create new object
+                    stoBindingEntryInstruction // store in array
+                };
 
-            // increase array size by one
-            var firstInstruction = beforeFieldInit.Body.Instructions.First();
+                var ILProcessor = beforeFieldInit.Body.GetILProcessor();
 
-            ILProcessor.Replace(firstInstruction, Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)0x6F));
-            //
-            new InstructionInserter(ILProcessor).InsertAfter(lastKeybindingDeclarationEnd, instructionsToAdd);
+                // increase array size by one
+                    var arraySizeSetInstruction = beforeFieldInit.Body.Instructions.First();
+                    ILProcessor.Replace(arraySizeSetInstruction, Instruction.Create(OpCodes.Ldc_I4, (int)arraySizeSetInstruction.Operand + 1));
+                //
+
+                new InstructionInserter(ILProcessor).InsertAfter(lastKeybindingDeclarationEnd, instructionsToAdd);
+            }
+            else
+            {
+                Logger.Log("Can't find last duplication instruction at GameInputMapping.cctor");
+            }
+
         }
 
         // TODO: use other sprite, refactor
@@ -254,14 +287,14 @@ namespace Injector
                 onPrefabInitBody, loadOverlayToggleInfosInstuction.Next, true);
 
             return;
+
             var initializeTogglesMethod = overlayMenu.Methods.First(method => method.Name == "InitializeToggles");
             var lastAddInstruction = initializeTogglesMethod.Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Callvirt);
 
             var overlayToggleInfoConstructorReference = _csharpModule.Import(overlayMenu
                 .NestedTypes.First(nestedType => nestedType.Name == "OverlayToggleInfo")
-                .Methods.First(method => method.IsConstructor));
-
-            Logger.Log(overlayToggleInfoConstructorReference.FullName);
+                //.Methods.First(method => method.IsConstructor));
+                .Methods.First(method => method.Name == ".ctor"));
 
             var instructionsToAdd = new List<Instruction>
             {
@@ -299,11 +332,16 @@ namespace Injector
             _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 1);
             _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 2);
             _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 3);
+            _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 4);
+            _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 5);
+            _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 6);
 
-            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 8);
-            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 9);
             _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 10);
             _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 11);
+            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 12);
+            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 13);
+            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 14);
+            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 15);
         }
 
         private void FixGameUpdateExceptionHandling()
@@ -390,20 +428,33 @@ namespace Injector
 
         private void InjectOnionDebugHandler()
         {
-            _csharpModule
+            var debugHandler = _csharpModule
                 .Types
-                .First(type => type.Name == "DebugHandler")
-                .Properties
-                .First(property => property.Name == "enabled")
-                .SetMethod
-                .IsPublic = true;
+                .FirstOrDefault(type => type.Name == "DebugHandler");
 
-            var debugHandlerConstructorBody = CecilHelper.GetMethodDefinition(_csharpModule, "DebugHandler", ".ctor").Body;
+            if (debugHandler != null)
+            {
+                var debugHandlerEnabledProperty = debugHandler
+                    .Properties
+                    .FirstOrDefault(property => property.Name == "enabled");
+
+                if (debugHandlerEnabledProperty != null)
+                {
+                    debugHandlerEnabledProperty
+                        .SetMethod
+                        .IsPublic = true;
+                }
+            }
+            else
+            {
+                Logger.Log("Can't find type DebugHandler");
+            }
+
+            var debugHandlerConstructorBody = CecilHelper.GetMethodDefinition(_csharpModule, debugHandler, ".ctor").Body;
 
             var lastInstruction = debugHandlerConstructorBody.Instructions.Last();
 
             _onionToCSharpInjector.InjectBefore("Hooks", "OnDebugHandlerCtor", debugHandlerConstructorBody, lastInstruction);
-
         }
 
         private void InjectOnionCameraController()

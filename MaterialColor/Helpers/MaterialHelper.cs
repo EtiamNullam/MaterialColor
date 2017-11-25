@@ -1,4 +1,6 @@
-﻿namespace MaterialColor.Helpers
+﻿using System;
+
+namespace MaterialColor.Helpers
 {
     public static class MaterialHelper
     {
@@ -9,13 +11,46 @@
                 return SimHashes.Vacuum;
             }
 
-            var cellElementIndex = Grid.Cell[cellIndex].elementIdx;
+            return TryCellIndexToSimHash(cellIndex);
+        }
+
+        private static SimHashes TryCellIndexToSimHash(int cellIndex)
+        {
+            try
+            {
+                return CellIndexToSimHash(cellIndex);
+            }
+            catch (Exception e)
+            {
+                State.Logger.Log("Cell or element index from index failed");
+                State.Logger.Log(e);
+            }
+
+            return SimHashes.Vacuum;
+        }
+
+        private static SimHashes CellIndexToSimHash(int cellIndex)
+        {
+            var cell = Grid.Cell[cellIndex];
+
+            var cellElementIndex = cell.elementIdx;
             var element = ElementLoader.elements[cellElementIndex];
 
-            return element.id;
+            if (element != null)
+            {
+                return element.id;
+            }
+            else
+            {
+                State.Logger.Log("Element from cell failed.");
+            }
+
+            return SimHashes.Vacuum;
         }
 
         public static SimHashes ExtractMaterial(KAnimControllerBase kAnimController)
-            => kAnimController.GetComponent<PrimaryElement>().ElementID;
+            => kAnimController
+                .GetComponent<PrimaryElement>()
+                    .ElementID;
     }
 }

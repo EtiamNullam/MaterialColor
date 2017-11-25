@@ -35,5 +35,6 @@ namespace Common
         public const string ConfiguratorLogFileName = "ConfiguratorLog.txt";
         public const string InjectorLogFileName = "InjectorLog.txt";
         public const string OnionLogFileName = "OnionLog.txt";
+        public const string CommonLogFileName = "CommonLog.txt";
     }
 }

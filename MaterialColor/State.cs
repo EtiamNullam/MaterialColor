@@ -52,8 +52,14 @@ namespace MaterialColor
             {
                 if (_elementColorInfos == null)
                 {
-                    _jsonLoader.TryLoadElementColorInfos(out var colorInfos);
-                    ElementColorInfos = colorInfos;
+                    if (_jsonLoader.TryLoadElementColorInfos(out var colorInfos))
+                    {
+                        ElementColorInfos = colorInfos;
+                    }
+                    else
+                    {
+                        ElementColorInfos = new Dictionary<SimHashes, ElementColorInfo>();
+                    }
                 }
 
                 return _elementColorInfos;
@@ -119,9 +125,10 @@ namespace MaterialColor
             return false;
         }
 
+        // TODO: load from file instead
         public static readonly List<string> TileNames = new List<string>
         {
-            "Tile", "MeshTile", "InsulationTile", "GasPermeableMembrane", "TilePOI", "PlasticTile"
+            "Tile", "MeshTile", "InsulationTile", "GasPermeableMembrane", "TilePOI", "PlasticTile", "MetalTile"
         };
     }
 }

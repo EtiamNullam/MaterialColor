@@ -1,5 +1,6 @@
 ﻿namespace Injector.IO
 {
+    // TODO: switch to Path.GetDirectorySeparator
     public static class Paths
     {
         public static string DefaultCoreAssemblyPath = "OxygenNotIncluded_Data\\Managed\\Core.dll";
