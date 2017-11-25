@@ -63,14 +63,12 @@ namespace MaterialColor.IO
             }
             catch (Exception e)
             {
-                var message = "Can't load ElementColorInfos\n" + e.Message + '\n';
+                var message = "Can't load ElementColorInfos";
 
-                if (State.ConfiguratorState != null && State.ConfiguratorState.ShowDetailedErrorInfo)
-                {
-                    message += '\n' + e.StackTrace;
-                }
+                Debug.LogError(message + '\n' + e.Message + '\n');
 
-                Debug.LogError(message);
+                State.Logger.Log(message);
+                State.Logger.Log(e);
 
                 elementColorInfos = new Dictionary<SimHashes, ElementColorInfo>();
                 return false;
@@ -86,14 +84,12 @@ namespace MaterialColor.IO
             }
             catch (Exception e)
             {
-                var message = "Can't load TypeColorOffsets\n" + e.Message + '\n';
+                var message = "Can't load TypeColorOffsets";
 
-                if (State.ConfiguratorState != null && State.ConfiguratorState.ShowDetailedErrorInfo)
-                {
-                    message += '\n' + e.StackTrace;
-                }
+                Debug.LogError(message + '\n' + e.Message + '\n');
 
-                Debug.LogError(message);
+                State.Logger.Log(message);
+                State.Logger.Log(e);
 
                 typeColorOffsets = new Dictionary<string, Color32>();
                 return false;

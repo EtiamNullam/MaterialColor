@@ -15,6 +15,8 @@ namespace Common.Data
         public bool ShowMissingElementColorInfos { get; set; }
         public bool ShowMissingTypeColorOffsets { get; set; }
         public bool ShowBuildingsAsWhite { get; set; }
+
+        // not really used, remove?
         public bool ShowDetailedErrorInfo { get; set; }
 
         public bool RemoteDoorsEnabled { get; set; } = false;

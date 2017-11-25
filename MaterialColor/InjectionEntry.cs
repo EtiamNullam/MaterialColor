@@ -1,15 +1,13 @@
 ﻿using Common;
 using Common.IO;
-using Common.Json;
-using MaterialColor.Extensions;
 using MaterialColor.Helpers;
-using MaterialColor.IO;
 using System;
 using System.IO;
 using UnityEngine;
 
 namespace MaterialColor
 {
+    // TODO: move most of this stuff to Core
     public static class InjectionEntry
     {
         private static bool Initialized = false;
@@ -51,21 +49,29 @@ namespace MaterialColor
 
         public static void EnterEveryUpdate()
         {
-            if (_firstUpdate)
+            try
             {
-                if (OverlayScreen.Instance != null)
+                if (_firstUpdate)
                 {
-                    OverlayScreen.Instance.OnOverlayChanged += OnOverlayChanged;
-                    _firstUpdate = false;
+                    if (OverlayScreen.Instance != null)
+                    {
+                        OverlayScreen.Instance.OnOverlayChanged += OnOverlayChanged;
+                        _firstUpdate = false;
+                    }
+                    else State.Logger.Log("OverlayScreen.Instance is null");
                 }
-                else State.Logger.Log("OverlayScreen.Instance is null");
-            }
 
-            if (ElementColorInfosChanged || TypeColorOffsetsChanged || ConfiguratorStateChanged)
+                if (ElementColorInfosChanged || TypeColorOffsetsChanged || ConfiguratorStateChanged)
+                {
+                    UpdateBuildingsColors();
+                    RebuildAllTiles();
+                    ElementColorInfosChanged = TypeColorOffsetsChanged = ConfiguratorStateChanged = false;
+                }
+            }
+            catch (Exception e)
             {
-                UpdateBuildingsColors();
-                RebuildAllTiles();
-                ElementColorInfosChanged = TypeColorOffsetsChanged = ConfiguratorStateChanged = false;
+                State.Logger.Log("EnterEveryUpdate failed.");
+                State.Logger.Log(e);
             }
         }
 
@@ -73,42 +79,61 @@ namespace MaterialColor
         {
             Color resultColor;
 
-            if (State.ConfiguratorState.Enabled)
+            try
             {
-                switch (State.ConfiguratorState.ColorMode)
+                if (State.ConfiguratorState.Enabled)
                 {
-                    case Common.Data.ColorMode.Json:
-                        resultColor = ColorHelper.GetCellColorJson(cellIndex);
-                        break;
-                    case Common.Data.ColorMode.DebugColor:
-                        resultColor = ColorHelper.GetCellColorDebug(cellIndex);
-                        break;
-                    default:
-                        resultColor = ColorHelper.GetDefaultCellColor();
-                        break;
+                    switch (State.ConfiguratorState.ColorMode)
+                    {
+                        case Common.Data.ColorMode.Json:
+                            resultColor = ColorHelper.GetCellColorJson(cellIndex);
+                            break;
+                        case Common.Data.ColorMode.DebugColor:
+                            resultColor = ColorHelper.GetCellColorDebug(cellIndex);
+                            break;
+                        default:
+                            resultColor = ColorHelper.GetDefaultCellColor();
+                            break;
+                    }
                 }
-            }
-            else resultColor = ColorHelper.GetDefaultCellColor();
+                else resultColor = ColorHelper.GetDefaultCellColor();
 
-            return blockRenderer.highlightCell == cellIndex
-                ? resultColor * 1.25f
-                : blockRenderer.selectedCell == cellIndex
-                    ? resultColor * 1.5f
-                    : resultColor;
+                return blockRenderer.highlightCell == cellIndex
+                    ? resultColor * 1.25f
+                    : blockRenderer.selectedCell == cellIndex
+                        ? resultColor * 1.5f
+                        : resultColor;
+            }
+            catch (Exception e)
+            {
+                State.Logger.Log("EnterCell failed.");
+                State.Logger.Log(e);
+
+                return ColorHelper.GetDefaultCellColor();
+            }
         }
 
         public static bool EnterToggle(OverlayMenu overlayMenu, OverlayMenu.OverlayToggleInfo toggleInfo)
         {
-            if (toggleInfo.simView == (SimViewMode)Common.IDs.ToggleMaterialColorOverlayID)
+            try
             {
-                State.ConfiguratorState.Enabled = !State.ConfiguratorState.Enabled;
-                UpdateBuildingsColors();
-                RebuildAllTiles();
+                if (toggleInfo.simView == (SimViewMode)Common.IDs.ToggleMaterialColorOverlayID)
+                {
+                    State.ConfiguratorState.Enabled = !State.ConfiguratorState.Enabled;
+                    UpdateBuildingsColors();
+                    RebuildAllTiles();
 
-                return true;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            else
+            catch (Exception e)
             {
+                State.Logger.Log("EnterToggle failed.");
+                State.Logger.Log(e);
                 return false;
             }
         }
@@ -123,9 +148,18 @@ namespace MaterialColor
 
         private static void OnOverlayChanged(SimViewMode obj)
         {
-            if (State.ConfiguratorState.Enabled && obj == SimViewMode.None)
+            try
             {
-                UpdateBuildingsColors();
+                if (State.ConfiguratorState.Enabled && obj == SimViewMode.None)
+                {
+                    UpdateBuildingsColors();
+                }
+
+            }
+            catch(Exception e)
+            {
+                State.Logger.Log("OnOverlayChangedFailed");
+                State.Logger.Log(e);
             }
         }
 
@@ -133,23 +167,55 @@ namespace MaterialColor
         {
             var jsonFilter = "*.json";
 
-            FileChangeNotifier.StartFileWatch(jsonFilter, Paths.ElementColorInfosDirectory, OnElementColorsInfosChanged);
-            FileChangeNotifier.StartFileWatch(jsonFilter, Paths.TypeColorOffsetsDirectory, OnTypeColorOffsetsChanged);
+            try
+            {
+                FileChangeNotifier.StartFileWatch(jsonFilter, Paths.ElementColorInfosDirectory, OnElementColorsInfosChanged);
+                FileChangeNotifier.StartFileWatch(jsonFilter, Paths.TypeColorOffsetsDirectory, OnTypeColorOffsetsChanged);
 
-            FileChangeNotifier.StartFileWatch(Paths.MaterialColorStateFileName, Paths.MaterialConfigPath, OnMaterialStateChanged);
+                FileChangeNotifier.StartFileWatch(Paths.MaterialColorStateFileName, Paths.MaterialConfigPath, OnMaterialStateChanged);
+            }
+            catch (Exception e)
+            {
+                State.Logger.Log("SubscribeToFIleChangeNotifierFailed");
+                State.Logger.Log(e);
+            }
         }
 
         private static void UpdateBuildingsColors()
         {
-            foreach (var building in Components.BuildingCompletes)
+            State.Logger.Log($"Trying to update {Components.BuildingCompletes.Count} buildings");
+
+            try
             {
-                OnBuildingsCompletesAdd(building);
+                foreach (var building in Components.BuildingCompletes)
+                {
+                    OnBuildingsCompletesAdd(building);
+                }
+            }
+            catch (Exception e)
+            {
+                State.Logger.Log("Buildings colors update failed.");
+                State.Logger.Log(e);
             }
         }
 
+        #region Event Handling
+
         private static void OnElementColorsInfosChanged(object sender, FileSystemEventArgs e)
         {
-            if (State.TryReloadElementColorInfos())
+            bool reloadColorInfosResult = false;
+
+            try
+            {
+                reloadColorInfosResult = State.TryReloadElementColorInfos();
+            }
+            catch (Exception ex)
+            {
+                State.Logger.Log("ReloadElementColorInfos failed.");
+                State.Logger.Log(ex);
+            }
+
+            if (reloadColorInfosResult)
             {
                 ElementColorInfosChanged = true;
 
@@ -157,6 +223,10 @@ namespace MaterialColor
 
                 State.Logger.Log(message);
                 Debug.LogError(message);
+            }
+            else
+            {
+                State.Logger.Log("Reload element color infos failed");
             }
         }
 
@@ -188,5 +258,7 @@ namespace MaterialColor
 
         private static void OnBuildingsCompletesAdd(BuildingComplete building)
             => ColorHelper.UpdateBuildingColor(building);
+
+        #endregion
     }
 }

@@ -27,15 +27,28 @@ namespace Injector.WPF.ViewModels
 
             State = TryLoadLastAppState();
 
-            if (!IsCSharpPatched && CanRestoreCSharpBackup())
+            try
             {
-                Status = "Warning: A backup for Assembly-CSharp.dll exists, but current assembly doesn't appear to be patched. Patching without restoring backup is advised.";
-            }
+                if (!IsCSharpPatched && CanRestoreCSharpBackup())
+                {
+                    Status = GetNotPatchedWithBackupMessage("Assembly-CSharp.dll");
+                }
 
-            if (!IsFirstpassPatched && CanRestoreFirstpassBackup())
-            {
-                Status = "Warning: A backup for Assembly-CSharp-firstpass.dll exists, but current assembly doesn't appear to be patched. Patching without restoring backup is advised.";
+                if (!IsFirstpassPatched && CanRestoreFirstpassBackup())
+                {
+                    Status = GetNotPatchedWithBackupMessage("Assembly-CSharp-firstpass.dll");
+                }
             }
+            catch (Exception e)
+            {
+                _logger.Log("Error while trying to determine if assemblies are patched.");
+                _logger.Log(e);
+            }
+        }
+
+        private string GetNotPatchedWithBackupMessage(string fileName)
+        {
+            return $"Warning: A backup for {fileName} exists, but current assembly doesn't appear to be patched. Patching without restoring backup is advised.";
         }
 
         public DelegateCommand PatchCommand { get; private set; }
