@@ -287,12 +287,14 @@ namespace Injector
                 onPrefabInitBody, loadOverlayToggleInfosInstuction.Next, true);
 
             return;
+
             var initializeTogglesMethod = overlayMenu.Methods.First(method => method.Name == "InitializeToggles");
             var lastAddInstruction = initializeTogglesMethod.Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Callvirt);
 
             var overlayToggleInfoConstructorReference = _csharpModule.Import(overlayMenu
                 .NestedTypes.First(nestedType => nestedType.Name == "OverlayToggleInfo")
-                .Methods.First(method => method.IsConstructor));
+                //.Methods.First(method => method.IsConstructor));
+                .Methods.First(method => method.Name == ".ctor"));
 
             var instructionsToAdd = new List<Instruction>
             {
