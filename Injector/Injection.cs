@@ -240,7 +240,6 @@ namespace Injector
                 var instructionsToAdd = new List<Instruction>
                 {
                     Instruction.Create(OpCodes.Dup),
-                    //Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)0x6E), // index 
                     Instruction.Create(OpCodes.Ldc_I4, lastEntryIndex + 1), // index 
                     Instruction.Create(OpCodes.Ldelema, (TypeReference)stoBindingEntryInstruction.Operand),
                     Instruction.Create(OpCodes.Ldstr, screen),
@@ -258,10 +257,7 @@ namespace Injector
 
                 // increase array size by one
                     var arraySizeSetInstruction = beforeFieldInit.Body.Instructions.First();
-
-                    //
                     ILProcessor.Replace(arraySizeSetInstruction, Instruction.Create(OpCodes.Ldc_I4, (int)arraySizeSetInstruction.Operand + 1));
-                    //
                 //
 
                 new InstructionInserter(ILProcessor).InsertAfter(lastKeybindingDeclarationEnd, instructionsToAdd);
@@ -297,8 +293,6 @@ namespace Injector
             var overlayToggleInfoConstructorReference = _csharpModule.Import(overlayMenu
                 .NestedTypes.First(nestedType => nestedType.Name == "OverlayToggleInfo")
                 .Methods.First(method => method.IsConstructor));
-
-            Logger.Log(overlayToggleInfoConstructorReference.FullName);
 
             var instructionsToAdd = new List<Instruction>
             {
