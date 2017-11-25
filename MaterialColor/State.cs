@@ -125,9 +125,10 @@ namespace MaterialColor
             return false;
         }
 
+        // TODO: load from file instead
         public static readonly List<string> TileNames = new List<string>
         {
-            "Tile", "MeshTile", "InsulationTile", "GasPermeableMembrane", "TilePOI", "PlasticTile"
+            "Tile", "MeshTile", "InsulationTile", "GasPermeableMembrane", "TilePOI", "PlasticTile", "MetalTile"
         };
     }
 }
