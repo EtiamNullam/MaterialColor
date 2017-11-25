@@ -232,11 +232,11 @@ namespace Injector
             var stoBindingEntryInstruction = beforeFieldInit.Body.Instructions.First(instruction => instruction.OpCode == OpCodes.Stobj);
             var newBindingEntryInstruction = beforeFieldInit.Body.Instructions.First(instruction => instruction.OpCode == OpCodes.Newobj);
 
-            var lastDupInstruction = beforeFieldInit.Body.Instructions.FirstOrDefault(instr => instr.OpCode == OpCodes.Dup);
+            var lastDupInstruction = beforeFieldInit.Body.Instructions.LastOrDefault(instr => instr.OpCode == OpCodes.Dup);
 
             if (lastDupInstruction != null)
             {
-                var lastEntryIndex = (int)lastDupInstruction.Next.Operand;
+                var lastEntryIndex = Convert.ToInt32(lastDupInstruction.Next.Operand);
 
                 var instructionsToAdd = new List<Instruction>
                 {
@@ -250,6 +250,7 @@ namespace Injector
                     Instruction.Create(OpCodes.Ldc_I4, (int)keyModifier),
                     Instruction.Create(OpCodes.Ldc_I4, (int)action),
                     Instruction.Create(OpCodes.Ldc_I4_1), // rebindable = true
+                    Instruction.Create(OpCodes.Ldc_I4_1), // ignore root conflicts = true
                     newBindingEntryInstruction, // create new object
                     stoBindingEntryInstruction // store in array
                 };
