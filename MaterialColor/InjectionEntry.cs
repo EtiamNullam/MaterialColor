@@ -183,6 +183,8 @@ namespace MaterialColor
 
         private static void UpdateBuildingsColors()
         {
+            State.Logger.Log($"Trying to update {Components.BuildingCompletes.Count} buildings");
+
             try
             {
                 foreach (var building in Components.BuildingCompletes)
@@ -192,7 +194,7 @@ namespace MaterialColor
             }
             catch (Exception e)
             {
-                State.Logger.Log("UpdateBuildingColors failed.");
+                State.Logger.Log("Buildings colors update failed.");
                 State.Logger.Log(e);
             }
         }
