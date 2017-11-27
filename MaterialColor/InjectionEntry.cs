@@ -144,6 +144,7 @@ namespace MaterialColor
             {
                 World.Instance.blockTileRenderer.Rebuild(ObjectLayer.FoundationTile, i);
             }
+            State.Logger.Log("All tiles rebuilt.");
         }
 
         private static void OnOverlayChanged(SimViewMode obj)
@@ -183,7 +184,7 @@ namespace MaterialColor
 
         private static void UpdateBuildingsColors()
         {
-            State.Logger.Log($"Trying to update {Components.BuildingCompletes.Count} buildings");
+            State.Logger.Log($"Trying to update {Components.BuildingCompletes.Count} buildings.");
 
             try
             {
@@ -191,6 +192,7 @@ namespace MaterialColor
                 {
                     OnBuildingsCompletesAdd(building);
                 }
+                State.Logger.Log($"Buildings updated successfully.");
             }
             catch (Exception e)
             {
