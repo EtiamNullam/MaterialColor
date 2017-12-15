@@ -33,7 +33,6 @@ namespace MaterialColor.Helpers
 
             if (State.TileNames.Contains(buildingName))
             {
-                Debug.LogError($"Tile report {buildingName} {material} {color}");
                 try
                 {
                     if (TileColors == null)
@@ -143,13 +142,6 @@ namespace MaterialColor.Helpers
         public static Color GetDefaultCellColor()
             => new Color(1, 1, 1);
 
-        // TODO: remove, obsolete
-        public static Color GetCellColorJson(int cellIndex)
-        {
-            var material = MaterialHelper.GetMaterialFromCell(cellIndex);
-            return material.ToCellMaterialColor();
-        }
-
         private static void BreakdownGridObjectsComponents(int cellIndex)
         {
             for (int i = 0; i <= 20; i++)
@@ -172,20 +164,6 @@ namespace MaterialColor.Helpers
                 }
                 //catch { }
             }
-        }
-
-        // TODO: remove, obsolete
-        public static Color GetCellColorDebug(int cellIndex)
-        {
-            var cell = Grid.Cell[cellIndex];
-            var element = ElementLoader.elements[cell.elementIdx];
-            var substance = element.substance;
-
-            var debugColor = substance.debugColour;
-
-            debugColor.a = byte.MaxValue;
-
-            return debugColor;
         }
     }
 }
