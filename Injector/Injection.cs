@@ -156,6 +156,38 @@ namespace Injector
 
             _csharpPublisher.MakeFieldPublic("BlockTileRenderer", "selectedCell");
             _csharpPublisher.MakeFieldPublic("BlockTileRenderer", "highlightCell");
+
+            var deconstructable = _csharpModule.Types.FirstOrDefault(t => t.Name == "Deconstructable");
+
+            if (deconstructable != null)
+            {
+                var onCompleteWorkBody = deconstructable.Methods.FirstOrDefault(m => m.Name == "OnCompleteWork").Body;
+
+                if (onCompleteWorkBody != null)
+                {
+                    var lastInstruction = onCompleteWorkBody.Instructions.LastOrDefault();
+
+                    if (lastInstruction != null)
+                    {
+                        var inserter = new InstructionInserter(onCompleteWorkBody);
+
+                        inserter.InsertBefore(lastInstruction, Instruction.Create(OpCodes.Ldloc_3));
+                        _materialToCSharpInjector.InjectBefore("InjectionEntry", "ResetCell", onCompleteWorkBody, lastInstruction);
+                    }
+                    else
+                    {
+                        Logger.Log("Couldn't find last instruction at Deconstructable.OnCompleteWork method");
+                    }
+                }
+                else
+                {
+                    Logger.Log("Couldn't find method at Deconstructable.OnCompleteWork");
+                }
+            }
+            else
+            {
+                Logger.Log("Couldn't find type: Deconstructable");
+            }
         }
 
         private void InjectBuildingsSpecialCasesHandling()
@@ -285,36 +317,6 @@ namespace Injector
             _coreToCSharpInjector.InjectBefore(
                 "OverlayMenuManager", "OnOverlayMenuPrefabInit",
                 onPrefabInitBody, loadOverlayToggleInfosInstuction.Next, true);
-
-            return;
-
-            var initializeTogglesMethod = overlayMenu.Methods.First(method => method.Name == "InitializeToggles");
-            var lastAddInstruction = initializeTogglesMethod.Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Callvirt);
-
-            var overlayToggleInfoConstructorReference = _csharpModule.Import(overlayMenu
-                .NestedTypes.First(nestedType => nestedType.Name == "OverlayToggleInfo")
-                //.Methods.First(method => method.IsConstructor));
-                .Methods.First(method => method.Name == ".ctor"));
-
-            var instructionsToAdd = new List<Instruction>
-            {
-                Instruction.Create(OpCodes.Ldloc_0),
-                Instruction.Create(OpCodes.Ldstr, "Toggle MaterialColor"),
-                Instruction.Create(OpCodes.Ldstr, "overlay_materialcolor"), // reuse other sprite
-                Instruction.Create(OpCodes.Ldc_I4, Common.IDs.ToggleMaterialColorOverlayID),
-                Instruction.Create(OpCodes.Box, _csharpModule.Import(CecilHelper.GetTypeDefinition(_csharpModule, "SimViewMode"))),
-                Instruction.Create(OpCodes.Ldstr, string.Empty),
-                Instruction.Create(OpCodes.Ldc_I4, Common.IDs.ToggleMaterialColorOverlayAction),
-                Instruction.Create(OpCodes.Box, _csharpModule.Import(CecilHelper.GetTypeDefinition(_firstPassModule, "Action"))),
-                Instruction.Create(OpCodes.Ldstr, "Toggles MaterialColor overlay"),
-                Instruction.Create(OpCodes.Ldstr, "MaterialColor"),
-                Instruction.Create(OpCodes.Newobj, overlayToggleInfoConstructorReference),
-                lastAddInstruction
-            };
-
-            var inserter = new InstructionInserter(initializeTogglesMethod);
-
-            inserter.InsertAfter(lastAddInstruction, instructionsToAdd);
         }
 
         /*

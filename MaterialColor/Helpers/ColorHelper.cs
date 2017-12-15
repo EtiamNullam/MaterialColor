@@ -1,4 +1,5 @@
 ﻿using MaterialColor.Extensions;
+using System;
 using UnityEngine;
 
 namespace MaterialColor.Helpers
@@ -8,80 +9,102 @@ namespace MaterialColor.Helpers
         public static void UpdateBuildingColor(BuildingComplete building)
         {
             var buildingName = building.name.Replace("Complete", string.Empty);
-            var kAnimControllerBase = building.GetComponent<KAnimControllerBase>();
+            var material = MaterialHelper.ExtractMaterial(building);
 
-            if (kAnimControllerBase != null)
+            Color32 color;
+
+            if (State.ConfiguratorState.Enabled)
             {
-                var material = MaterialHelper.ExtractMaterial(kAnimControllerBase);
-
-                Color32 color;
-
-                if (State.ConfiguratorState.Enabled)
+                switch (State.ConfiguratorState.ColorMode)
                 {
-                    switch (State.ConfiguratorState.ColorMode)
-                    {
-                        case Common.Data.ColorMode.Json:
-                            color = material.GetMaterialColorForType(buildingName);
-                            break;
-                        case Common.Data.ColorMode.DebugColor:
-                            color = material.ToDebugColor();
-                            break;
-                        case Common.Data.ColorMode.None:
-                        default:
-                            color = DefaultColor;
-                            break;
-                    }
+                    case Common.Data.ColorMode.Json:
+                        color = material.GetMaterialColorForType(buildingName);
+                        break;
+                    case Common.Data.ColorMode.DebugColor:
+                        color = material.ToDebugColor();
+                        break;
+                    case Common.Data.ColorMode.None:
+                    default:
+                        color = DefaultColor;
+                        break;
                 }
-                else color = DefaultColor;
+            }
+            else color = DefaultColor;
 
-                var dimmedColor = color.SetBrightness(color.GetBrightness() / 2);
-
-                // storagelocker
-                var storageLocker = building.GetComponent<StorageLocker>();
-
-                if (storageLocker != null)
+            if (State.TileNames.Contains(buildingName))
+            {
+                try
                 {
-                    SetFilteredStorageColors(storageLocker.filteredStorage, color, dimmedColor);
-                }
-                else // ownable
-                {
-                    var ownable = building.GetComponent<Ownable>();
-
-                    if (ownable != null)
+                    if (TileColors == null)
                     {
-                        ownable.ownedTint = color;
-                        ownable.unownedTint = dimmedColor;
-                        ownable.UpdateTint();
+                        TileColors = new Color?[Grid.CellCount];
                     }
-                    else // rationbox
-                    {
-                        var rationBox = building.GetComponent<RationBox>();
 
-                        if (rationBox != null)
+                    TileColors[Grid.PosToCell(building.gameObject)] = color;
+
+                    return;
+                }
+                catch (Exception e)
+                {
+                    State.Logger.Log("Error while aquiring cell color");
+                    State.Logger.Log(e);
+                }
+            }
+
+            var dimmedColor = color.SetBrightness(color.GetBrightness() / 2);
+
+            // storagelocker
+            var storageLocker = building.GetComponent<StorageLocker>();
+
+            if (storageLocker != null)
+            {
+                SetFilteredStorageColors(storageLocker.filteredStorage, color, dimmedColor);
+            }
+            else // ownable
+            {
+                var ownable = building.GetComponent<Ownable>();
+
+                if (ownable != null)
+                {
+                    ownable.ownedTint = color;
+                    ownable.unownedTint = dimmedColor;
+                    ownable.UpdateTint();
+                }
+                else // rationbox
+                {
+                    var rationBox = building.GetComponent<RationBox>();
+
+                    if (rationBox != null)
+                    {
+                        SetFilteredStorageColors(rationBox.filteredStorage, color, dimmedColor);
+                    }
+                    else // refrigerator
+                    {
+                        var fridge = building.GetComponent<Refrigerator>();
+
+                        if (fridge != null)
                         {
-                            SetFilteredStorageColors(rationBox.filteredStorage, color, dimmedColor);
+                            SetFilteredStorageColors(fridge.filteredStorage, color, dimmedColor);
                         }
-                        else // refrigerator
+                        else // anything else
                         {
-                            var fridge = building.GetComponent<Refrigerator>();
+                            var kAnimControllerBase = building.GetComponent<KAnimControllerBase>();
 
-                            if (fridge != null)
-                            {
-                                SetFilteredStorageColors(fridge.filteredStorage, color, dimmedColor);
-                            }
-                            else
+                            if (kAnimControllerBase != null)
                             {
                                 kAnimControllerBase.TintColour = color;
                             }
+                            else
+                            {
+                                Debug.LogError($"Can't find KAnimControllerBase component in <{buildingName}> and its not a registered tile.");
+                            }
                         }
                     }
                 }
             }
-            else if (!State.TileNames.Contains(buildingName))
-            {
-                Debug.LogError($"Can't find KAnimControllerBase component in <{buildingName}>.");
-            }
         }
+
+        public static Color?[] TileColors = null;
 
         public readonly static Color32 DefaultColor =
             new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue);
@@ -119,23 +142,28 @@ namespace MaterialColor.Helpers
         public static Color GetDefaultCellColor()
             => new Color(1, 1, 1);
 
-        public static Color GetCellColorJson(int cellIndex)
+        private static void BreakdownGridObjectsComponents(int cellIndex)
         {
-            var material = MaterialHelper.GetMaterialFromCell(cellIndex);
-            return material.ToCellMaterialColor();
-        }
+            for (int i = 0; i <= 20; i++)
+            {
+                State.Logger.Log("Starting object from grid component breakdown, index: " + cellIndex);
 
-        public static Color GetCellColorDebug(int cellIndex)
-        {
-            var cell = Grid.Cell[cellIndex];
-            var element = ElementLoader.elements[cell.elementIdx];
-            var substance = element.substance;
+                try
+                {
+                    var comps = Grid.Objects[cellIndex, i].GetComponents<Component>();
 
-            var debugColor = substance.debugColour;
-
-            debugColor.a = byte.MaxValue;
-
-            return debugColor;
+                    foreach (var comp in comps)
+                    {
+                        State.Logger.Log($"Object Layer: {i}, Name: {comp.name}, Type: {comp.GetType()}");
+                    }
+                }
+                catch (IndexOutOfRangeException e)
+                {
+                    State.Logger.Log($"Cell Index: {cellIndex}, Layer: {i}");
+                    State.Logger.Log(e);
+                }
+                //catch { }
+            }
         }
     }
 }
