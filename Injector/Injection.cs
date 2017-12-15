@@ -156,6 +156,38 @@ namespace Injector
 
             _csharpPublisher.MakeFieldPublic("BlockTileRenderer", "selectedCell");
             _csharpPublisher.MakeFieldPublic("BlockTileRenderer", "highlightCell");
+
+            var deconstructable = _csharpModule.Types.FirstOrDefault(t => t.Name == "Deconstructable");
+
+            if (deconstructable != null)
+            {
+                var onCompleteWorkBody = deconstructable.Methods.FirstOrDefault(m => m.Name == "OnCompleteWork").Body;
+
+                if (onCompleteWorkBody != null)
+                {
+                    var lastInstruction = onCompleteWorkBody.Instructions.LastOrDefault();
+
+                    if (lastInstruction != null)
+                    {
+                        var inserter = new InstructionInserter(onCompleteWorkBody);
+
+                        inserter.InsertBefore(lastInstruction, Instruction.Create(OpCodes.Ldloc_3));
+                        _materialToCSharpInjector.InjectBefore("InjectionEntry", "ResetCell", onCompleteWorkBody, lastInstruction);
+                    }
+                    else
+                    {
+                        Logger.Log("Couldn't find last instruction at Deconstructable.OnCompleteWork method");
+                    }
+                }
+                else
+                {
+                    Logger.Log("Couldn't find method at Deconstructable.OnCompleteWork");
+                }
+            }
+            else
+            {
+                Logger.Log("Couldn't find type: Deconstructable");
+            }
         }
 
         private void InjectBuildingsSpecialCasesHandling()

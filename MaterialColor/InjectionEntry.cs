@@ -75,34 +75,24 @@ namespace MaterialColor
             }
         }
 
+        // invalid location isnt red
         public static Color EnterCell(Rendering.BlockTileRenderer blockRenderer, int cellIndex)
         {
-            Color resultColor;
-
             try
             {
-                if (State.ConfiguratorState.Enabled)
+                Color tileColor;
+
+                if (ColorHelper.TileColors.Length > cellIndex && ColorHelper.TileColors[cellIndex].HasValue)
                 {
-                    switch (State.ConfiguratorState.ColorMode)
-                    {
-                        case Common.Data.ColorMode.Json:
-                            resultColor = ColorHelper.GetCellColorJson(cellIndex);
-                            break;
-                        case Common.Data.ColorMode.DebugColor:
-                            resultColor = ColorHelper.GetCellColorDebug(cellIndex);
-                            break;
-                        default:
-                            resultColor = ColorHelper.GetDefaultCellColor();
-                            break;
-                    }
+                    tileColor = ColorHelper.TileColors[cellIndex].Value;
                 }
-                else resultColor = ColorHelper.GetDefaultCellColor();
+                else tileColor = ColorHelper.GetDefaultCellColor();
 
                 return blockRenderer.highlightCell == cellIndex
-                    ? resultColor * 1.25f
+                    ? tileColor * 1.25f
                     : blockRenderer.selectedCell == cellIndex
-                        ? resultColor * 1.5f
-                        : resultColor;
+                        ? tileColor * 1.5f
+                        : tileColor;
             }
             catch (Exception e)
             {
@@ -110,6 +100,26 @@ namespace MaterialColor
                 State.Logger.Log(e);
 
                 return ColorHelper.GetDefaultCellColor();
+            }
+        }
+
+        private static bool firstTimeEnumerate = true;
+
+        private static void EnumerateOtherComponentsOnce(Component component)
+        {
+            if (firstTimeEnumerate)
+            {
+                var comps = component.GetComponents<Component>();
+
+                if (comps.Length > 0)
+                {
+                    firstTimeEnumerate = false;
+
+                    foreach (var comp in comps)
+                    {
+                        State.Logger.Log($"Component (BlockTileRenderer) Name/Type: {comp.name} / {comp.GetType()} ");
+                    }
+                }
             }
         }
 
@@ -138,6 +148,7 @@ namespace MaterialColor
             }
         }
 
+        // probably wont work
         private static void RebuildAllTiles()
         {
             for (int i = 0; i < Grid.CellCount; i++)
@@ -198,6 +209,14 @@ namespace MaterialColor
             {
                 State.Logger.Log("Buildings colors update failed.");
                 State.Logger.Log(e);
+            }
+        }
+
+        public static void ResetCell(int cellIndex)
+        {
+            if (ColorHelper.TileColors.Length > cellIndex)
+            {
+                ColorHelper.TileColors[cellIndex] = null;
             }
         }
 

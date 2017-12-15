@@ -1,9 +1,11 @@
 ﻿using System;
+using UnityEngine;
 
 namespace MaterialColor.Helpers
 {
     public static class MaterialHelper
     {
+        // TODO: remove, obsolete
         public static SimHashes GetMaterialFromCell(int cellIndex)
         {
             if (!Grid.IsValidCell(cellIndex))
@@ -14,6 +16,7 @@ namespace MaterialColor.Helpers
             return TryCellIndexToSimHash(cellIndex);
         }
 
+        // TODO: remove, obsolete
         private static SimHashes TryCellIndexToSimHash(int cellIndex)
         {
             try
@@ -29,6 +32,7 @@ namespace MaterialColor.Helpers
             return SimHashes.Vacuum;
         }
 
+        // TODO: remove, obsolete
         private static SimHashes CellIndexToSimHash(int cellIndex)
         {
             var cell = Grid.Cell[cellIndex];
@@ -48,9 +52,19 @@ namespace MaterialColor.Helpers
             return SimHashes.Vacuum;
         }
 
-        public static SimHashes ExtractMaterial(KAnimControllerBase kAnimController)
-            => kAnimController
-                .GetComponent<PrimaryElement>()
-                    .ElementID;
+        public static SimHashes ExtractMaterial(Component component)
+        {
+            var primaryElement = component.GetComponent<PrimaryElement>();
+
+            if (primaryElement != null)
+            {
+                return primaryElement.ElementID;
+            }
+            else
+            {
+                State.Logger.Log("PrimaryElement not found in: " + component);
+                return SimHashes.Vacuum;
+            }
+        }
     }
 }
