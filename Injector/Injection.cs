@@ -156,6 +156,7 @@ namespace Injector
 
             _csharpPublisher.MakeFieldPublic("BlockTileRenderer", "selectedCell");
             _csharpPublisher.MakeFieldPublic("BlockTileRenderer", "highlightCell");
+            _csharpPublisher.MakeFieldPublic("BlockTileRenderer", "invalidPlaceCell");
 
             var deconstructable = _csharpModule.Types.FirstOrDefault(t => t.Name == "Deconstructable");
 
