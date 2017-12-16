@@ -139,8 +139,11 @@ namespace MaterialColor.Helpers
             }
         }
 
-        public static Color GetDefaultCellColor()
+        public static Color DefaultCellColor
             => new Color(1, 1, 1);
+
+        public static Color InvalidCellColor
+            => new Color(1, 0, 0);
 
         private static void BreakdownGridObjectsComponents(int cellIndex)
         {
