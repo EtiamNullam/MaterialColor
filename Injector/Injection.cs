@@ -81,7 +81,11 @@ namespace Injector
             }
 
             InjectCore();
-            InjectRemoteDoors();
+
+            if (injectorState.InjectRemoteDoors)
+            {
+                InjectRemoteDoors();
+            }
 
             if (injectorState.InjectMaterialColor)
             {
@@ -109,6 +113,11 @@ namespace Injector
             if (injectorState.InjectOnion)
             {
                 InjectOnionPatcher();
+            }
+
+            if (injectorState.CustomTemperatureSensorRange)
+            {
+                ExpandTemperatureSensorRange(injectorState.MaxSensorTemperature);
             }
 
             InjectPatchedSign();
@@ -503,6 +512,21 @@ namespace Injector
             catch (Exception e)
             {
                 Logger.Log("Remote doors injection failed.");
+                Logger.Log(e);
+            }
+        }
+
+        private void ExpandTemperatureSensorRange(float newMax)
+        {
+            try
+            {
+                _csharpModule.Types.FirstOrDefault(t => t.Name == "LogicTemperatureSensorConfig")
+                    .Methods.FirstOrDefault(m => m.Name == "DoPostConfigureComplete").Body
+                    .Instructions.LastOrDefault(i => i.OpCode == OpCodes.Ldc_R4).Operand = newMax;
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Expand temperature sensor range failed");
                 Logger.Log(e);
             }
         }
