@@ -288,8 +288,8 @@ namespace Injector
                 var ILProcessor = beforeFieldInit.Body.GetILProcessor();
 
                 // increase array size by one
-                    var arraySizeSetInstruction = beforeFieldInit.Body.Instructions.First();
-                    ILProcessor.Replace(arraySizeSetInstruction, Instruction.Create(OpCodes.Ldc_I4, (int)arraySizeSetInstruction.Operand + 1));
+                var arraySizeSetInstruction = beforeFieldInit.Body.Instructions.First();
+                ILProcessor.Replace(arraySizeSetInstruction, Instruction.Create(OpCodes.Ldc_I4, (int)arraySizeSetInstruction.Operand + 1));
                 //
 
                 new InstructionInserter(ILProcessor).InsertAfter(lastKeybindingDeclarationEnd, instructionsToAdd);
@@ -479,23 +479,31 @@ namespace Injector
 
         private void InjectRemoteDoors()
         {
-            var energyConsumer_SetConnectionStatus_Body = CecilHelper.GetMethodDefinition(_csharpModule, "EnergyConsumer", "SetConnectionStatus").Body;
+            try
+            {
+                var energyConsumer_SetConnectionStatus_Body = CecilHelper.GetMethodDefinition(_csharpModule, "EnergyConsumer", "SetConnectionStatus").Body;
 
-            var returnToRemove = energyConsumer_SetConnectionStatus_Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Ret);
+                var returnToRemove = energyConsumer_SetConnectionStatus_Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Ret);
 
-            energyConsumer_SetConnectionStatus_Body.GetILProcessor().Append(Instruction.Create(OpCodes.Ret));
+                energyConsumer_SetConnectionStatus_Body.GetILProcessor().Append(Instruction.Create(OpCodes.Ret));
 
-            var instructionToInjectBefore = energyConsumer_SetConnectionStatus_Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Ret);
+                var instructionToInjectBefore = energyConsumer_SetConnectionStatus_Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Ret);
 
-            _csharpInstructionRemover.ReplaceByNop(energyConsumer_SetConnectionStatus_Body, returnToRemove);
+                _csharpInstructionRemover.ReplaceByNop(energyConsumer_SetConnectionStatus_Body, returnToRemove);
 
-            _remoteToCSharpInjector.InjectBefore("InjectionEntry", "OnEnergyConsumerSetConnectionStatus",
-                energyConsumer_SetConnectionStatus_Body,
-                instructionToInjectBefore, true
-                );
+                _remoteToCSharpInjector.InjectBefore("InjectionEntry", "OnEnergyConsumerSetConnectionStatus",
+                    energyConsumer_SetConnectionStatus_Body,
+                    instructionToInjectBefore, true
+                    );
 
-            _csharpPublisher.MakeFieldPublic("Door", "controlState");
-            _csharpPublisher.MakeMethodPublic("Door", "RefreshControlState");
+                _csharpPublisher.MakeFieldPublic("Door", "controlState");
+                _csharpPublisher.MakeMethodPublic("Door", "RefreshControlState");
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Remote doors injection failed.");
+                Logger.Log(e);
+            }
         }
 
         private void InjectPatchedSign()
