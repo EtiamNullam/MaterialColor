@@ -115,9 +115,11 @@ namespace Injector
                 InjectOnionPatcher();
             }
 
-            if (injectorState.CustomTemperatureSensorRange)
+            if (injectorState.CustomSensorRanges)
             {
                 ExpandTemperatureSensorRange(injectorState.MaxSensorTemperature);
+                ExpandGasSensorPressureRange(injectorState.MaxGasSensorPressure);
+                ExpandLiquidSensorPressureRange(injectorState.MaxLiquidSensorPressure);
             }
 
             InjectPatchedSign();
@@ -527,6 +529,36 @@ namespace Injector
             catch (Exception e)
             {
                 Logger.Log("Expand temperature sensor range failed");
+                Logger.Log(e);
+            }
+        }
+
+        private void ExpandGasSensorPressureRange(float newMax)
+        {
+            try
+            {
+                _csharpModule.Types.FirstOrDefault(t => t.Name == "LogicPressureSensorGasConfig")
+                    .Methods.FirstOrDefault(m => m.Name == "DoPostConfigureComplete").Body
+                    .Instructions.LastOrDefault(i => i.OpCode == OpCodes.Ldc_R4 && (float) i.Operand == 2).Operand = newMax;
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Expand gas sensor range failed");
+                Logger.Log(e);
+            }
+        }
+
+        private void ExpandLiquidSensorPressureRange(float newMax)
+        {
+            try
+            {
+                _csharpModule.Types.FirstOrDefault(t => t.Name == "LogicPressureSensorLiquidConfig")
+                    .Methods.FirstOrDefault(m => m.Name == "DoPostConfigureComplete").Body
+                    .Instructions.LastOrDefault(i => i.OpCode == OpCodes.Ldc_R4 && (float) i.Operand == 2000).Operand = newMax;
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Expand liquid sensor range failed");
                 Logger.Log(e);
             }
         }
