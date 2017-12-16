@@ -7,7 +7,7 @@
         xmlns:prism="http://prismlibrary.com/"
         mc:Ignorable="d"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="Injector" Height="350" Width="300" MinWidth="300" MinHeight="220" ResizeMode="CanResizeWithGrip">
+        Title="Injector" Height="400" Width="300" MinWidth="300" MinHeight="220" ResizeMode="CanResizeWithGrip">
     
     <Window.InputBindings>
         <KeyBinding Key="Esc" Command="{Binding ExitCommand}"/>
@@ -19,7 +19,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="130"/>
+            <RowDefinition Height="180"/>
             <RowDefinition Height="80"/>
             <RowDefinition Height="28"/>
             <RowDefinition/>
@@ -41,8 +41,9 @@
             <CheckBox Content="Inject overlay button and _hotkey" Margin="10,0,0,0" IsChecked="{Binding State.InjectMaterialColorOverlayButton, Mode=TwoWay}"/>
             <CheckBox Content="Inject _OnionPatcher" IsChecked="{Binding State.InjectOnion, Mode=TwoWay}"/>
             <CheckBox Content="Enable _debug log" IsChecked="{Binding State.EnableDebugConsole, Mode=TwoWay}" />
-            <CheckBox Content="Enable custom max sensor _temperature" IsChecked="{Binding State.CustomTemperatureSensorRange, Mode=TwoWay}" />
-            <Grid Margin="10,0,0,0">
+            <CheckBox Content="Enable custom max _sensor values" IsChecked="{Binding State.CustomSensorRanges, Mode=TwoWay}" />
+            
+            <Grid Margin="10,2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="5*"/>
                     <ColumnDefinition Width="4*"/>
@@ -50,8 +51,32 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="Max temperature" />
-                <TextBox Grid.Column="1" Text="{Binding State.MaxSensorTemperature, Mode=TwoWay}" IsEnabled="{Binding State.CustomTemperatureSensorRange}"/>
-                <TextBlock Grid.Column="2" Text=" K "/>
+                <TextBox Grid.Column="1" Text="{Binding State.MaxSensorTemperature, Mode=TwoWay}" IsEnabled="{Binding State.CustomSensorRanges}"/>
+                <TextBlock Grid.Column="2" Text="K" Margin="5,0"/>
+            </Grid>
+            
+            <Grid Margin="10,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Max gas pressure" />
+                <TextBox Grid.Column="1" Text="{Binding State.MaxGasSensorPressure, Mode=TwoWay}" IsEnabled="{Binding State.CustomSensorRanges}"/>
+                <TextBlock Grid.Column="2" Text="kg" Margin="5,0"/>
+            </Grid>
+            
+            <Grid Margin="10,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Max liquid pressure" />
+                <TextBox Grid.Column="1" Text="{Binding State.MaxLiquidSensorPressure, Mode=TwoWay}" IsEnabled="{Binding State.CustomSensorRanges}"/>
+                <TextBlock Grid.Column="2" Text="kg" Margin="5,0"/>
             </Grid>
         </StackPanel>
 
