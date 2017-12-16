@@ -86,20 +86,37 @@ namespace MaterialColor
                 {
                     tileColor = ColorHelper.TileColors[cellIndex].Value;
                 }
-                else tileColor = ColorHelper.GetDefaultCellColor();
+                else
+                {
+                    if (cellIndex == blockRenderer.invalidPlaceCell)
+                    {
+                        return ColorHelper.InvalidCellColor;
+                    }
+                    else
+                    {
+                        tileColor = ColorHelper.DefaultCellColor;
+                    }
+                }
 
-                return blockRenderer.highlightCell == cellIndex
-                    ? tileColor * 1.25f
-                    : blockRenderer.selectedCell == cellIndex
-                        ? tileColor * 1.5f
-                        : tileColor;
+                if (cellIndex == blockRenderer.selectedCell)
+                {
+                    return tileColor * 1.5f;
+                }
+                else if (cellIndex == blockRenderer.highlightCell)
+                {
+                    return tileColor * 1.25f;
+                }
+                else
+                {
+                    return tileColor;
+                }
             }
             catch (Exception e)
             {
                 State.Logger.Log("EnterCell failed.");
                 State.Logger.Log(e);
 
-                return ColorHelper.GetDefaultCellColor();
+                return ColorHelper.DefaultCellColor;
             }
         }
 
