@@ -83,37 +83,37 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         
-        <TabControl>
+        <TabControl Margin="2">
             <TabItem Header="MaterialColor" >
                 <StackPanel Orientation="Vertical" Style="{StaticResource Indented}">
                     <CheckBox Content="_Enable" IsChecked="{Binding MaterialState.Enabled}" />
 
                     <TextBlock Text="Color mode:" Margin="0,5"/>
-                    <ComboBox x:Name="colorModeComboBox" Width="120" HorizontalAlignment="Left" Style="{StaticResource Indented}" IsEnabled="{Binding MaterialState.MaterialColorEnabled}"
+                    <ComboBox x:Name="colorModeComboBox" Width="120" HorizontalAlignment="Left" Style="{StaticResource Indented}" IsEnabled="{Binding MaterialState.Enabled}"
                               SelectedItem="{Binding MaterialState.ColorMode}" ItemsSource="{Binding Source={StaticResource dataFromEnum}}"/>
 
                     <TextBlock Text="Advanced:" Style="{StaticResource SectionHeader}"/>
 
                     <StackPanel Style="{StaticResource Indented}" >
-                        <CheckBox IsChecked="{Binding MaterialState.ShowMissingElementColorInfos}" IsEnabled="{Binding MaterialState.MaterialColorEnabled}" AutomationProperties.AcceleratorKey="c" >
+                        <CheckBox IsChecked="{Binding MaterialState.ShowMissingElementColorInfos}" IsEnabled="{Binding MaterialState.Enabled}" AutomationProperties.AcceleratorKey="c" >
                             <TextBlock>
                                 Show missing <LineBreak/> element color infos
                             </TextBlock>
                         </CheckBox>
 
-                        <CheckBox IsChecked="{Binding MaterialState.ShowMissingTypeColorOffsets}" IsEnabled="{Binding MaterialState.MaterialColorEnabled}">
+                        <CheckBox IsChecked="{Binding MaterialState.ShowMissingTypeColorOffsets}" IsEnabled="{Binding MaterialState.Enabled}">
                             <TextBlock>
                                 Show missing <LineBreak/> type color offsets
                             </TextBlock>
                         </CheckBox>
 
-                        <CheckBox IsChecked="{Binding MaterialState.ShowBuildingsAsWhite}" IsEnabled="{Binding MaterialState.MaterialColorEnabled}">
+                        <CheckBox IsChecked="{Binding MaterialState.ShowBuildingsAsWhite}" IsEnabled="{Binding MaterialState.Enabled}">
                             <TextBlock>
                                 Apply white <LineBreak/> to colorable objects
                             </TextBlock>
                         </CheckBox>
 
-                        <CheckBox IsChecked="{Binding MaterialState.ShowDetailedErrorInfo}" IsEnabled="{Binding MaterialState.MaterialColorEnabled}" AutomationProperties.AcceleratorKey="i">
+                        <CheckBox IsChecked="{Binding MaterialState.ShowDetailedErrorInfo}" IsEnabled="{Binding MaterialState.Enabled}" AutomationProperties.AcceleratorKey="i">
                             <TextBlock>
                                 Show detailed <LineBreak/> informations about errors
                             </TextBlock>
