@@ -7,79 +7,101 @@
         xmlns:prism="http://prismlibrary.com/"
         mc:Ignorable="d"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="Injector" Height="400" Width="300" MinWidth="300" MinHeight="220" ResizeMode="CanResizeWithGrip">
+        Title="Injector" Height="320" Width="250" MinWidth="250" MinHeight="260" ResizeMode="CanResizeWithGrip">
     
     <Window.InputBindings>
         <KeyBinding Key="Esc" Command="{Binding ExitCommand}"/>
     </Window.InputBindings>
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
+        
         <Grid.RowDefinitions>
-            <RowDefinition Height="180"/>
-            <RowDefinition Height="80"/>
-            <RowDefinition Height="28"/>
-            <RowDefinition/>
+            <RowDefinition Height="120"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
-        <StackPanel Margin="10" Grid.ColumnSpan="2" Orientation="Vertical">
-            <StackPanel.Resources>
+        
+        <TabControl Grid.ColumnSpan="2" Margin="2">
+            <TabControl.Resources>
                 <Style TargetType="CheckBox">
                     <Setter Property="Margin">
                         <Setter.Value>
                             <Thickness>
-                                2
+                                0,3,0,0
                             </Thickness>
                         </Setter.Value>
                     </Setter>
                 </Style>
-            </StackPanel.Resources>
-            <CheckBox Content="Inject _MaterialColor" IsChecked="{Binding State.InjectMaterialColor, Mode=TwoWay}"/>
-            <CheckBox Content="Inject overlay button and _hotkey" Margin="10,0,0,0" IsChecked="{Binding State.InjectMaterialColorOverlayButton, Mode=TwoWay}"/>
-            <CheckBox Content="Inject _OnionPatcher" IsChecked="{Binding State.InjectOnion, Mode=TwoWay}"/>
-            <CheckBox Content="Enable _debug log" IsChecked="{Binding State.EnableDebugConsole, Mode=TwoWay}" />
-            <CheckBox Content="Enable custom max _sensor values" IsChecked="{Binding State.CustomSensorRanges, Mode=TwoWay}" />
+            </TabControl.Resources>
             
-            <Grid Margin="10,2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="4*"/>
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
+            <TabItem Header="Common">
+                <StackPanel Grid.ColumnSpan="2" Orientation="Vertical">
+                    <CheckBox Content="Inject _MaterialColor" IsChecked="{Binding State.InjectMaterialColor, Mode=TwoWay}"/>
+                    <CheckBox Content="Inject overlay button and _hotkey" Margin="10,3,0,0" IsChecked="{Binding State.InjectMaterialColorOverlayButton, Mode=TwoWay}"/>
+                    <CheckBox Content="Inject _OnionPatcher" IsChecked="{Binding State.InjectOnion, Mode=TwoWay}"/>
+                    <CheckBox Content="Enable _debug log" IsChecked="{Binding State.EnableDebugConsole, Mode=TwoWay}" />
+                </StackPanel>
+            </TabItem>
 
-                <TextBlock Text="Max temperature" />
-                <TextBox Grid.Column="1" Text="{Binding State.MaxSensorTemperature, Mode=TwoWay}" IsEnabled="{Binding State.CustomSensorRanges}"/>
-                <TextBlock Grid.Column="2" Text="K" Margin="5,0"/>
-            </Grid>
-            
-            <Grid Margin="10,2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="4*"/>
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
+            <TabItem Header="Sensors">
+                <StackPanel>
+                    <StackPanel.Resources>
+                        <Style TargetType="Grid">
+                            <Setter Property="Margin">
+                                <Setter.Value>
+                                    <Thickness>
+                                        10,2,0,0
+                                    </Thickness>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </StackPanel.Resources>
+                    
+                    <CheckBox Content="Enable custom max _sensor values" IsChecked="{Binding State.CustomSensorRanges, Mode=TwoWay}" />
+                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock Text="Max temperature" />
+                        <TextBox Grid.Column="1" Text="{Binding State.MaxSensorTemperature, Mode=TwoWay}" IsEnabled="{Binding State.CustomSensorRanges}"/>
+                        <TextBlock Grid.Column="2" Text="K" Margin="5,0"/>
+                    </Grid>
+                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
 
-                <TextBlock Text="Max gas pressure" />
-                <TextBox Grid.Column="1" Text="{Binding State.MaxGasSensorPressure, Mode=TwoWay}" IsEnabled="{Binding State.CustomSensorRanges}"/>
-                <TextBlock Grid.Column="2" Text="kg" Margin="5,0"/>
-            </Grid>
-            
-            <Grid Margin="10,2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="4*"/>
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
+                        <TextBlock Text="Max gas pressure" />
+                        <TextBox Grid.Column="1" Text="{Binding State.MaxGasSensorPressure, Mode=TwoWay}" IsEnabled="{Binding State.CustomSensorRanges}"/>
+                        <TextBlock Grid.Column="2" Text="kg" Margin="5,0"/>
+                    </Grid>
+                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
 
-                <TextBlock Text="Max liquid pressure" />
-                <TextBox Grid.Column="1" Text="{Binding State.MaxLiquidSensorPressure, Mode=TwoWay}" IsEnabled="{Binding State.CustomSensorRanges}"/>
-                <TextBlock Grid.Column="2" Text="kg" Margin="5,0"/>
-            </Grid>
-        </StackPanel>
-
+                        <TextBlock Text="Max liquid pressure" />
+                        <TextBox Grid.Column="1" Text="{Binding State.MaxLiquidSensorPressure, Mode=TwoWay}" IsEnabled="{Binding State.CustomSensorRanges}"/>
+                        <TextBlock Grid.Column="2" Text="kg" Margin="5,0"/>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+        
         <Button Command="{Binding PatchCommand}" Grid.Row="1" Content="_Patch" Margin="10" MaxWidth="400" IsDefault="True"/>
         <Button Command="{Binding RestoreBackupCommand}" Grid.Row="1" Grid.Column="1" Content="_Restore Backup" MaxWidth="400" Margin="10"/>
 
