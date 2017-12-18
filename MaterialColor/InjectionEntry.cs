@@ -16,8 +16,6 @@ namespace MaterialColor
         private static bool TypeColorOffsetsChanged = false;
         private static bool ConfiguratorStateChanged = false;
 
-        private static bool _firstUpdate = false;
-
         // TODO: merge with EnterEveryUpdate?
         public static void EnterOnce()
         {
@@ -44,27 +42,15 @@ namespace MaterialColor
         {
             SubscribeToFileChangeNotifier();
             Initialized = true;
-            _firstUpdate = true;
         }
 
         public static void EnterEveryUpdate()
         {
             try
             {
-                if (_firstUpdate)
-                {
-                    if (OverlayScreen.Instance != null)
-                    {
-                        OverlayScreen.Instance.OnOverlayChanged += OnOverlayChanged;
-                        _firstUpdate = false;
-                    }
-                    else State.Logger.Log("OverlayScreen.Instance is null");
-                }
-
                 if (ElementColorInfosChanged || TypeColorOffsetsChanged || ConfiguratorStateChanged)
                 {
-                    UpdateBuildingsColors();
-                    RebuildAllTiles();
+                    RefreshMaterialColor();
                     ElementColorInfosChanged = TypeColorOffsetsChanged = ConfiguratorStateChanged = false;
                 }
             }
@@ -75,27 +61,51 @@ namespace MaterialColor
             }
         }
 
-        // invalid location isnt red
         public static Color EnterCell(Rendering.BlockTileRenderer blockRenderer, int cellIndex)
         {
             try
             {
                 Color tileColor;
 
-                if (ColorHelper.TileColors.Length > cellIndex && ColorHelper.TileColors[cellIndex].HasValue)
+                if (State.ConfiguratorState.Enabled)
                 {
-                    tileColor = ColorHelper.TileColors[cellIndex].Value;
-                }
-                else
-                {
-                    if (cellIndex == blockRenderer.invalidPlaceCell)
+                    if (State.ConfiguratorState.LegacyTileColorHandling)
                     {
-                        return ColorHelper.InvalidCellColor;
+                        switch (State.ConfiguratorState.ColorMode)
+                        {
+                            case Common.Data.ColorMode.Json:
+                                tileColor = ColorHelper.GetCellColorJson(cellIndex);
+                                break;
+                            case Common.Data.ColorMode.DebugColor:
+                                tileColor = ColorHelper.GetCellColorDebug(cellIndex);
+                                break;
+                            default:
+                                tileColor = ColorHelper.DefaultCellColor;
+                                break;
+                        }
                     }
                     else
                     {
-                        tileColor = ColorHelper.DefaultCellColor;
+                        if (ColorHelper.TileColors.Length > cellIndex && ColorHelper.TileColors[cellIndex].HasValue)
+                        {
+                            tileColor = ColorHelper.TileColors[cellIndex].Value;
+                        }
+                        else
+                        {
+                            if (cellIndex == blockRenderer.invalidPlaceCell)
+                            {
+                                return ColorHelper.InvalidCellColor;
+                            }
+                            else
+                            {
+                                tileColor = ColorHelper.DefaultCellColor;
+                            }
+                        }
                     }
+                }
+                else
+                {
+                    tileColor = ColorHelper.DefaultCellColor;
                 }
 
                 if (cellIndex == blockRenderer.selectedCell)
@@ -144,18 +154,16 @@ namespace MaterialColor
         {
             try
             {
-                if (toggleInfo.simView == (SimViewMode)Common.IDs.ToggleMaterialColorOverlayID)
+                var toggleMaterialColor = toggleInfo.simView == (SimViewMode)Common.IDs.ToggleMaterialColorOverlayID;
+
+                if (toggleMaterialColor)
                 {
                     State.ConfiguratorState.Enabled = !State.ConfiguratorState.Enabled;
-                    UpdateBuildingsColors();
-                    RebuildAllTiles();
 
-                    return true;
+                    RefreshMaterialColor();
                 }
-                else
-                {
-                    return false;
-                }
+
+                return toggleMaterialColor;
             }
             catch (Exception e)
             {
@@ -165,7 +173,12 @@ namespace MaterialColor
             }
         }
 
-        // probably wont work
+        public static void RefreshMaterialColor()
+        {
+            UpdateBuildingsColors();
+            RebuildAllTiles();
+        }
+
         private static void RebuildAllTiles()
         {
             for (int i = 0; i < Grid.CellCount; i++)
@@ -175,19 +188,18 @@ namespace MaterialColor
             State.Logger.Log("All tiles rebuilt.");
         }
 
-        private static void OnOverlayChanged(SimViewMode obj)
+        public static void OverlayChangedEntry()
         {
             try
             {
-                if (State.ConfiguratorState.Enabled && obj == SimViewMode.None)
+                if (OverlayScreen.Instance.GetMode() != SimViewMode.None)
                 {
-                    UpdateBuildingsColors();
+                    RefreshMaterialColor();
                 }
-
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                State.Logger.Log("OnOverlayChangedFailed");
+                State.Logger.Log("OverlayChangedEntry failed");
                 State.Logger.Log(e);
             }
         }

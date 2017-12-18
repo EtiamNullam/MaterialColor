@@ -21,9 +21,9 @@ namespace Injector
             return targetModule.Import(method);
         }
 
-        public static MethodDefinition GetMethodDefinition(ModuleDefinition module, string typeName, string methodName)
+        public static MethodDefinition GetMethodDefinition(ModuleDefinition module, string typeName, string methodName, bool useFullName = false)
         {
-            var type = GetTypeDefinition(module, typeName);
+            var type = GetTypeDefinition(module, typeName, useFullName);
 
             return GetMethodDefinition(module, type, methodName);
         }
@@ -45,9 +45,9 @@ namespace Injector
             return type.Fields.First(field => field.Name == fieldName);
         }
 
-        public static TypeDefinition GetTypeDefinition(ModuleDefinition module, string typeName)
+        public static TypeDefinition GetTypeDefinition(ModuleDefinition module, string typeName, bool useFullName = false)
         {
-            return module.Types.First(type => type.Name == typeName);
+            return module.Types.First(type => useFullName ? type.FullName == typeName : type.Name == typeName);
         }
     }
 }
