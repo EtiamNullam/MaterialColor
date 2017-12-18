@@ -168,5 +168,24 @@ namespace MaterialColor.Helpers
                 //catch { }
             }
         }
+
+        public static Color GetCellColorJson(int cellIndex)
+        {
+            var material = MaterialHelper.GetMaterialFromCell(cellIndex);
+            return material.ToCellMaterialColor();
+        }
+
+        public static Color GetCellColorDebug(int cellIndex)
+        {
+            var cell = Grid.Cell[cellIndex];
+            var element = ElementLoader.elements[cell.elementIdx];
+            var substance = element.substance;
+
+            var debugColor = substance.debugColour;
+
+            debugColor.a = byte.MaxValue;
+
+            return debugColor;
+        }
     }
 }

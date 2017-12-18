@@ -61,27 +61,51 @@ namespace MaterialColor
             }
         }
 
-        // invalid location isnt red
         public static Color EnterCell(Rendering.BlockTileRenderer blockRenderer, int cellIndex)
         {
             try
             {
                 Color tileColor;
 
-                if (ColorHelper.TileColors.Length > cellIndex && ColorHelper.TileColors[cellIndex].HasValue)
+                if (State.ConfiguratorState.Enabled)
                 {
-                    tileColor = ColorHelper.TileColors[cellIndex].Value;
-                }
-                else
-                {
-                    if (cellIndex == blockRenderer.invalidPlaceCell)
+                    if (State.ConfiguratorState.LegacyTileColorHandling)
                     {
-                        return ColorHelper.InvalidCellColor;
+                        switch (State.ConfiguratorState.ColorMode)
+                        {
+                            case Common.Data.ColorMode.Json:
+                                tileColor = ColorHelper.GetCellColorJson(cellIndex);
+                                break;
+                            case Common.Data.ColorMode.DebugColor:
+                                tileColor = ColorHelper.GetCellColorDebug(cellIndex);
+                                break;
+                            default:
+                                tileColor = ColorHelper.DefaultCellColor;
+                                break;
+                        }
                     }
                     else
                     {
-                        tileColor = ColorHelper.DefaultCellColor;
+                        if (ColorHelper.TileColors.Length > cellIndex && ColorHelper.TileColors[cellIndex].HasValue)
+                        {
+                            tileColor = ColorHelper.TileColors[cellIndex].Value;
+                        }
+                        else
+                        {
+                            if (cellIndex == blockRenderer.invalidPlaceCell)
+                            {
+                                return ColorHelper.InvalidCellColor;
+                            }
+                            else
+                            {
+                                tileColor = ColorHelper.DefaultCellColor;
+                            }
+                        }
                     }
+                }
+                else
+                {
+                    tileColor = ColorHelper.DefaultCellColor;
                 }
 
                 if (cellIndex == blockRenderer.selectedCell)
