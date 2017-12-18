@@ -107,6 +107,16 @@ namespace Injector
                 InjectCellColorHandling();
                 InjectBuildingsSpecialCasesHandling();
 
+                try
+                {
+                    _materialToCSharpInjector.InjectAsFirst("InjectionEntry", "OverlayChangedEntry", "OverlayMenu", "OnOverlayChanged");
+                }
+                catch (Exception e)
+                {
+                    Logger.Log("OverlayChangedEntry injection failed");
+                    Logger.Log(e);
+                }
+
                 if (injectorState.InjectMaterialColorOverlayButton)
                 {
                     try
