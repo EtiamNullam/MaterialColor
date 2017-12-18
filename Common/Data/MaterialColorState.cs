@@ -16,6 +16,8 @@ namespace Common.Data
         public bool ShowMissingTypeColorOffsets { get; set; }
         public bool ShowBuildingsAsWhite { get; set; }
 
+        public bool LegacyTileColorHandling { get; set; } = false;
+
         // not really used, remove?
         public bool ShowDetailedErrorInfo { get; set; }
 

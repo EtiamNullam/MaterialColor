@@ -121,6 +121,7 @@
                     </StackPanel>
 
                     <CheckBox Content="_Remote Doors (obsolete)" IsChecked="{Binding MaterialState.RemoteDoorsEnabled}" Style="{StaticResource Indented}"/>
+                    <CheckBox Content="_Legacy tile color handling" IsChecked="{Binding MaterialState.LegacyTileColorHandling}" Margin="10,5,0,0" Style="{StaticResource Indented}"/>
                 </StackPanel>
             </TabItem>
 
