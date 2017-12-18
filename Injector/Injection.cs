@@ -82,6 +82,20 @@ namespace Injector
 
             InjectCore();
 
+            if (injectorState.EnableDraggableGUI)
+            {
+                try
+                {
+                    var coreToFirstpass = new MethodInjector(_coreModule, _firstPassModule);
+                    coreToFirstpass.InjectAsFirst("DraggablePanel", "Attach", "KScreen", "OnPrefabInit", includeCallingObject: true);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log("Draggable GUI injection failed");
+                    Logger.Log(e);
+                }
+            }
+
             if (injectorState.InjectRemoteDoors)
             {
                 InjectRemoteDoors();

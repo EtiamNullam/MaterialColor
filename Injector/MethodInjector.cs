@@ -32,18 +32,18 @@ namespace Injector
         }
 
         public void InjectBefore(string sourceTypeName, string sourceMethodName, string targetTypeName, string targetMethodName,
-            int instructionIndex, bool includeCallingObject = false, int includeArgumentCount = 0, bool passArgumentsByRef = false)
+            int instructionIndex, bool includeCallingObject = false, int includeArgumentCount = 0, bool passArgumentsByRef = false, bool useFullName = false)
         {
-            var targetMethodBody = CecilHelper.GetMethodDefinition(_targetModule, targetTypeName, targetMethodName).Body;
+            var targetMethodBody = CecilHelper.GetMethodDefinition(_targetModule, targetTypeName, targetMethodName, useFullName).Body;
             var instruction = targetMethodBody.Instructions[instructionIndex];
 
-            InjectBefore(sourceTypeName, sourceMethodName, targetMethodBody, instruction, includeCallingObject, includeArgumentCount, passArgumentsByRef);
+            InjectBefore(sourceTypeName, sourceMethodName, targetMethodBody, instruction, includeCallingObject, includeArgumentCount, passArgumentsByRef, useFullName: useFullName);
         }
 
         public void InjectBefore(string sourceTypeName, string sourceMethodName, MethodBody targetMethodBody,
-            Instruction targetInstruction, bool includeCallingObject = false, int includeArgumentCount = 0, bool passArgumentsByRef = false)
+            Instruction targetInstruction, bool includeCallingObject = false, int includeArgumentCount = 0, bool passArgumentsByRef = false, bool useFullName = false)
         {
-            var sourceMethod = CecilHelper.GetMethodDefinition(_sourceModule, sourceTypeName, sourceMethodName);
+            var sourceMethod = CecilHelper.GetMethodDefinition(_sourceModule, sourceTypeName, sourceMethodName, useFullName: useFullName);
             var sourceMethodReference = CecilHelper.GetMethodReference(_targetModule, sourceMethod);
 
             InjectBefore(sourceMethodReference, targetMethodBody, targetInstruction, includeCallingObject, includeArgumentCount, passArgumentsByRef);
