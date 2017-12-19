@@ -241,22 +241,25 @@ namespace MaterialColor
             }
         }
 
+        // TODO: Move
+        private static float MaxOverlayGasPressure = 5;
+        private static float MinOverlayGasColorIntensity = 0.2f;
+
         public static Color EnterGasOverlay(int cellIndex)
         {
-            Color gasColor;
+            Color gasColor = ColorHelper.GetCellOverlayColor(cellIndex);
 
-            switch (State.ConfiguratorState.ColorMode)
+            if (!Grid.Element[cellIndex].IsGas)
             {
-                case Common.Data.ColorMode.Json:
-                    gasColor = ColorHelper.GetCellColorJson(cellIndex);
-                    break;
-                case Common.Data.ColorMode.DebugColor:
-                    gasColor = ColorHelper.GetCellColorDebug(cellIndex);
-                    break;
-                default:
-                    gasColor = ColorHelper.DefaultCellColor;
-                    break;
+                return Color.gray;
             }
+
+            var intensity = Mathf.Clamp(Grid.Cell[cellIndex].mass / MaxOverlayGasPressure, 0, 1 - MinOverlayGasColorIntensity);
+
+            intensity += MinOverlayGasColorIntensity;
+            intensity = Mathf.Sqrt(intensity);
+
+            gasColor *= intensity;
 
             return gasColor;
         }
