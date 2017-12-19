@@ -241,6 +241,26 @@ namespace MaterialColor
             }
         }
 
+        public static Color EnterGasOverlay(int cellIndex)
+        {
+            Color gasColor;
+
+            switch (State.ConfiguratorState.ColorMode)
+            {
+                case Common.Data.ColorMode.Json:
+                    gasColor = ColorHelper.GetCellColorJson(cellIndex);
+                    break;
+                case Common.Data.ColorMode.DebugColor:
+                    gasColor = ColorHelper.GetCellColorDebug(cellIndex);
+                    break;
+                default:
+                    gasColor = ColorHelper.DefaultCellColor;
+                    break;
+            }
+
+            return gasColor;
+        }
+
         public static void ResetCell(int cellIndex)
         {
             if (ColorHelper.TileColors.Length > cellIndex)
