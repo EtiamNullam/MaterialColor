@@ -192,9 +192,14 @@ namespace MaterialColor
         {
             try
             {
-                if (OverlayScreen.Instance.GetMode() != SimViewMode.None)
+                switch (OverlayScreen.Instance.GetMode())
                 {
-                    RefreshMaterialColor();
+                    case SimViewMode.PowerMap:
+                    case SimViewMode.GasVentMap:
+                    case SimViewMode.LiquidVentMap:
+                    case SimViewMode.Logic:
+                        RefreshMaterialColor();
+                        break;
                 }
             }
             catch (Exception e)
