@@ -73,6 +73,7 @@ namespace Injector
             _remoteToCSharpInjector = new MethodInjector(_remoteModule, _csharpModule);
         }
 
+        // TODO: refactor
         public void Inject(InjectorState injectorState)
         {
             if (injectorState.EnableDebugConsole)
@@ -82,19 +83,20 @@ namespace Injector
 
             InjectCore();
 
-            // improved gas overlay
-            try
+            if (injectorState.EnableImprovedOxygenOverlay)
             {
-                _csharpInstructionRemover.ClearAllButLast("SimDebugView", "GetOxygenMapColour");
+                try
+                {
+                    _csharpInstructionRemover.ClearAllButLast("SimDebugView", "GetOxygenMapColour");
+                    _materialToCSharpInjector.InjectAsFirst("InjectionEntry", "EnterGasOverlay", "SimDebugView", "GetOxygenMapColour", includeArgumentCount: 1);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log("Improved gas overlay injection failed");
+                    Logger.Log(e);
+                }
+            }
 
-                _materialToCSharpInjector.InjectAsFirst("InjectionEntry", "EnterGasOverlay", "SimDebugView", "GetOxygenMapColour", includeArgumentCount: 1);
-            }
-            catch (Exception e)
-            {
-                Logger.Log("Improved gas overlay injection failed");
-                Logger.Log(e);
-            }
-            //
             if (injectorState.EnableDraggableGUI)
             {
                 try

@@ -18,6 +18,7 @@ namespace Common.Data
         public float MaxLiquidSensorPressure { get; set; } = 10000;
 
         public bool EnableDraggableGUI { get; set; } = true;
+        public bool EnableImprovedOxygenOverlay { get; set; } = true;
 
         public bool InjectRemoteDoors { get; set; } = false;
         public bool EnableDebugConsole { get; set; } = false;
