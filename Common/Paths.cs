@@ -36,5 +36,12 @@ namespace Common
         public const string InjectorLogFileName = "InjectorLog.txt";
         public const string OnionLogFileName = "OnionLog.txt";
         public const string CommonLogFileName = "CommonLog.txt";
+
+        public static readonly string SpritesPath = ModsDirectory + Path.DirectorySeparatorChar + "Sprites";
+
+        public const string MaterialColorOverlayIconFileName = "overlay_materialColor.png";
+
+        public static readonly string MaterialColorOverlayIconPath = SpritesPath + Path.DirectorySeparatorChar + MaterialColorOverlayIconFileName;
+
     }
 }

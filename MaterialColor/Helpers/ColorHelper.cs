@@ -187,5 +187,18 @@ namespace MaterialColor.Helpers
 
             return debugColor;
         }
+
+        public static Color GetCellOverlayColor(int cellIndex)
+        {
+            var cell = Grid.Cell[cellIndex];
+            var element = ElementLoader.elements[cell.elementIdx];
+            var substance = element.substance;
+
+            var overlayColor = substance.overlayColour;
+
+            overlayColor.a = byte.MaxValue;
+
+            return overlayColor;
+        }
     }
 }

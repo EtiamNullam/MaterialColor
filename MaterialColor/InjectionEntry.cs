@@ -192,9 +192,14 @@ namespace MaterialColor
         {
             try
             {
-                if (OverlayScreen.Instance.GetMode() != SimViewMode.None)
+                switch (OverlayScreen.Instance.GetMode())
                 {
-                    RefreshMaterialColor();
+                    case SimViewMode.PowerMap:
+                    case SimViewMode.GasVentMap:
+                    case SimViewMode.LiquidVentMap:
+                    case SimViewMode.Logic:
+                        RefreshMaterialColor();
+                        break;
                 }
             }
             catch (Exception e)
@@ -239,6 +244,29 @@ namespace MaterialColor
                 State.Logger.Log("Buildings colors update failed.");
                 State.Logger.Log(e);
             }
+        }
+
+        // TODO: Move
+        private static float MaxOverlayGasPressure = 5;
+        private static float MinOverlayGasColorIntensity = 0.2f;
+
+        public static Color EnterGasOverlay(int cellIndex)
+        {
+            Color gasColor = ColorHelper.GetCellOverlayColor(cellIndex);
+
+            if (!Grid.Element[cellIndex].IsGas)
+            {
+                return Color.gray;
+            }
+
+            var intensity = Mathf.Clamp(Grid.Cell[cellIndex].mass / MaxOverlayGasPressure, 0, 1 - MinOverlayGasColorIntensity);
+
+            intensity += MinOverlayGasColorIntensity;
+            intensity = Mathf.Sqrt(intensity);
+
+            gasColor *= intensity;
+
+            return gasColor;
         }
 
         public static void ResetCell(int cellIndex)
