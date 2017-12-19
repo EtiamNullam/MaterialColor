@@ -45,6 +45,9 @@
     <Reference Include="UnityEngine">
       <HintPath>..\GameManaged\UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\GameManaged\UnityEngine.UI.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System">
@@ -60,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DraggablePanel.cs" />
+    <Compile Include="IO\FileManager.cs" />
     <Compile Include="KeybindingsManager.cs" />
     <Compile Include="OverlayMenuManager.cs" />
     <Compile Include="UpdateQueueManager.cs" />

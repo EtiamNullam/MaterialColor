@@ -265,6 +265,8 @@ namespace Injector
 
             AddOverlayButton();
             AttachCustomActionToToggle();
+
+            AddOverlayButtonSprite();
         }
 
         // TODO: notify user when injection fails
@@ -368,6 +370,27 @@ namespace Injector
             _coreToCSharpInjector.InjectBefore(
                 "OverlayMenuManager", "OnOverlayMenuPrefabInit",
                 onPrefabInitBody, loadOverlayToggleInfosInstuction.Next, true);
+        }
+
+        private void AddOverlayButtonSprite()
+        {
+            try
+            {
+                var body = _csharpModule.Types.FirstOrDefault(t => t.Name == "KIconToggleMenu").Methods.FirstOrDefault(m => m.Name == "RefreshButtons").Body;
+                var targetInstruction = body.Instructions.Reverse().Skip(5).FirstOrDefault(i => i.OpCode == OpCodes.Callvirt);
+
+                var inserter = new InstructionInserter(body);
+
+                inserter.InsertBefore(targetInstruction, Instruction.Create(OpCodes.Ldloc, body.Variables[5]));
+
+                _coreToCSharpInjector.InjectBefore("OverlayMenuManager", "EnterToggleSprite", body, targetInstruction, includeCallingObject: true);
+
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Toggle change sprite failed");
+                Logger.Log(e);
+            }
         }
 
         /*
