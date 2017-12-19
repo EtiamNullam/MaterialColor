@@ -31,6 +31,11 @@ namespace Injector
             var method = CecilHelper.GetMethodDefinition(_targetModule, typeName, methodName);
             var methodBody = method.Body;
 
+            ClearAllButLast(methodBody);
+        }
+
+        public void ClearAllButLast(MethodBody methodBody)
+        {
             var methodILProcessor = methodBody.GetILProcessor();
 
             for (int i = methodBody.Instructions.Count - 1; i > 0; i--)
