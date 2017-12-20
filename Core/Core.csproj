@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DraggablePanel.cs" />
+    <Compile Include="InjectionEntry.cs" />
     <Compile Include="IO\FileManager.cs" />
     <Compile Include="KeybindingsManager.cs" />
     <Compile Include="OverlayMenuManager.cs" />
