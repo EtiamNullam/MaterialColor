@@ -76,6 +76,11 @@ namespace Injector
 
             InjectCore();
 
+            if (injectorState.FixLogicBridges)
+            {
+                MakeLogicBridgesPlaceableOnLogicGates();
+            }
+
             if (injectorState.EnableImprovedOxygenOverlay)
             {
                 try
@@ -603,6 +608,24 @@ namespace Injector
                 Logger.Log(e);
 
                 Failed = true;
+            }
+        }
+
+        private void MakeLogicBridgesPlaceableOnLogicGates()
+        {
+            try
+            {
+                var body = _csharpModule.Types.FirstOrDefault(t => t.Name == "LogicWireBridgeConfig").Methods.FirstOrDefault(m => m.Name == "CreateBuildingDef").Body;
+                var lastInstruction = body.Instructions.LastOrDefault();
+
+                _coreToCSharpInjector.InjectBefore("InjectionEntry", "LogicWireBridgeEnter", body, lastInstruction);
+
+                new InstructionInserter(body).InsertBefore(lastInstruction, Instruction.Create(OpCodes.Ldloc_0));
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Logic bridges placable everywhere injection failed");
+                Logger.Log(e);
             }
         }
 

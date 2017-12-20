@@ -7,7 +7,7 @@
         xmlns:prism="http://prismlibrary.com/"
         mc:Ignorable="d"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="Injector" Height="320" Width="250" MinWidth="250" MinHeight="260" ResizeMode="CanResizeWithGrip">
+        Title="Injector" Height="350" Width="250" MinWidth="250" MinHeight="260" ResizeMode="CanResizeWithGrip">
     
     <Window.InputBindings>
         <KeyBinding Key="Esc" Command="{Binding ExitCommand}"/>
@@ -20,7 +20,7 @@
         </Grid.ColumnDefinitions>
         
         <Grid.RowDefinitions>
-            <RowDefinition Height="145"/>
+            <RowDefinition Height="180"/>
             <RowDefinition Height="60"/>
             <RowDefinition Height="28"/>
             <RowDefinition Height="*"/>
@@ -50,6 +50,11 @@
                     <CheckBox Content="Inject _OnionPatcher" IsChecked="{Binding State.InjectOnion, Mode=TwoWay}"/>
                     <CheckBox Content="Enable draggable _GUI" IsChecked="{Binding State.EnableDraggableGUI, Mode=TwoWay}"/>
                     <CheckBox Content="Enable _debug log" IsChecked="{Binding State.EnableDebugConsole, Mode=TwoWay}" />
+                    <CheckBox IsChecked="{Binding State.FixLogicBridges, Mode=TwoWay}">
+                        <TextBlock>
+                            Make logic bridges placable<LineBreak/> over logic gates
+                        </TextBlock>
+                    </CheckBox>
                 </StackPanel>
             </TabItem>
 
