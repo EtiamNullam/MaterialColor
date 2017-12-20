@@ -248,7 +248,7 @@ namespace MaterialColor
 
         // TODO: Move
         private static float MaxOverlayGasPressure = 5;
-        private static float MinOverlayGasColorIntensity = 0.2f;
+        private static float MinOverlayGasColorIntensity = 0.3f;
 
         public static Color EnterGasOverlay(int cellIndex)
         {
@@ -259,8 +259,9 @@ namespace MaterialColor
                 return Color.gray;
             }
 
-            var intensity = Mathf.Clamp(Grid.Cell[cellIndex].mass / MaxOverlayGasPressure, 0, 1 - MinOverlayGasColorIntensity);
+            var intensity = Mathf.Clamp01(Grid.Cell[cellIndex].mass / MaxOverlayGasPressure);
 
+            intensity *= 1 - MinOverlayGasColorIntensity;
             intensity += MinOverlayGasColorIntensity;
             intensity = Mathf.Sqrt(intensity);
 
