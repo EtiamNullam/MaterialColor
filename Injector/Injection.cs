@@ -34,14 +34,7 @@ namespace Injector
         private InstructionRemover _csharpInstructionRemover;
         private Publisher _csharpPublisher;
 
-        // TODO: use
-        private bool _haveFailed;
-
-        public bool HaveFailed
-        {
-            get { return _haveFailed; }
-            set { _haveFailed = value; }
-        }
+        public bool Failed { get; set; } = false;
 
         private void Initialize(ModuleDefinition coreModule, ModuleDefinition materialModule, ModuleDefinition onionModule, ModuleDefinition remoteModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
         {
@@ -83,6 +76,11 @@ namespace Injector
 
             InjectCore();
 
+            if (injectorState.FixLogicBridges)
+            {
+                MakeLogicBridgesPlaceableOnLogicGates();
+            }
+
             if (injectorState.EnableImprovedOxygenOverlay)
             {
                 try
@@ -94,6 +92,8 @@ namespace Injector
                 {
                     Logger.Log("Improved gas overlay injection failed");
                     Logger.Log(e);
+
+                    Failed = true;
                 }
             }
 
@@ -108,6 +108,8 @@ namespace Injector
                 {
                     Logger.Log("Draggable GUI injection failed");
                     Logger.Log(e);
+
+                    Failed = true;
                 }
             }
 
@@ -130,6 +132,8 @@ namespace Injector
                 {
                     Logger.Log("OverlayChangedEntry injection failed");
                     Logger.Log(e);
+
+                    Failed = true;
                 }
 
                 if (injectorState.InjectMaterialColorOverlayButton)
@@ -144,6 +148,8 @@ namespace Injector
                         {
                             Logger.Log("Overlay menu button injection failed");
                             Logger.Log(e);
+
+                            Failed = true;
                         }
                     }
                 }
@@ -164,16 +170,6 @@ namespace Injector
             InjectPatchedSign();
             FixGameUpdateExceptionHandling();
         }
-
-        public enum State
-        {
-            NotFinished,
-            Successful,
-            Error
-        }
-
-        // TODO: start using it to inform user about the injection result
-        private State CurrentState => Injection.State.NotFinished;
 
         private void InjectCore()
         {
@@ -228,16 +224,22 @@ namespace Injector
                     else
                     {
                         Logger.Log("Couldn't find last instruction at Deconstructable.OnCompleteWork method");
+
+                        Failed = true;
                     }
                 }
                 else
                 {
                     Logger.Log("Couldn't find method at Deconstructable.OnCompleteWork");
+
+                    Failed = true;
                 }
             }
             else
             {
                 Logger.Log("Couldn't find type: Deconstructable");
+
+                Failed = true;
             }
         }
 
@@ -295,11 +297,15 @@ namespace Injector
                 else
                 {
                     Logger.Log("Can't find type KInputController.KeyDef");
+
+                    Failed = true;
                 }
             }
             else
             {
                 Logger.Log("Can't find type KInputController");
+
+                Failed = true;
             }
         }
 
@@ -350,6 +356,8 @@ namespace Injector
             else
             {
                 Logger.Log("Can't find last duplication instruction at GameInputMapping.cctor");
+
+                Failed = true;
             }
 
         }
@@ -390,6 +398,8 @@ namespace Injector
             {
                 Logger.Log("Toggle change sprite failed");
                 Logger.Log(e);
+
+                Failed = true;
             }
         }
 
@@ -524,6 +534,8 @@ namespace Injector
             else
             {
                 Logger.Log("Can't find type DebugHandler");
+
+                Failed = true;
             }
 
             var debugHandlerConstructorBody = CecilHelper.GetMethodDefinition(_csharpModule, debugHandler, ".ctor").Body;
@@ -577,6 +589,8 @@ namespace Injector
             {
                 Logger.Log("Remote doors injection failed.");
                 Logger.Log(e);
+
+                Failed = true;
             }
         }
 
@@ -592,6 +606,26 @@ namespace Injector
             {
                 Logger.Log("Expand temperature sensor range failed");
                 Logger.Log(e);
+
+                Failed = true;
+            }
+        }
+
+        private void MakeLogicBridgesPlaceableOnLogicGates()
+        {
+            try
+            {
+                var body = _csharpModule.Types.FirstOrDefault(t => t.Name == "LogicWireBridgeConfig").Methods.FirstOrDefault(m => m.Name == "CreateBuildingDef").Body;
+                var lastInstruction = body.Instructions.LastOrDefault();
+
+                _coreToCSharpInjector.InjectBefore("InjectionEntry", "LogicWireBridgeEnter", body, lastInstruction);
+
+                new InstructionInserter(body).InsertBefore(lastInstruction, Instruction.Create(OpCodes.Ldloc_0));
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Logic bridges placable everywhere injection failed");
+                Logger.Log(e);
             }
         }
 
@@ -601,12 +635,14 @@ namespace Injector
             {
                 _csharpModule.Types.FirstOrDefault(t => t.Name == "LogicPressureSensorGasConfig")
                     .Methods.FirstOrDefault(m => m.Name == "DoPostConfigureComplete").Body
-                    .Instructions.LastOrDefault(i => i.OpCode == OpCodes.Ldc_R4 && (float) i.Operand == 2).Operand = newMax;
+                    .Instructions.LastOrDefault(i => i.OpCode == OpCodes.Ldc_R4 && (float)i.Operand == 2).Operand = newMax;
             }
             catch (Exception e)
             {
                 Logger.Log("Expand gas sensor range failed");
                 Logger.Log(e);
+
+                Failed = true;
             }
         }
 
@@ -616,12 +652,14 @@ namespace Injector
             {
                 _csharpModule.Types.FirstOrDefault(t => t.Name == "LogicPressureSensorLiquidConfig")
                     .Methods.FirstOrDefault(m => m.Name == "DoPostConfigureComplete").Body
-                    .Instructions.LastOrDefault(i => i.OpCode == OpCodes.Ldc_R4 && (float) i.Operand == 2000).Operand = newMax;
+                    .Instructions.LastOrDefault(i => i.OpCode == OpCodes.Ldc_R4 && (float)i.Operand == 2000).Operand = newMax;
             }
             catch (Exception e)
             {
                 Logger.Log("Expand liquid sensor range failed");
                 Logger.Log(e);
+
+                Failed = true;
             }
         }
 
