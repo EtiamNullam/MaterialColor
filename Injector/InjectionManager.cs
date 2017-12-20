@@ -19,7 +19,7 @@ namespace Injector
 
         public Common.IO.Logger Logger { get; set; }
 
-        public void InjectDefaultAndBackup(InjectorState injectorState)
+        public bool InjectDefaultAndBackup(InjectorState injectorState)
         {
             var coreModule = CecilHelper.GetModule(Paths.DefaultCoreAssemblyPath, Paths.ManagedDirectoryPath);
             var materialModule = CecilHelper.GetModule(Paths.DefaultMaterialAssemblyPath, Paths.ManagedDirectoryPath);
@@ -29,14 +29,17 @@ namespace Injector
             var csharpModule = CecilHelper.GetModule(Paths.DefaultAssemblyCSharpPath, Paths.ManagedDirectoryPath);
             var firstPassModule = CecilHelper.GetModule(Paths.DefaultAssemblyFirstPassPath, Paths.ManagedDirectoryPath);
 
-            new Injection(coreModule, materialModule, onionModule, remoteModule, csharpModule, firstPassModule)
+            var injection = new Injection(coreModule, materialModule, onionModule, remoteModule, csharpModule, firstPassModule)
             {
                 Logger = Logger
-            }
-                .Inject(injectorState);
+            };
+
+            injection.Inject(injectorState);
 
             BackupAndSaveCSharpModule(csharpModule);
             BackupAndSaveFirstPassModule(firstPassModule);
+
+            return injection.Failed;
         }
 
         public bool IsCurrentAssemblyCSharpPatched()
