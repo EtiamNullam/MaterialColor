@@ -248,22 +248,24 @@ namespace MaterialColor
 
         // TODO: Move
         private static float MaxOverlayGasPressure = 5;
-        private static float MinOverlayGasColorIntensity = 0.3f;
+        private static float MinOverlayGasColorIntensity = 0.6f;
+        private static Color NotGasColor = new Color(0.6f, 0.6f, 0.6f);
 
         public static Color EnterGasOverlay(int cellIndex)
         {
-            Color gasColor = ColorHelper.GetCellOverlayColor(cellIndex);
+            var element = Grid.Element[cellIndex];
 
-            if (!Grid.Element[cellIndex].IsGas)
+            if (!element.IsGas)
             {
-                return Color.gray;
+                return NotGasColor;
             }
+
+            Color gasColor = ColorHelper.GetCellOverlayColor(cellIndex);
 
             var intensity = Mathf.Clamp01(Grid.Cell[cellIndex].mass / MaxOverlayGasPressure);
 
             intensity *= 1 - MinOverlayGasColorIntensity;
             intensity += MinOverlayGasColorIntensity;
-            intensity = Mathf.Sqrt(intensity);
 
             gasColor *= intensity;
 
