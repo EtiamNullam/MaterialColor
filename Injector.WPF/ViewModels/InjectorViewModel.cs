@@ -147,7 +147,14 @@ namespace Injector.WPF.ViewModels
 
             try
             {
-                _injector.InjectDefaultAndBackup(State);
+                if (_injector.InjectDefaultAndBackup(State))
+                {
+                    Status = "\tSome issues with injection appeared, check logs for more info\n\tOriginal backed up and patched.\n\tPatch complete.";
+                }
+                else
+                {
+                    Status = "\tOriginal backed up and patched.\n\tPatch successful.";
+                }
             }
             catch (Exception e)
             {
@@ -158,8 +165,6 @@ namespace Injector.WPF.ViewModels
             }
 
             RestoreBackupCommand.RaiseCanExecuteChanged();
-
-            Status = "\tOriginal backed up.\n\tOriginal patched.\n\tPatch successful.";
 
             try
             {
