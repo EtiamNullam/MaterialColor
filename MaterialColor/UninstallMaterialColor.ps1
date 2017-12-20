@@ -29,6 +29,8 @@ else
 	pushd ".\Mods";
 		Remove-Item ".\Logs" -Recurse;
 
+		Remove-Item ".\Sprites" -Recurse;
+
 		pushd ".\MaterialColor";
 			ls | % {
 				if ($_ -notlike "Config")
