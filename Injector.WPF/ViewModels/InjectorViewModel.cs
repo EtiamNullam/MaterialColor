@@ -99,7 +99,7 @@ namespace Injector.WPF.ViewModels
         public bool IsFirstpassPatched
             => _injector.IsCurrentAssemblyFirstpassPatched();
 
-        public bool CanPatch() => State.InjectMaterialColor || State.InjectOnion || State.EnableDebugConsole;
+        public bool CanPatch() => State.InjectMaterialColor || State.InjectOnion;
 
         public void Patch()
         {
