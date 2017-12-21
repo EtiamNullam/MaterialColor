@@ -104,6 +104,7 @@ namespace Injector.WPF.ViewModels
         public void Patch()
         {
             Status = $"[{DateTime.Now.TimeOfDay}] Patching started.";
+            _logger.LogProperties(State);
 
             if (CanRestoreCSharpBackup())
             {
