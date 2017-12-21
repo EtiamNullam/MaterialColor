@@ -137,7 +137,7 @@
                         <CheckBox Content="Custom max camera distance" Margin="0,3" IsChecked="{Binding OnionCustomMaxCamera}" IsEnabled="{Binding OnionEnabled}"/>
                         <TextBox Margin="10,2,5,2" Text="{Binding OnionState.MaxCameraDistance}" IsEnabled="{Binding OnionCustomMaxCameraEnabled}"/>
 
-                        <CheckBox Content="Custom world dimensions" IsChecked="{Binding OnionCustomWorldSize}" IsEnabled="{Binding OnionEnabled}" />
+                        <CheckBox Content="Custom world dimensions (in chunks)" IsChecked="{Binding OnionCustomWorldSize}" IsEnabled="{Binding OnionEnabled}" />
 
                         <Grid Style="{StaticResource Indented}">
                             <Grid.ColumnDefinitions>
