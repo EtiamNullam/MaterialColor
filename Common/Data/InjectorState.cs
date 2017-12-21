@@ -21,8 +21,5 @@ namespace Common.Data
         public bool EnableImprovedOxygenOverlay { get; set; } = true;
 
         public bool FixLogicBridges { get; set; } = true;
-
-        public bool InjectRemoteDoors { get; set; } = false;
-        public bool EnableDebugConsole { get; set; } = false;
     }
 }

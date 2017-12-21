@@ -69,11 +69,6 @@ namespace Injector
         // TODO: refactor
         public void Inject(InjectorState injectorState)
         {
-            if (injectorState.EnableDebugConsole)
-            {
-                EnableConsole();
-            }
-
             InjectCore();
 
             if (injectorState.FixLogicBridges)
@@ -111,11 +106,6 @@ namespace Injector
 
                     Failed = true;
                 }
-            }
-
-            if (injectorState.InjectRemoteDoors)
-            {
-                InjectRemoteDoors();
             }
 
             if (injectorState.InjectMaterialColor)
@@ -412,22 +402,48 @@ namespace Injector
          * ReportErrorDialog.Update()
          */
         //TODO: make it more flexible for future versions
+        // Doesn't work on Tubular Upgrade
         private void EnableConsole()
         {
-            _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 0);
-            _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 1);
-            _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 2);
-            _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 3);
-            _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 4);
-            _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 5);
-            _csharpInstructionRemover.ReplaceByNopAt("FrontEndManager", "LateUpdate", 6);
+            try
+            {
+                _csharpModule
+                    .Types.FirstOrDefault(t => t.Name == "Game")
+                        .Methods.FirstOrDefault(m => m.Name == "Update")
+                            .Body.Instructions.FirstOrDefault(i => i.OpCode == OpCodes.Ldc_I4_0)
+                               .OpCode = OpCodes.Ldc_I4_1;
 
-            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 10);
-            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 11);
-            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 12);
-            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 13);
-            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 14);
-            _csharpInstructionRemover.ReplaceByNopAt("Game", "Update", 15);
+                _csharpModule
+                    .Types.FirstOrDefault(t => t.Name == "FrontEndManager")
+                        .Methods.FirstOrDefault(m => m.Name == "LateUpdate")
+                            .Body.Instructions.FirstOrDefault(i => i.OpCode == OpCodes.Ldc_I4_0)
+                               .OpCode = OpCodes.Ldc_I4_1;
+
+                _csharpModule
+                    .Types.FirstOrDefault(t => t.Name == "GraphicsOptionsScreen")
+                        .Methods.FirstOrDefault(m => m.Name == "Update")
+                            .Body.Instructions.FirstOrDefault(i => i.OpCode == OpCodes.Ldc_I4_0)
+                               .OpCode = OpCodes.Ldc_I4_1;
+
+                _csharpModule
+                    .Types.FirstOrDefault(t => t.Name == "OptionsMenuScreen")
+                        .Methods.FirstOrDefault(m => m.Name == "Update")
+                            .Body.Instructions.FirstOrDefault(i => i.OpCode == OpCodes.Ldc_I4_0)
+                               .OpCode = OpCodes.Ldc_I4_1;
+
+                _csharpModule
+                    .Types.FirstOrDefault(t => t.Name == "ReportErrorDialog")
+                        .Methods.FirstOrDefault(m => m.Name == "Update")
+                            .Body.Instructions.FirstOrDefault(i => i.OpCode == OpCodes.Ldc_I4_0)
+                               .OpCode = OpCodes.Ldc_I4_1;
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Enable console failed");
+                Logger.Log(e);
+
+                Failed = true;
+            }
         }
 
         private void FixGameUpdateExceptionHandling()
@@ -561,37 +577,6 @@ namespace Injector
                 cameraControllerOnSpawnBody,
                 restoreCall,
                 true);
-        }
-
-        private void InjectRemoteDoors()
-        {
-            try
-            {
-                var energyConsumer_SetConnectionStatus_Body = CecilHelper.GetMethodDefinition(_csharpModule, "EnergyConsumer", "SetConnectionStatus").Body;
-
-                var returnToRemove = energyConsumer_SetConnectionStatus_Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Ret);
-
-                energyConsumer_SetConnectionStatus_Body.GetILProcessor().Append(Instruction.Create(OpCodes.Ret));
-
-                var instructionToInjectBefore = energyConsumer_SetConnectionStatus_Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Ret);
-
-                _csharpInstructionRemover.ReplaceByNop(energyConsumer_SetConnectionStatus_Body, returnToRemove);
-
-                _remoteToCSharpInjector.InjectBefore("InjectionEntry", "OnEnergyConsumerSetConnectionStatus",
-                    energyConsumer_SetConnectionStatus_Body,
-                    instructionToInjectBefore, true
-                    );
-
-                _csharpPublisher.MakeFieldPublic("Door", "controlState");
-                _csharpPublisher.MakeMethodPublic("Door", "RefreshControlState");
-            }
-            catch (Exception e)
-            {
-                Logger.Log("Remote doors injection failed.");
-                Logger.Log(e);
-
-                Failed = true;
-            }
         }
 
         private void ExpandTemperatureSensorRange(float newMax)

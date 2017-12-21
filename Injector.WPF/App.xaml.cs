@@ -36,7 +36,6 @@ namespace Injector.WPF
                 bool injectMaterial = false;
                 bool injectOnion = false;
                 bool recover = false;
-                bool enableDebugConsole = false;
 
                 foreach (var argument in e.Args.Select(arg => arg.ToLower()).ToList())
                 {
@@ -52,10 +51,6 @@ namespace Injector.WPF
                     {
                         recover = true;
                     }
-                    else if (EnableDebugArgumentAliases.Contains(argument))
-                    {
-                        enableDebugConsole = true;
-                    }
                 }
 
                 if (injectMaterial || injectOnion || recover)
@@ -68,7 +63,6 @@ namespace Injector.WPF
                         {
                             InjectMaterialColor = injectMaterial,
                             InjectOnion = injectOnion,
-                            EnableDebugConsole = enableDebugConsole
                         };
 
                         Inject(state);
@@ -108,6 +102,5 @@ namespace Injector.WPF
         private List<string> RecoverArgumentAliases = new List<string> { "-r", "-recover" };
         private List<string> InjectMaterialArgumentAliases = new List<string> { "-m", "-material" };
         private List<string> InjectOnionArgumentAliases = new List<string> { "-o", "-onion" };
-        private List<string> EnableDebugArgumentAliases = new List<string> { "-d", "-enabledebug" };
     }
 }
