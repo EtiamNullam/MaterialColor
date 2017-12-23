@@ -79,7 +79,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="340"/>
+            <RowDefinition Height="360"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         
@@ -120,7 +120,6 @@
                         </CheckBox>
                     </StackPanel>
 
-                    <CheckBox Content="_Remote Doors (obsolete)" IsChecked="{Binding MaterialState.RemoteDoorsEnabled}" Style="{StaticResource Indented}"/>
                     <CheckBox Content="_Legacy tile color handling" IsChecked="{Binding MaterialState.LegacyTileColorHandling}" Margin="10,5,0,0" Style="{StaticResource Indented}"/>
                 </StackPanel>
             </TabItem>
@@ -137,7 +136,7 @@
                         <CheckBox Content="Custom max camera distance" Margin="0,3" IsChecked="{Binding OnionCustomMaxCamera}" IsEnabled="{Binding OnionEnabled}"/>
                         <TextBox Margin="10,2,5,2" Text="{Binding OnionState.MaxCameraDistance}" IsEnabled="{Binding OnionCustomMaxCameraEnabled}"/>
 
-                        <CheckBox Content="Custom world dimensions" IsChecked="{Binding OnionCustomWorldSize}" IsEnabled="{Binding OnionEnabled}" />
+                        <CheckBox Content="Custom world dimensions (in chunks)" IsChecked="{Binding OnionCustomWorldSize}" IsEnabled="{Binding OnionEnabled}" />
 
                         <Grid Style="{StaticResource Indented}">
                             <Grid.ColumnDefinitions>
@@ -183,6 +182,16 @@
                             <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding OnionState.NoiseSeed}" IsEnabled="{Binding OnionCustomSeedsEnabled}"/>
                         </Grid>
                     </StackPanel>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Gas overlay">
+                <StackPanel>
+                    <TextBlock Text="Minimum gas color intensity (0-1)"/>
+                    <TextBox Text="{Binding MaterialState.MinimumGasColorIntensity}"/>
+                    <TextBlock Text="Gas pressure range (in kilograms)"/>
+                    <TextBox Text="{Binding MaterialState.GasPressureStart}"/>
+                    <TextBox Text="{Binding MaterialState.GasPressureEnd}"/>
                 </StackPanel>
             </TabItem>
         </TabControl>
