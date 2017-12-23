@@ -18,9 +18,33 @@ namespace Common.Data
 
         public bool LegacyTileColorHandling { get; set; } = false;
 
+        // gas overlay
+        public float MinimumGasColorIntensity { get; set; } = 0.25f;
+        public float GasPressureStart { get; set; } = 0.1f;
+
+        public float GasPressureEnd
+        {
+            get
+            {
+                return _gasPressureEnd;
+            }
+            set
+            {
+                if (_gasPressureEnd <= 0)
+                {
+                    _gasPressureEnd = float.Epsilon;
+                }
+                else
+                {
+                    _gasPressureEnd = value;
+                }
+            }
+        }
+
+        private float _gasPressureEnd = 2.5f;
+        //
+
         // not really used, remove?
         public bool ShowDetailedErrorInfo { get; set; }
-
-        public bool RemoteDoorsEnabled { get; set; } = false;
     }
 }

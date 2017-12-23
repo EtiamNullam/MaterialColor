@@ -247,12 +247,15 @@ namespace MaterialColor
         }
 
         // TODO: Move
-        private static float MaxOverlayGasPressure = 5;
-        private static float MinOverlayGasColorIntensity = 0.6f;
         private static Color NotGasColor = new Color(0.6f, 0.6f, 0.6f);
 
+        // WIP
+        // TODO: refactor
         public static Color EnterGasOverlay(int cellIndex)
         {
+            var minMass = State.ConfiguratorState.GasPressureStart;
+            var maxMass = State.ConfiguratorState.GasPressureEnd;
+
             var element = Grid.Element[cellIndex];
 
             if (!element.IsGas)
@@ -262,14 +265,43 @@ namespace MaterialColor
 
             Color gasColor = ColorHelper.GetCellOverlayColor(cellIndex);
 
-            var intensity = Mathf.Clamp01(Grid.Cell[cellIndex].mass / MaxOverlayGasPressure);
+            var gasMass = Grid.Cell[cellIndex].mass;
 
-            intensity *= 1 - MinOverlayGasColorIntensity;
-            intensity += MinOverlayGasColorIntensity;
+            gasMass -= minMass;
+
+            if (gasMass < 0)
+            {
+                gasMass = 0;
+            }
+
+            maxMass -= minMass;
+
+            if (maxMass < float.Epsilon)
+            {
+                maxMass = float.Epsilon;
+            }
+
+            var intensity = GetGasColorIntensity(gasMass, maxMass);
 
             gasColor *= intensity;
+            gasColor.a = 1;
 
             return gasColor;
+        }
+
+        private static float GetGasColorIntensity(float mass, float maxMass)
+        {
+            var minIntensity = State.ConfiguratorState.MinimumGasColorIntensity;
+
+            var intensity = mass / maxMass;
+
+            intensity = Mathf.Sqrt(intensity);
+
+            intensity = Mathf.Clamp01(intensity);
+            intensity *= 1 - minIntensity;
+            intensity += minIntensity;
+
+            return intensity;
         }
 
         public static void ResetCell(int cellIndex)
