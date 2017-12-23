@@ -35,5 +35,20 @@ namespace Common.IO
         {
             Log($"{exception?.Message}\n{exception?.StackTrace}");
         }
+
+        public void LogProperties(object target)
+        {
+            var builder = new StringBuilder();
+
+            foreach (var property in target.GetType().GetProperties())
+            {
+                builder.Append(property.Name);
+                builder.Append(":");
+                builder.Append(property.GetValue(target));
+                builder.Append("\n");
+            }
+
+            Log(builder.ToString());
+        }
     }
 }

@@ -20,7 +20,7 @@
         </Grid.ColumnDefinitions>
         
         <Grid.RowDefinitions>
-            <RowDefinition Height="180"/>
+            <RowDefinition Height="170"/>
             <RowDefinition Height="60"/>
             <RowDefinition Height="28"/>
             <RowDefinition Height="*"/>
@@ -49,7 +49,6 @@
 
                     <CheckBox Content="Inject _OnionPatcher" IsChecked="{Binding State.InjectOnion, Mode=TwoWay}"/>
                     <CheckBox Content="Enable draggable _GUI" IsChecked="{Binding State.EnableDraggableGUI, Mode=TwoWay}"/>
-                    <CheckBox Content="Enable _debug log" IsChecked="{Binding State.EnableDebugConsole, Mode=TwoWay}" />
                     <CheckBox IsChecked="{Binding State.FixLogicBridges, Mode=TwoWay}">
                         <TextBlock>
                             Allow placing logic bridges<LineBreak/> over logic gates

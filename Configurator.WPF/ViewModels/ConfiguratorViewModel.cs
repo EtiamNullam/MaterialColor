@@ -149,6 +149,9 @@ namespace Configurator.WPF.ViewModels
 
         private void Apply()
         {
+            _logger.LogProperties(MaterialState);
+            _logger.LogProperties(OnionState);
+
             try
             {
                 Common.IO.IOHelper.EnsureDirectoryExists(Common.Paths.MaterialConfigPath);
