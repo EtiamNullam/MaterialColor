@@ -8,7 +8,7 @@
         xmlns:commonData="clr-namespace:Common.Data;assembly=Common"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Configurator" Height="450" Width="250"
+        Title="Configurator" Height="460" Width="250"
         prism:ViewModelLocator.AutoWireViewModel="True" ResizeMode="NoResize">
 
     <Window.Resources>
