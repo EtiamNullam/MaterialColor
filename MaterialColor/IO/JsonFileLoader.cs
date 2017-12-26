@@ -40,12 +40,11 @@ namespace MaterialColor.IO
             }
             catch (Exception ex)
             {
-                var message = "Can't load configurator state.\n" + ex.Message + '\n';
+                var message = "Can't load configurator state.";
 
-                if (State.ConfiguratorState != null && State.ConfiguratorState.ShowDetailedErrorInfo)
-                {
-                    message += '\n' + ex.StackTrace;
-                }
+                _logger.Log(ex);
+                _logger.Log(message);
+
                 Debug.LogError(message);
 
                 state = new MaterialColorState();

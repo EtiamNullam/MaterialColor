@@ -112,12 +112,6 @@
                                 Apply white <LineBreak/> to colorable objects
                             </TextBlock>
                         </CheckBox>
-
-                        <CheckBox IsChecked="{Binding MaterialState.ShowDetailedErrorInfo}" IsEnabled="{Binding MaterialState.Enabled}" AutomationProperties.AcceleratorKey="i">
-                            <TextBlock>
-                                Show detailed <LineBreak/> informations about errors
-                            </TextBlock>
-                        </CheckBox>
                     </StackPanel>
 
                     <CheckBox Content="_Legacy tile color handling" IsChecked="{Binding MaterialState.LegacyTileColorHandling}" Margin="10,5,0,0" Style="{StaticResource Indented}"/>
