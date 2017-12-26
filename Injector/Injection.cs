@@ -11,9 +11,9 @@ namespace Injector
 {
     public class Injection
     {
-        public Injection(ModuleDefinition coreModule, ModuleDefinition materialModule, ModuleDefinition onionModule, ModuleDefinition remoteModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
+        public Injection(ModuleDefinition coreModule, ModuleDefinition materialModule, ModuleDefinition onionModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
         {
-            Initialize(coreModule, materialModule, onionModule, remoteModule, csharpModule, firstPassModule);
+            Initialize(coreModule, materialModule, onionModule, csharpModule, firstPassModule);
         }
 
         public Common.IO.Logger Logger { get; set; }
@@ -21,7 +21,6 @@ namespace Injector
         private ModuleDefinition _coreModule;
         private ModuleDefinition _materialModule;
         private ModuleDefinition _onionModule;
-        private ModuleDefinition _remoteModule;
 
         private ModuleDefinition _csharpModule;
         private ModuleDefinition _firstPassModule;
@@ -29,19 +28,17 @@ namespace Injector
         private MethodInjector _coreToCSharpInjector;
         private MethodInjector _materialToCSharpInjector;
         private MethodInjector _onionToCSharpInjector;
-        private MethodInjector _remoteToCSharpInjector;
 
         private InstructionRemover _csharpInstructionRemover;
         private Publisher _csharpPublisher;
 
         public bool Failed { get; set; } = false;
 
-        private void Initialize(ModuleDefinition coreModule, ModuleDefinition materialModule, ModuleDefinition onionModule, ModuleDefinition remoteModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
+        private void Initialize(ModuleDefinition coreModule, ModuleDefinition materialModule, ModuleDefinition onionModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
         {
             _coreModule = coreModule;
             _materialModule = materialModule;
             _onionModule = onionModule;
-            _remoteModule = remoteModule;
 
             _csharpModule = csharpModule;
             _firstPassModule = firstPassModule;
@@ -63,7 +60,6 @@ namespace Injector
             _coreToCSharpInjector = new MethodInjector(_coreModule, _csharpModule);
             _materialToCSharpInjector = new MethodInjector(_materialModule, _csharpModule);
             _onionToCSharpInjector = new MethodInjector(_onionModule, _csharpModule);
-            _remoteToCSharpInjector = new MethodInjector(_remoteModule, _csharpModule);
         }
 
         // TODO: refactor

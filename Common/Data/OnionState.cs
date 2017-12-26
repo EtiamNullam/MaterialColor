@@ -10,8 +10,8 @@ namespace Common.Data
     {
         public bool Enabled { get; set; } = true;
         public bool CustomWorldSize { get; set; } = false;
-        public int Width { get; set; } = 256;
-        public int Height { get; set; } = 384;
+        public int Width { get; set; } = 8;
+        public int Height { get; set; } = 12;
         public bool Debug { get; set; } = false;
         public bool FreeCamera { get; set; } = true;
         public bool CustomMaxCameraDistance { get; set; } = true;
