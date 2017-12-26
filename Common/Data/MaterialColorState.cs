@@ -43,8 +43,5 @@ namespace Common.Data
 
         private float _gasPressureEnd = 2.5f;
         //
-
-        // not really used, remove?
-        public bool ShowDetailedErrorInfo { get; set; }
     }
 }
