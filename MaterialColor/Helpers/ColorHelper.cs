@@ -124,7 +124,8 @@ namespace MaterialColor.Helpers
 
         public static bool TryGetTypeStandardColor(string typeName, out Color32 standardColor)
         {
-            if (State.TypeColorOffsets.TryGetValue(typeName, out Color32 typeStandardColor))
+            Color32 typeStandardColor;
+            if (State.TypeColorOffsets.TryGetValue(typeName, out typeStandardColor))
             {
                 standardColor = typeStandardColor;
                 return true;
