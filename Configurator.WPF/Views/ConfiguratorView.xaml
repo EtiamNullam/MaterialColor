@@ -86,11 +86,13 @@
         <TabControl Margin="2">
             <TabItem Header="MaterialColor" >
                 <StackPanel Orientation="Vertical" Style="{StaticResource Indented}">
-                    <CheckBox Content="_Enable" IsChecked="{Binding MaterialState.Enabled}" />
+                    <CheckBox Content="_Enable" IsChecked="{Binding MaterialState.Enabled}" Margin="0,5" />
 
                     <TextBlock Text="Color mode:" Margin="0,5"/>
                     <ComboBox x:Name="colorModeComboBox" Width="120" HorizontalAlignment="Left" Style="{StaticResource Indented}" IsEnabled="{Binding MaterialState.Enabled}"
                               SelectedItem="{Binding MaterialState.ColorMode}" ItemsSource="{Binding Source={StaticResource dataFromEnum}}"/>
+
+                    <CheckBox Content="_Legacy tile color handling" IsChecked="{Binding MaterialState.LegacyTileColorHandling}" Margin="0,10"/>
 
                     <TextBlock Text="Advanced:" Style="{StaticResource SectionHeader}"/>
 
@@ -113,8 +115,6 @@
                             </TextBlock>
                         </CheckBox>
                     </StackPanel>
-
-                    <CheckBox Content="_Legacy tile color handling" IsChecked="{Binding MaterialState.LegacyTileColorHandling}" Margin="10,5,0,0" Style="{StaticResource Indented}"/>
                 </StackPanel>
             </TabItem>
 
