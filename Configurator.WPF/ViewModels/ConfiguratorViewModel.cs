@@ -23,16 +23,16 @@ namespace Configurator.WPF.ViewModels
 
         public MaterialColorState MaterialState
         {
-            get => _materialState;
-            set => SetProperty(ref _materialState, value);
+            get { return _materialState; }
+            set { SetProperty(ref _materialState, value); }
         }
 
         private MaterialColorState _materialState;
 
         public OnionState OnionState
         {
-            get => _onionState;
-            set => SetProperty(ref _onionState, value);
+            get { return _onionState; }
+            set { SetProperty(ref _onionState, value); }
         }
 
         private OnionState _onionState;
@@ -55,12 +55,12 @@ namespace Configurator.WPF.ViewModels
 
         public bool OnionCustomMaxCameraEnabled
         {
-            get => _onionState.Enabled && OnionCustomMaxCamera;
+            get { return _onionState.Enabled && OnionCustomMaxCamera; }
         }
 
         public bool OnionCustomMaxCamera
         {
-            get => _onionState.CustomMaxCameraDistance;
+            get { return _onionState.CustomMaxCameraDistance; }
             set
             {
                 _onionState.CustomMaxCameraDistance = value;
@@ -93,12 +93,12 @@ namespace Configurator.WPF.ViewModels
 
         public bool OnionCustomSeedsEnabled
         {
-            get => _onionState.Enabled && OnionCustomSeeds;
+            get { return _onionState.Enabled && OnionCustomSeeds; }
         }
 
         public bool OnionCustomSeeds
         {
-            get => _onionState.CustomSeeds;
+            get { return _onionState.CustomSeeds; }
             set
             {
                 _onionState.CustomSeeds = value;
@@ -115,7 +115,7 @@ namespace Configurator.WPF.ViewModels
 
         public string Status
         {
-            get => _status;
+            get { return _status; }
             set
             {
                 SetProperty(ref _status, $"{_status}\n[{DateTime.Now.TimeOfDay}]: {value}".Trim());

@@ -32,7 +32,8 @@ namespace MaterialColor
             {
                 if (_typeColorOffsets == null)
                 {
-                    _jsonLoader.TryLoadTypeColorOffsets(out var colorOffsets);
+                    Dictionary<string, Color32> colorOffsets;
+                    _jsonLoader.TryLoadTypeColorOffsets(out colorOffsets);
                     TypeColorOffsets = colorOffsets;
                 }
 
@@ -52,7 +53,8 @@ namespace MaterialColor
             {
                 if (_elementColorInfos == null)
                 {
-                    if (_jsonLoader.TryLoadElementColorInfos(out var colorInfos))
+                    Dictionary<SimHashes, ElementColorInfo> colorInfos;
+                    if (_jsonLoader.TryLoadElementColorInfos(out colorInfos))
                     {
                         ElementColorInfos = colorInfos;
                     }
@@ -78,7 +80,8 @@ namespace MaterialColor
             {
                 if (_configuratorState == null)
                 {
-                    _jsonLoader.TryLoadConfiguratorState(out var state);
+                    MaterialColorState state;
+                    _jsonLoader.TryLoadConfiguratorState(out state);
                     ConfiguratorState = state;
                 }
 
@@ -94,7 +97,8 @@ namespace MaterialColor
 
         public static bool TryReloadConfiguratorState()
         {
-            if (_jsonLoader.TryLoadConfiguratorState(out var state))
+            MaterialColorState state;
+            if (_jsonLoader.TryLoadConfiguratorState(out state))
             {
                 ConfiguratorState = state;
                 return true;
@@ -105,7 +109,8 @@ namespace MaterialColor
 
         public static bool TryReloadTypeColorOffsets()
         {
-            if (_jsonLoader.TryLoadTypeColorOffsets(out var colorOffsets))
+            Dictionary<string, Color32> colorOffsets;
+            if (_jsonLoader.TryLoadTypeColorOffsets(out colorOffsets))
             {
                 TypeColorOffsets = colorOffsets;
                 return true;
@@ -116,7 +121,8 @@ namespace MaterialColor
 
         public static bool TryReloadElementColorInfos()
         {
-            if (_jsonLoader.TryLoadElementColorInfos(out var colorInfos))
+            Dictionary<SimHashes, ElementColorInfo> colorInfos;
+            if (_jsonLoader.TryLoadElementColorInfos(out colorInfos))
             {
                 ElementColorInfos = colorInfos;
                 return true;
