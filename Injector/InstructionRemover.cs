@@ -11,7 +11,7 @@ namespace Injector
             _targetModule = targetModule;
         }
 
-        readonly ModuleDefinition _targetModule;
+        private readonly ModuleDefinition _targetModule;
 
         public void ReplaceByNopAt(string typeName, string methodName, int instructionIndex)
         {
