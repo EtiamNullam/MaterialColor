@@ -6,6 +6,7 @@ using Common.Data;
 
 namespace Injector.WPF
 {
+    /// <inheritdoc />
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
