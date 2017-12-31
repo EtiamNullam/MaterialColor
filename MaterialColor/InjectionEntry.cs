@@ -3,6 +3,7 @@ using Common.IO;
 using MaterialColor.Helpers;
 using System;
 using System.IO;
+using Common.Data;
 using UnityEngine;
 
 namespace MaterialColor
@@ -79,6 +80,7 @@ namespace MaterialColor
                             case Common.Data.ColorMode.DebugColor:
                                 tileColor = ColorHelper.GetCellColorDebug(cellIndex);
                                 break;
+                            case ColorMode.None:
                             default:
                                 tileColor = ColorHelper.DefaultCellColor;
                                 break;
@@ -93,13 +95,9 @@ namespace MaterialColor
                         else
                         {
                             if (cellIndex == blockRenderer.invalidPlaceCell)
-                            {
                                 return ColorHelper.InvalidCellColor;
-                            }
-                            else
-                            {
-                                tileColor = ColorHelper.DefaultCellColor;
-                            }
+
+                            tileColor = ColorHelper.DefaultCellColor;
                         }
                     }
                 }
@@ -109,17 +107,12 @@ namespace MaterialColor
                 }
 
                 if (cellIndex == blockRenderer.selectedCell)
-                {
                     return tileColor * 1.5f;
-                }
-                else if (cellIndex == blockRenderer.highlightCell)
-                {
+
+                if (cellIndex == blockRenderer.highlightCell)
                     return tileColor * 1.25f;
-                }
-                else
-                {
-                    return tileColor;
-                }
+
+                return tileColor;
             }
             catch (Exception e)
             {

@@ -31,18 +31,16 @@ namespace Injector.IO
             var backupExists = BackupForFileExists(filePath);
             var pathBlocked = File.Exists(filePath);
 
-            if (backupExists)
+            if (!backupExists) return false;
+
+            if (pathBlocked)
             {
-                if (pathBlocked)
-                {
-                    File.Delete(filePath);
-                }
-
-                File.Move(backupPath, filePath);
-
-                return true;
+                File.Delete(filePath);
             }
-            else return false;
+
+            File.Move(backupPath, filePath);
+
+            return true;
         }
 
         public void SaveModule(ModuleDefinition module, string filePath)

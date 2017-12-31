@@ -130,14 +130,12 @@ namespace MaterialColor.Helpers
                 standardColor = typeStandardColor;
                 return true;
             }
-            else
-            {
-                standardColor = State.ConfiguratorState.ShowMissingTypeColorOffsets
-                    ? MissingDebugColor
-                    : NoOffset;
 
-                return false;
-            }
+            standardColor = State.ConfiguratorState.ShowMissingTypeColorOffsets
+                ? MissingDebugColor
+                : NoOffset;
+
+            return false;
         }
 
         public static Color DefaultCellColor

@@ -32,14 +32,10 @@ namespace MaterialColor.Helpers
             var cellElementIndex = cell.elementIdx;
             var element = ElementLoader.elements[cellElementIndex];
 
-            if (element != null)
-            {
-                return element.id;
-            }
-            else
-            {
-                State.Logger.Log("Element from cell failed.");
-            }
+            if (element != null) return element.id;
+
+
+            State.Logger.Log("Element from cell failed.");
 
             return SimHashes.Vacuum;
         }
@@ -48,15 +44,10 @@ namespace MaterialColor.Helpers
         {
             var primaryElement = component.GetComponent<PrimaryElement>();
 
-            if (primaryElement != null)
-            {
-                return primaryElement.ElementID;
-            }
-            else
-            {
-                State.Logger.Log("PrimaryElement not found in: " + component);
-                return SimHashes.Vacuum;
-            }
+            if (primaryElement != null) return primaryElement.ElementID;
+
+            State.Logger.Log("PrimaryElement not found in: " + component);
+            return SimHashes.Vacuum;
         }
     }
 }
