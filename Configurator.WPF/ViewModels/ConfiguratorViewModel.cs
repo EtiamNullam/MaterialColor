@@ -4,6 +4,7 @@ using Common.Json;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
+using System.Windows;
 
 namespace Configurator.WPF.ViewModels
 {
@@ -18,7 +19,7 @@ namespace Configurator.WPF.ViewModels
             TryLoadLastAppState();
 
             ApplyCommand = new DelegateCommand(Apply);
-            ExitCommand = new DelegateCommand(App.Current.Shutdown);
+            ExitCommand = new DelegateCommand(Application.Current.Shutdown);
         }
 
         public MaterialColorState MaterialState
@@ -107,11 +108,11 @@ namespace Configurator.WPF.ViewModels
             }
         }
 
-        private Common.IO.Logger _logger;
-        private ConfiguratorStateManager _stateManager;
+        private readonly Common.IO.Logger _logger;
+        private readonly ConfiguratorStateManager _stateManager;
 
-        public DelegateCommand ApplyCommand { get; private set; }
-        public DelegateCommand ExitCommand { get; private set; }
+        public DelegateCommand ApplyCommand { get; }
+        public DelegateCommand ExitCommand { get; }
 
         public string Status
         {
@@ -173,7 +174,7 @@ namespace Configurator.WPF.ViewModels
             }
             catch (Exception e)
             {
-                Status = $"Can't save current state.";
+                Status = "Can\'t save current state.";
 
                 _logger.Log(e);
 

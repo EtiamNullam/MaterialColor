@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -7,7 +6,7 @@ namespace Common.IO
 {
     public static class FileChangeNotifier
     {
-        private static List<FileWatcherInfo> _fileWatcherInfos = new List<FileWatcherInfo>();
+        private static readonly List<FileWatcherInfo> _fileWatcherInfos = new List<FileWatcherInfo>();
 
         public static void StartFileWatch(string filter, string parentDirectory, FileSystemEventHandler callback)
         {
@@ -17,14 +16,12 @@ namespace Common.IO
             {
                 var watcher = info.FileWatcher;
 
-                if (watcher.Filter == filter && watcher.Path == parentDirectory)
-                {
-                    watcherInfo = info;
-                    return;
-                }
+                if (watcher.Filter != filter || watcher.Path != parentDirectory) continue;
+                watcherInfo = info; // TODO REFACTOR (weakman) This assigned value is never used....
+                return;             // ...because of this return,
             }
 
-            if (watcherInfo == null)
+            if (watcherInfo == null) // REFACTOR (weakman)  , Which means this is currently always true...
             {
                 IOHelper.EnsureDirectoryExists(parentDirectory);
 
@@ -34,7 +31,7 @@ namespace Common.IO
 
                 _fileWatcherInfos.Add(watcherInfo);
             }
-            else
+            else // REFACTOR (weakman) ...so this is never executed
             {
                 foreach (var sub in watcherInfo.Subscribers)
                 {
@@ -75,8 +72,8 @@ namespace Common.IO
                 TryAddSubscriber(callback);
             }
 
-            public FileSystemWatcher FileWatcher;
-            public List<FileSystemEventHandler> Subscribers = new List<FileSystemEventHandler>();
+            public readonly FileSystemWatcher FileWatcher;
+            public readonly List<FileSystemEventHandler> Subscribers = new List<FileSystemEventHandler>();
 
             public bool TryAddSubscriber(FileSystemEventHandler callback)
             {

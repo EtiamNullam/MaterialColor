@@ -7,12 +7,7 @@ namespace MaterialColor.Helpers
     {
         public static SimHashes GetMaterialFromCell(int cellIndex)
         {
-            if (!Grid.IsValidCell(cellIndex))
-            {
-                return SimHashes.Vacuum;
-            }
-
-            return TryCellIndexToSimHash(cellIndex);
+            return Grid.IsValidCell(cellIndex) ? TryCellIndexToSimHash(cellIndex) : SimHashes.Vacuum;
         }
 
         private static SimHashes TryCellIndexToSimHash(int cellIndex)

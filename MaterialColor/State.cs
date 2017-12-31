@@ -9,19 +9,11 @@ namespace MaterialColor
 {
     public static class State
     {
-        private static JsonFileLoader _jsonLoader = new JsonFileLoader(new JsonManager(), Logger);
+        private static readonly JsonFileLoader _jsonLoader = new JsonFileLoader(new JsonManager(), Logger);
 
         public static Common.IO.Logger Logger
         {
-            get
-            {
-                if (_logger == null)
-                {
-                    _logger = new Common.IO.Logger(Paths.MaterialCoreLogFileName);
-                }
-
-                return _logger;
-            }
+            get { return _logger ?? (_logger = new Common.IO.Logger(Paths.MaterialCoreLogFileName)); }
         }
 
         private static Common.IO.Logger _logger;
@@ -54,14 +46,7 @@ namespace MaterialColor
                 if (_elementColorInfos == null)
                 {
                     Dictionary<SimHashes, ElementColorInfo> colorInfos;
-                    if (_jsonLoader.TryLoadElementColorInfos(out colorInfos))
-                    {
-                        ElementColorInfos = colorInfos;
-                    }
-                    else
-                    {
-                        ElementColorInfos = new Dictionary<SimHashes, ElementColorInfo>();
-                    }
+                    ElementColorInfos = _jsonLoader.TryLoadElementColorInfos(out colorInfos) ? colorInfos : new Dictionary<SimHashes, ElementColorInfo>();
                 }
 
                 return _elementColorInfos;
