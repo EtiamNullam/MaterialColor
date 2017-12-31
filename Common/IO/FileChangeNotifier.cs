@@ -17,11 +17,11 @@ namespace Common.IO
                 var watcher = info.FileWatcher;
 
                 if (watcher.Filter != filter || watcher.Path != parentDirectory) continue;
-                watcherInfo = info;
-                return;
+                watcherInfo = info; // TODO REFACTOR (weakman) This assigned value is never used....
+                return;             // ...because of this return,
             }
 
-            if (watcherInfo == null)
+            if (watcherInfo == null) // REFACTOR (weakman)  , Which means this is currently always true...
             {
                 IOHelper.EnsureDirectoryExists(parentDirectory);
 
@@ -31,7 +31,7 @@ namespace Common.IO
 
                 _fileWatcherInfos.Add(watcherInfo);
             }
-            else
+            else // REFACTOR (weakman) ...so this is never executed
             {
                 foreach (var sub in watcherInfo.Subscribers)
                 {

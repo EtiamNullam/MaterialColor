@@ -209,7 +209,7 @@ namespace Injector.WPF.ViewModels
 
         public bool TryRestoreCSharpBackup()
         {
-            bool result = false;
+            bool result;
 
             try
             {
@@ -231,7 +231,7 @@ namespace Injector.WPF.ViewModels
 
         public bool TryRestoreFirstpassBackup()
         {
-            bool result = false;
+            bool result;
 
             try
             {
@@ -253,7 +253,7 @@ namespace Injector.WPF.ViewModels
         [Obsolete]
         public bool TryRestoreBackup()
         {
-            bool result = false;
+            bool result;
 
             try
             {
