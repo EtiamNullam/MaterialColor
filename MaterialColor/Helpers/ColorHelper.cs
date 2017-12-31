@@ -106,13 +106,13 @@ namespace MaterialColor.Helpers
 
         public static Color?[] TileColors = null;
 
-        public readonly static Color32 DefaultColor =
+        public static readonly Color32 DefaultColor =
             new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue);
 
-        public readonly static Color32 MissingDebugColor =
+        public static readonly Color32 MissingDebugColor =
             new Color32(byte.MaxValue, 0, byte.MaxValue, byte.MaxValue);
 
-        public readonly static Color32 NoOffset =
+        public static readonly Color32 NoOffset =
             new Color32(0, 0, 0, byte.MaxValue);
 
         private static void SetFilteredStorageColors(FilteredStorage storage, Color32 color, Color32 dimmedColor)
