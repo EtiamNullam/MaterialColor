@@ -30,7 +30,7 @@ namespace Core
                     toggleInfo.toggle.fgImage.sprite = FileManager.LoadSpriteFromFile(Common.Paths.MaterialColorOverlayIconPath, 256, 256);
                 }
             }
-            catch (Exception e) { }
+            catch (Exception) { }
         }
     }
 }
