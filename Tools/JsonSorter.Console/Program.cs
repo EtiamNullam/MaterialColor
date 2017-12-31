@@ -58,16 +58,16 @@ namespace JsonSorter.Console
         }
 
         private static string _filePath = null;
-        private static JsonManager _jsonManager = new JsonManager();
-        private static ElementColorInfosManager _elementColorInfosManager = new ElementColorInfosManager(_jsonManager);
-        private static TypeColorOffsetsManager _typeColorOffsetsManager = new TypeColorOffsetsManager(_jsonManager);
+        private static readonly JsonManager _jsonManager = new JsonManager();
+        private static readonly ElementColorInfosManager _elementColorInfosManager = new ElementColorInfosManager(_jsonManager);
+        private static readonly TypeColorOffsetsManager _typeColorOffsetsManager = new TypeColorOffsetsManager(_jsonManager);
 
-        private static List<string> TypeArgAliases = new List<string>
+        private static readonly List<string> TypeArgAliases = new List<string>
         {
             "-type", "-t"
         };
 
-        private static List<string> ElementArgAliases = new List<string>
+        private static readonly List<string> ElementArgAliases = new List<string>
         {
             "-element", "-e"
         };

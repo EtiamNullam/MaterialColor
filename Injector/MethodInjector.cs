@@ -12,8 +12,8 @@ namespace Injector
             _targetModule = targetModule;
         }
 
-        private ModuleDefinition _sourceModule;
-        private ModuleDefinition _targetModule;
+        private readonly ModuleDefinition _sourceModule;
+        private readonly ModuleDefinition _targetModule;
 
         /// <param name="passArgumentsByRef">
         /// Doesn't work on calling object

@@ -16,7 +16,7 @@ namespace Injector
             _ilProcessor = targetMethodILProcessor;
         }
 
-        private ILProcessor _ilProcessor;
+        private readonly ILProcessor _ilProcessor;
 
         public void InsertBefore(Instruction targetInstruction, IEnumerable<Instruction> instructionsToInsert)
         {

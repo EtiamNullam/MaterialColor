@@ -76,10 +76,10 @@ namespace Injector.WPF.ViewModels
 
         private InjectorState _state;
 
-        private InjectorStateManager _stateManager;
-        private FileManager _fileManager;
-        private InjectionManager _injector;
-        private Logger _logger;
+        private readonly InjectorStateManager _stateManager;
+        private readonly FileManager _fileManager;
+        private readonly InjectionManager _injector;
+        private readonly Logger _logger;
 
         private string _status;
 

@@ -107,8 +107,8 @@ namespace Configurator.WPF.ViewModels
             }
         }
 
-        private Common.IO.Logger _logger;
-        private ConfiguratorStateManager _stateManager;
+        private readonly Common.IO.Logger _logger;
+        private readonly ConfiguratorStateManager _stateManager;
 
         public DelegateCommand ApplyCommand { get; }
         public DelegateCommand ExitCommand { get; }

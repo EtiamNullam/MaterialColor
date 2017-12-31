@@ -247,7 +247,7 @@ namespace MaterialColor
         }
 
         // TODO: Move
-        private static Color NotGasColor = new Color(0.6f, 0.6f, 0.6f);
+        private static readonly Color NotGasColor = new Color(0.6f, 0.6f, 0.6f);
 
         // WIP
         // TODO: refactor

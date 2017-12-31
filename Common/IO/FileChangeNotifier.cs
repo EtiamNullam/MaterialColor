@@ -6,7 +6,7 @@ namespace Common.IO
 {
     public static class FileChangeNotifier
     {
-        private static List<FileWatcherInfo> _fileWatcherInfos = new List<FileWatcherInfo>();
+        private static readonly List<FileWatcherInfo> _fileWatcherInfos = new List<FileWatcherInfo>();
 
         public static void StartFileWatch(string filter, string parentDirectory, FileSystemEventHandler callback)
         {
@@ -74,8 +74,8 @@ namespace Common.IO
                 TryAddSubscriber(callback);
             }
 
-            public FileSystemWatcher FileWatcher;
-            public List<FileSystemEventHandler> Subscribers = new List<FileSystemEventHandler>();
+            public readonly FileSystemWatcher FileWatcher;
+            public readonly List<FileSystemEventHandler> Subscribers = new List<FileSystemEventHandler>();
 
             public bool TryAddSubscriber(FileSystemEventHandler callback)
             {

@@ -15,7 +15,7 @@ namespace MaterialColor.IO
             InitializeManagers(jsonManager);
         }
 
-        private Common.IO.Logger _logger;
+        private readonly Common.IO.Logger _logger;
 
         private ConfiguratorStateManager _configuratorStateManager;
         private ElementColorInfosManager _elementColorInfosManager;

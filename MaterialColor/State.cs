@@ -9,7 +9,7 @@ namespace MaterialColor
 {
     public static class State
     {
-        private static JsonFileLoader _jsonLoader = new JsonFileLoader(new JsonManager(), Logger);
+        private static readonly JsonFileLoader _jsonLoader = new JsonFileLoader(new JsonManager(), Logger);
 
         public static Common.IO.Logger Logger
         {

@@ -41,7 +41,7 @@ namespace OnionHooks
 
         private static OnionState _config;
         private static ConfiguratorStateManager _stateManager;
-        private static Common.IO.Logger _logger = new Common.IO.Logger(Paths.OnionLogFileName);
+        private static readonly Common.IO.Logger _logger = new Common.IO.Logger(Paths.OnionLogFileName);
 
         private static CameraController _cameraController;
 

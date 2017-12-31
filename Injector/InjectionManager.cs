@@ -12,7 +12,7 @@ namespace Injector
             _fileManager = fileManager;
         }
 
-        private FileManager _fileManager;
+        private readonly FileManager _fileManager;
 
         public Common.IO.Logger Logger { get; set; }
 
