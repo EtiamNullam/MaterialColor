@@ -5,6 +5,7 @@ using Injector.IO;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
+using System.Windows;
 
 namespace Injector.WPF.ViewModels
 {
@@ -16,7 +17,7 @@ namespace Injector.WPF.ViewModels
 
             PatchCommand = new DelegateCommand(Patch, CanPatch);
             RestoreBackupCommand = new DelegateCommand(RestoreBackup, CanRestoreBackup);
-            ExitCommand = new DelegateCommand(App.Current.Shutdown);
+            ExitCommand = new DelegateCommand(Application.Current.Shutdown);
 
             _stateManager = stateManager;
             _fileManager = fileManager;

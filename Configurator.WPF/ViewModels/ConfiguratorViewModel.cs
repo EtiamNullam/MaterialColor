@@ -4,6 +4,7 @@ using Common.Json;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
+using System.Windows;
 
 namespace Configurator.WPF.ViewModels
 {
@@ -18,7 +19,7 @@ namespace Configurator.WPF.ViewModels
             TryLoadLastAppState();
 
             ApplyCommand = new DelegateCommand(Apply);
-            ExitCommand = new DelegateCommand(App.Current.Shutdown);
+            ExitCommand = new DelegateCommand(Application.Current.Shutdown);
         }
 
         public MaterialColorState MaterialState
