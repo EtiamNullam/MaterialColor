@@ -30,7 +30,7 @@ namespace Injector
         private InstructionRemover _csharpInstructionRemover;
         private Publisher _csharpPublisher;
 
-        public bool Failed { get; set; } = false;
+        public bool Failed { get; set; }
 
         private void Initialize(ModuleDefinition coreModule, ModuleDefinition materialModule, ModuleDefinition onionModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
         {

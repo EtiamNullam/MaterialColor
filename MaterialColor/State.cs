@@ -36,7 +36,7 @@ namespace MaterialColor
             }
         }
 
-        private static Dictionary<string, Color32> _typeColorOffsets = null;
+        private static Dictionary<string, Color32> _typeColorOffsets;
 
         public static Dictionary<SimHashes, ElementColorInfo> ElementColorInfos
         {
@@ -56,7 +56,7 @@ namespace MaterialColor
             }
         }
 
-        private static Dictionary<SimHashes, ElementColorInfo> _elementColorInfos = null;
+        private static Dictionary<SimHashes, ElementColorInfo> _elementColorInfos;
 
         public static MaterialColorState ConfiguratorState
         {
@@ -76,7 +76,7 @@ namespace MaterialColor
             }
         }
 
-        private static MaterialColorState _configuratorState = null;
+        private static MaterialColorState _configuratorState;
 
         public static bool TryReloadConfiguratorState()
         {

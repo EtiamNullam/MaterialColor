@@ -11,11 +11,11 @@ namespace MaterialColor
     // TODO: move most of this stuff to Core
     public static class InjectionEntry
     {
-        private static bool _initialized = false;
+        private static bool _initialized;
 
-        private static bool _elementColorInfosChanged = false;
-        private static bool _typeColorOffsetsChanged = false;
-        private static bool _configuratorStateChanged = false;
+        private static bool _elementColorInfosChanged;
+        private static bool _typeColorOffsetsChanged;
+        private static bool _configuratorStateChanged;
 
         // TODO: merge with EnterEveryUpdate?
         public static void EnterOnce()

@@ -33,12 +33,12 @@ namespace Core
             Screen.transform.position = newPosition;
         }
 
-        private bool _isDragging = false;
+        private bool _isDragging;
 
         // Use GetComponent<KScreen>() instead?
         public KScreen Screen;
 
-        public Vector3 Offset = new Vector3();
+        public Vector3 Offset;
 
         public static void Attach(KScreen screen)
         {

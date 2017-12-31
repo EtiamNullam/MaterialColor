@@ -104,7 +104,7 @@ namespace MaterialColor.Helpers
             }
         }
 
-        public static Color?[] TileColors = null;
+        public static Color?[] TileColors;
 
         public static readonly Color32 DefaultColor =
             new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue);
