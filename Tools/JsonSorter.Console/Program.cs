@@ -91,9 +91,9 @@ namespace JsonSorter.Console
         }
 
         private static int CompareElementColorInfoDictionaryPairs(KeyValuePair<SimHashes, ElementColorInfo> a, KeyValuePair<SimHashes, ElementColorInfo> b)
-            => a.Key.ToString().CompareTo(b.Key.ToString());
+            => string.Compare(a.Key.ToString(), b.Key.ToString(), StringComparison.Ordinal);
 
         private static int CompareTypeColorOffsetDictionaryPairs(KeyValuePair<string, Color32> a, KeyValuePair<string, Color32> b)
-            => a.Key.CompareTo(b.Key);
+            => string.Compare(a.Key, b.Key, StringComparison.Ordinal);
     }
 }
