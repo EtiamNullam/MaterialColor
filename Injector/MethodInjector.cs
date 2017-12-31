@@ -37,13 +37,13 @@ namespace Injector
             var targetMethodBody = CecilHelper.GetMethodDefinition(_targetModule, targetTypeName, targetMethodName, useFullName).Body;
             var instruction = targetMethodBody.Instructions[instructionIndex];
 
-            InjectBefore(sourceTypeName, sourceMethodName, targetMethodBody, instruction, includeCallingObject, includeArgumentCount, passArgumentsByRef, useFullName: useFullName);
+            InjectBefore(sourceTypeName, sourceMethodName, targetMethodBody, instruction, includeCallingObject, includeArgumentCount, passArgumentsByRef, useFullName);
         }
 
         public void InjectBefore(string sourceTypeName, string sourceMethodName, MethodBody targetMethodBody,
             Instruction targetInstruction, bool includeCallingObject = false, int includeArgumentCount = 0, bool passArgumentsByRef = false, bool useFullName = false)
         {
-            var sourceMethod = CecilHelper.GetMethodDefinition(_sourceModule, sourceTypeName, sourceMethodName, useFullName: useFullName);
+            var sourceMethod = CecilHelper.GetMethodDefinition(_sourceModule, sourceTypeName, sourceMethodName, useFullName);
             var sourceMethodReference = CecilHelper.GetMethodReference(_targetModule, sourceMethod);
 
             InjectBefore(sourceMethodReference, targetMethodBody, targetInstruction, includeCallingObject, includeArgumentCount, passArgumentsByRef);
