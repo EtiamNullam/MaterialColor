@@ -50,9 +50,9 @@ namespace Injector.WPF.ViewModels
             return $"Warning: A backup for {fileName} exists, but current assembly doesn't appear to be patched. Patching without restoring backup is advised.";
         }
 
-        public DelegateCommand PatchCommand { get; private set; }
-        public DelegateCommand RestoreBackupCommand { get; private set; }
-        public DelegateCommand ExitCommand { get; private set; }
+        public DelegateCommand PatchCommand { get; }
+        public DelegateCommand RestoreBackupCommand { get; }
+        public DelegateCommand ExitCommand { get; }
 
         public string Status
         {

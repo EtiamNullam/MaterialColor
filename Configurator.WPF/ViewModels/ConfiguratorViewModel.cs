@@ -110,8 +110,8 @@ namespace Configurator.WPF.ViewModels
         private Common.IO.Logger _logger;
         private ConfiguratorStateManager _stateManager;
 
-        public DelegateCommand ApplyCommand { get; private set; }
-        public DelegateCommand ExitCommand { get; private set; }
+        public DelegateCommand ApplyCommand { get; }
+        public DelegateCommand ExitCommand { get; }
 
         public string Status
         {
