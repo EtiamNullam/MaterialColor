@@ -1,12 +1,12 @@
 ﻿using System.Windows;
 using System.Linq;
-using System;
 using System.Collections.Generic;
 using Common.Json;
 using Common.Data;
 
 namespace Injector.WPF
 {
+    /// <inheritdoc />
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
@@ -14,15 +14,7 @@ namespace Injector.WPF
     {
         public IO.FileManager FileManager
         {
-            get
-            {
-                if (_fileManager == null)
-                {
-                    _fileManager = new IO.FileManager();
-                }
-
-                return _fileManager;
-            }
+            get { return _fileManager ?? (_fileManager = new IO.FileManager()); }
         }
 
         private IO.FileManager _fileManager;
@@ -39,15 +31,15 @@ namespace Injector.WPF
 
                 foreach (var argument in e.Args.Select(arg => arg.ToLower()).ToList())
                 {
-                    if (InjectMaterialArgumentAliases.Contains(argument))
+                    if (_injectMaterialArgumentAliases.Contains(argument))
                     {
                         recover = injectMaterial = true;
                     }
-                    else if (InjectOnionArgumentAliases.Contains(argument))
+                    else if (_injectOnionArgumentAliases.Contains(argument))
                     {
                         recover = injectOnion = true;
                     }
-                    else if (RecoverArgumentAliases.Contains(argument))
+                    else if (_recoverArgumentAliases.Contains(argument))
                     {
                         recover = true;
                     }
@@ -99,8 +91,8 @@ namespace Injector.WPF
             new InjectionManager(FileManager).InjectDefaultAndBackup(state);
         }
 
-        private List<string> RecoverArgumentAliases = new List<string> { "-r", "-recover" };
-        private List<string> InjectMaterialArgumentAliases = new List<string> { "-m", "-material" };
-        private List<string> InjectOnionArgumentAliases = new List<string> { "-o", "-onion" };
+        private readonly List<string> _recoverArgumentAliases = new List<string> { "-r", "-recover" };
+        private readonly List<string> _injectMaterialArgumentAliases = new List<string> { "-m", "-material" };
+        private readonly List<string> _injectOnionArgumentAliases = new List<string> { "-o", "-onion" };
     }
 }

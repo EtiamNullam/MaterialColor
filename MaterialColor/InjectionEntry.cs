@@ -10,11 +10,11 @@ namespace MaterialColor
     // TODO: move most of this stuff to Core
     public static class InjectionEntry
     {
-        private static bool Initialized = false;
+        private static bool _initialized = false;
 
-        private static bool ElementColorInfosChanged = false;
-        private static bool TypeColorOffsetsChanged = false;
-        private static bool ConfiguratorStateChanged = false;
+        private static bool _elementColorInfosChanged = false;
+        private static bool _typeColorOffsetsChanged = false;
+        private static bool _configuratorStateChanged = false;
 
         // TODO: merge with EnterEveryUpdate?
         public static void EnterOnce()
@@ -23,9 +23,9 @@ namespace MaterialColor
             {
                 Components.BuildingCompletes.OnAdd += OnBuildingsCompletesAdd;
 
-                if (!Initialized) Initialize();
+                if (!_initialized) Initialize();
 
-                ElementColorInfosChanged = TypeColorOffsetsChanged = ConfiguratorStateChanged = true;
+                _elementColorInfosChanged = _typeColorOffsetsChanged = _configuratorStateChanged = true;
             }
             catch (Exception e)
             {
@@ -41,17 +41,17 @@ namespace MaterialColor
         private static void Initialize()
         {
             SubscribeToFileChangeNotifier();
-            Initialized = true;
+            _initialized = true;
         }
 
         public static void EnterEveryUpdate()
         {
             try
             {
-                if (ElementColorInfosChanged || TypeColorOffsetsChanged || ConfiguratorStateChanged)
+                if (_elementColorInfosChanged || _typeColorOffsetsChanged || _configuratorStateChanged)
                 {
                     RefreshMaterialColor();
-                    ElementColorInfosChanged = TypeColorOffsetsChanged = ConfiguratorStateChanged = false;
+                    _elementColorInfosChanged = _typeColorOffsetsChanged = _configuratorStateChanged = false;
                 }
             }
             catch (Exception e)
@@ -130,17 +130,17 @@ namespace MaterialColor
             }
         }
 
-        private static bool firstTimeEnumerate = true;
+        private static bool _firstTimeEnumerate = true;
 
         private static void EnumerateOtherComponentsOnce(Component component)
         {
-            if (firstTimeEnumerate)
+            if (_firstTimeEnumerate)
             {
                 var comps = component.GetComponents<Component>();
 
                 if (comps.Length > 0)
                 {
-                    firstTimeEnumerate = false;
+                    _firstTimeEnumerate = false;
 
                     foreach (var comp in comps)
                     {
@@ -211,12 +211,12 @@ namespace MaterialColor
 
         private static void SubscribeToFileChangeNotifier()
         {
-            var jsonFilter = "*.json";
+            const string JSONFilter = "*.json";
 
             try
             {
-                FileChangeNotifier.StartFileWatch(jsonFilter, Paths.ElementColorInfosDirectory, OnElementColorsInfosChanged);
-                FileChangeNotifier.StartFileWatch(jsonFilter, Paths.TypeColorOffsetsDirectory, OnTypeColorOffsetsChanged);
+                FileChangeNotifier.StartFileWatch(JSONFilter, Paths.ElementColorInfosDirectory, OnElementColorsInfosChanged);
+                FileChangeNotifier.StartFileWatch(JSONFilter, Paths.TypeColorOffsetsDirectory, OnTypeColorOffsetsChanged);
 
                 FileChangeNotifier.StartFileWatch(Paths.MaterialColorStateFileName, Paths.MaterialConfigPath, OnMaterialStateChanged);
             }
@@ -237,7 +237,7 @@ namespace MaterialColor
                 {
                     OnBuildingsCompletesAdd(building);
                 }
-                State.Logger.Log($"Buildings updated successfully.");
+                State.Logger.Log("Buildings updated successfully.");
             }
             catch (Exception e)
             {
@@ -247,7 +247,7 @@ namespace MaterialColor
         }
 
         // TODO: Move
-        private static Color NotGasColor = new Color(0.6f, 0.6f, 0.6f);
+        private static readonly Color _notGasColor = new Color(0.6f, 0.6f, 0.6f);
 
         // WIP
         // TODO: refactor
@@ -260,7 +260,7 @@ namespace MaterialColor
 
             if (!element.IsGas)
             {
-                return NotGasColor;
+                return _notGasColor;
             }
 
             Color gasColor = ColorHelper.GetCellOverlayColor(cellIndex);
@@ -330,12 +330,12 @@ namespace MaterialColor
 
             if (reloadColorInfosResult)
             {
-                ElementColorInfosChanged = true;
+                _elementColorInfosChanged = true;
 
-                var message = "Element color infos changed.";
+                const string Message = "Element color infos changed.";
 
-                State.Logger.Log(message);
-                Debug.LogError(message);
+                State.Logger.Log(Message);
+                Debug.LogError(Message);
             }
             else
             {
@@ -347,12 +347,12 @@ namespace MaterialColor
         {
             if (State.TryReloadTypeColorOffsets())
             {
-                TypeColorOffsetsChanged = true;
+                _typeColorOffsetsChanged = true;
 
-                var message = "Type colors changed.";
+                const string Message = "Type colors changed.";
 
-                State.Logger.Log(message);
-                Debug.LogError(message);
+                State.Logger.Log(Message);
+                Debug.LogError(Message);
             }
         }
 
@@ -360,12 +360,12 @@ namespace MaterialColor
         {
             if (State.TryReloadConfiguratorState())
             {
-                ConfiguratorStateChanged = true;
+                _configuratorStateChanged = true;
 
-                var message = "Configurator state changed.";
+                const string Message = "Configurator state changed.";
 
-                State.Logger.Log(message);
-                Debug.LogError(message);
+                State.Logger.Log(Message);
+                Debug.LogError(Message);
             }
         }
 
