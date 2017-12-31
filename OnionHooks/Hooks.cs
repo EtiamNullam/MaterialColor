@@ -59,10 +59,10 @@ namespace OnionHooks
             {
                 Config = new OnionState();
 
-                var message = "OnionState.json loading failed";
+                const string Message = "OnionState.json loading failed";
 
-                _logger.Log(message);
-                Debug.LogError(message);
+                _logger.Log(Message);
+                Debug.LogError(Message);
 
                 return false;
             }

@@ -211,12 +211,12 @@ namespace MaterialColor
 
         private static void SubscribeToFileChangeNotifier()
         {
-            var jsonFilter = "*.json";
+            const string JSONFilter = "*.json";
 
             try
             {
-                FileChangeNotifier.StartFileWatch(jsonFilter, Paths.ElementColorInfosDirectory, OnElementColorsInfosChanged);
-                FileChangeNotifier.StartFileWatch(jsonFilter, Paths.TypeColorOffsetsDirectory, OnTypeColorOffsetsChanged);
+                FileChangeNotifier.StartFileWatch(JSONFilter, Paths.ElementColorInfosDirectory, OnElementColorsInfosChanged);
+                FileChangeNotifier.StartFileWatch(JSONFilter, Paths.TypeColorOffsetsDirectory, OnTypeColorOffsetsChanged);
 
                 FileChangeNotifier.StartFileWatch(Paths.MaterialColorStateFileName, Paths.MaterialConfigPath, OnMaterialStateChanged);
             }
@@ -332,10 +332,10 @@ namespace MaterialColor
             {
                 ElementColorInfosChanged = true;
 
-                var message = "Element color infos changed.";
+                const string Message = "Element color infos changed.";
 
-                State.Logger.Log(message);
-                Debug.LogError(message);
+                State.Logger.Log(Message);
+                Debug.LogError(Message);
             }
             else
             {
@@ -349,10 +349,10 @@ namespace MaterialColor
             {
                 TypeColorOffsetsChanged = true;
 
-                var message = "Type colors changed.";
+                const string Message = "Type colors changed.";
 
-                State.Logger.Log(message);
-                Debug.LogError(message);
+                State.Logger.Log(Message);
+                Debug.LogError(Message);
             }
         }
 
@@ -362,10 +362,10 @@ namespace MaterialColor
             {
                 ConfiguratorStateChanged = true;
 
-                var message = "Configurator state changed.";
+                const string Message = "Configurator state changed.";
 
-                State.Logger.Log(message);
-                Debug.LogError(message);
+                State.Logger.Log(Message);
+                Debug.LogError(Message);
             }
         }
 

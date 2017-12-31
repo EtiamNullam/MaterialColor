@@ -557,12 +557,12 @@ namespace Injector
 
         private void InjectOnionCameraController()
         {
-            var typeName = "CameraController";
+            const string TypeName = "CameraController";
 
-            _csharpPublisher.MakeFieldPublic(typeName, "maxOrthographicSize");
-            _csharpPublisher.MakeFieldPublic(typeName, "maxOrthographicSizeDebug");
+            _csharpPublisher.MakeFieldPublic(TypeName, "maxOrthographicSize");
+            _csharpPublisher.MakeFieldPublic(TypeName, "maxOrthographicSizeDebug");
 
-            var cameraControllerOnSpawnBody = CecilHelper.GetMethodDefinition(_csharpModule, typeName, "OnSpawn").Body;
+            var cameraControllerOnSpawnBody = CecilHelper.GetMethodDefinition(_csharpModule, TypeName, "OnSpawn").Body;
             var restoreCall = cameraControllerOnSpawnBody.Instructions.Last(instruction => instruction.OpCode == OpCodes.Call);
 
             _onionToCSharpInjector.InjectBefore(
