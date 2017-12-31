@@ -147,14 +147,9 @@ namespace Injector.WPF.ViewModels
 
             try
             {
-                if (_injector.InjectDefaultAndBackup(State))
-                {
-                    Status = "\tSome issues with injection appeared, check logs for more info\n\tOriginal backed up and patched.\n\tPatch complete.";
-                }
-                else
-                {
-                    Status = "\tOriginal backed up and patched.\n\tPatch successful.";
-                }
+                Status = _injector.InjectDefaultAndBackup(State) 
+                    ? "\tSome issues with injection appeared, check logs for more info\n\tOriginal backed up and patched.\n\tPatch complete."
+                    : "\tOriginal backed up and patched.\n\tPatch successful.";
             }
             catch (Exception e)
             {
@@ -199,26 +194,16 @@ namespace Injector.WPF.ViewModels
 
         public void RestoreCSharpBackup()
         {
-            if (TryRestoreCSharpBackup())
-            {
-                Status = $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp.dll backup restore successful.";
-            }
-            else
-            {
-                Status = $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp.dll backup restore failed.";
-            }
+            Status = TryRestoreCSharpBackup() 
+                ? $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp.dll backup restore successful." 
+                : $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp.dll backup restore failed.";
         }
 
         public void RestoreFirstpassBackup()
         {
-            if (TryRestoreFirstpassBackup())
-            {
-                Status = $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp-firstpass.dll backup restore successful.";
-            }
-            else
-            {
-                Status = $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp-firstpass.dll backup restore failed.";
-            }
+            Status = TryRestoreFirstpassBackup() 
+                ? $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp-firstpass.dll backup restore successful." 
+                : $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp-firstpass.dll backup restore failed.";
         }
 
         public bool TryRestoreCSharpBackup()

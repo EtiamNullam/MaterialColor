@@ -22,17 +22,7 @@
             {
                 return _gasPressureEnd;
             }
-            set
-            {
-                if (_gasPressureEnd <= 0)
-                {
-                    _gasPressureEnd = float.Epsilon;
-                }
-                else
-                {
-                    _gasPressureEnd = value;
-                }
-            }
+            set { _gasPressureEnd = _gasPressureEnd <= 0 ? float.Epsilon : value; }
         }
 
         private float _gasPressureEnd = 2.5f;

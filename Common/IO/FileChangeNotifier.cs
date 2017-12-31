@@ -16,11 +16,9 @@ namespace Common.IO
             {
                 var watcher = info.FileWatcher;
 
-                if (watcher.Filter == filter && watcher.Path == parentDirectory)
-                {
-                    watcherInfo = info;
-                    return;
-                }
+                if (watcher.Filter != filter || watcher.Path != parentDirectory) continue;
+                watcherInfo = info;
+                return;
             }
 
             if (watcherInfo == null)

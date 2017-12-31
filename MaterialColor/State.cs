@@ -54,14 +54,7 @@ namespace MaterialColor
                 if (_elementColorInfos == null)
                 {
                     Dictionary<SimHashes, ElementColorInfo> colorInfos;
-                    if (_jsonLoader.TryLoadElementColorInfos(out colorInfos))
-                    {
-                        ElementColorInfos = colorInfos;
-                    }
-                    else
-                    {
-                        ElementColorInfos = new Dictionary<SimHashes, ElementColorInfo>();
-                    }
+                    ElementColorInfos = _jsonLoader.TryLoadElementColorInfos(out colorInfos) ? colorInfos : new Dictionary<SimHashes, ElementColorInfo>();
                 }
 
                 return _elementColorInfos;
