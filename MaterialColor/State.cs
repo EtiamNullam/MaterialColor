@@ -13,15 +13,7 @@ namespace MaterialColor
 
         public static Common.IO.Logger Logger
         {
-            get
-            {
-                if (_logger == null)
-                {
-                    _logger = new Common.IO.Logger(Paths.MaterialCoreLogFileName);
-                }
-
-                return _logger;
-            }
+            get { return _logger ?? (_logger = new Common.IO.Logger(Paths.MaterialCoreLogFileName)); }
         }
 
         private static Common.IO.Logger _logger;

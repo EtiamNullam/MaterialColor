@@ -14,15 +14,7 @@ namespace Injector.WPF
     {
         public IO.FileManager FileManager
         {
-            get
-            {
-                if (_fileManager == null)
-                {
-                    _fileManager = new IO.FileManager();
-                }
-
-                return _fileManager;
-            }
+            get { return _fileManager ?? (_fileManager = new IO.FileManager()); }
         }
 
         private IO.FileManager _fileManager;
