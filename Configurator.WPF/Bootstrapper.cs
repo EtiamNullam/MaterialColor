@@ -14,5 +14,10 @@ namespace Configurator.WPF
         {
             Application.Current.MainWindow.Show();
         }
+
+        protected override void ConfigureContainer()
+        {
+            base.ConfigureContainer();
+        }
     }
 }

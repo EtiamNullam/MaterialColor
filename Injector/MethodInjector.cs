@@ -12,8 +12,8 @@ namespace Injector
             _targetModule = targetModule;
         }
 
-        private readonly ModuleDefinition _sourceModule;
-        private readonly ModuleDefinition _targetModule;
+        private ModuleDefinition _sourceModule;
+        private ModuleDefinition _targetModule;
 
         /// <param name="passArgumentsByRef">
         /// Doesn't work on calling object
@@ -37,13 +37,13 @@ namespace Injector
             var targetMethodBody = CecilHelper.GetMethodDefinition(_targetModule, targetTypeName, targetMethodName, useFullName).Body;
             var instruction = targetMethodBody.Instructions[instructionIndex];
 
-            InjectBefore(sourceTypeName, sourceMethodName, targetMethodBody, instruction, includeCallingObject, includeArgumentCount, passArgumentsByRef, useFullName);
+            InjectBefore(sourceTypeName, sourceMethodName, targetMethodBody, instruction, includeCallingObject, includeArgumentCount, passArgumentsByRef, useFullName: useFullName);
         }
 
         public void InjectBefore(string sourceTypeName, string sourceMethodName, MethodBody targetMethodBody,
             Instruction targetInstruction, bool includeCallingObject = false, int includeArgumentCount = 0, bool passArgumentsByRef = false, bool useFullName = false)
         {
-            var sourceMethod = CecilHelper.GetMethodDefinition(_sourceModule, sourceTypeName, sourceMethodName, useFullName);
+            var sourceMethod = CecilHelper.GetMethodDefinition(_sourceModule, sourceTypeName, sourceMethodName, useFullName: useFullName);
             var sourceMethodReference = CecilHelper.GetMethodReference(_targetModule, sourceMethod);
 
             InjectBefore(sourceMethodReference, targetMethodBody, targetInstruction, includeCallingObject, includeArgumentCount, passArgumentsByRef);

@@ -4,7 +4,11 @@ using Common.Data;
 using Common.IO;
 using Common.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace OnionHooks
 {
@@ -41,7 +45,7 @@ namespace OnionHooks
 
         private static OnionState _config;
         private static ConfiguratorStateManager _stateManager;
-        private static readonly Common.IO.Logger _logger = new Common.IO.Logger(Paths.OnionLogFileName);
+        private static Common.IO.Logger _logger = new Common.IO.Logger(Paths.OnionLogFileName);
 
         private static CameraController _cameraController;
 
@@ -59,10 +63,10 @@ namespace OnionHooks
             {
                 Config = new OnionState();
 
-                const string Message = "OnionState.json loading failed";
+                var message = "OnionState.json loading failed";
 
-                _logger.Log(Message);
-                Debug.LogError(Message);
+                _logger.Log(message);
+                Debug.LogError(message);
 
                 return false;
             }
@@ -88,10 +92,10 @@ namespace OnionHooks
         {
             if (!Config.Enabled || !Config.CustomSeeds) return;
 
-            worldSeed   = Config.WorldSeed >= 0     ?   Config.WorldSeed      : worldSeed;
-            layoutSeed  = Config.LayoutSeed >= 0    ?   Config.LayoutSeed     : layoutSeed;
-            terrainSeed = Config.TerrainSeed >= 0   ?   Config.TerrainSeed    : terrainSeed;
-            noiseSeed   = Config.NoiseSeed >= 0     ?   Config.NoiseSeed      : noiseSeed;
+            worldSeed   = (Config.WorldSeed >= 0)     ?   Config.WorldSeed      : worldSeed;
+            layoutSeed  = (Config.LayoutSeed >= 0)    ?   Config.LayoutSeed     : layoutSeed;
+            terrainSeed = (Config.TerrainSeed >= 0)   ?   Config.TerrainSeed    : terrainSeed;
+            noiseSeed   = (Config.NoiseSeed >= 0)     ?   Config.NoiseSeed      : noiseSeed;
 
             if (Config.LogSeed)
             {

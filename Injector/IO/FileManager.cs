@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Mono.Cecil;
+using System;
 
 namespace Injector.IO
 {

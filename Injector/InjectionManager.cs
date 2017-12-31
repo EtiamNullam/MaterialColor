@@ -1,5 +1,8 @@
-﻿using Mono.Cecil;
+﻿using System;
+using Mono.Cecil;
 using System.Linq;
+using Mono.Cecil.Cil;
+using System.Collections.Generic;
 using Injector.IO;
 using Common.Data;
 
@@ -12,7 +15,7 @@ namespace Injector
             _fileManager = fileManager;
         }
 
-        private readonly FileManager _fileManager;
+        private FileManager _fileManager;
 
         public Common.IO.Logger Logger { get; set; }
 
