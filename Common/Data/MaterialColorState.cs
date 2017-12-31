@@ -1,4 +1,10 @@
-﻿namespace Common.Data
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Common.Data
 {
     public class MaterialColorState
     {
@@ -22,7 +28,17 @@
             {
                 return _gasPressureEnd;
             }
-            set { _gasPressureEnd = _gasPressureEnd <= 0 ? float.Epsilon : value; }
+            set
+            {
+                if (_gasPressureEnd <= 0)
+                {
+                    _gasPressureEnd = float.Epsilon;
+                }
+                else
+                {
+                    _gasPressureEnd = value;
+                }
+            }
         }
 
         private float _gasPressureEnd = 2.5f;

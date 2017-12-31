@@ -9,7 +9,7 @@ namespace Injector
             _targetModule = targetModule;
         }
 
-        private readonly ModuleDefinition _targetModule;
+        ModuleDefinition _targetModule;
 
         public void MakeFieldPublic(string typeName, string fieldName)
         {

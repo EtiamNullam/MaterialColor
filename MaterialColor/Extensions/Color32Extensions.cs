@@ -6,13 +6,13 @@ namespace MaterialColor.Extensions
 {
     public static class Color32Extensions
     {
-        public static Color32 ToColor32(this int hexVal)
+        public static Color32 ToColor32(this int HexVal)
         {
-            var r = (byte)((hexVal >> 16) & 0xFF);
-            var g = (byte)((hexVal >> 8) & 0xFF);
-            var b = (byte)(hexVal & 0xFF);
+            var R = (byte)((HexVal >> 16) & 0xFF);
+            var G = (byte)((HexVal >> 8) & 0xFF);
+            var B = (byte)((HexVal) & 0xFF);
 
-            return new Color32(r, g, b, 0xFF);
+            return new Color32(R, G, B, 0xFF);
         }
 
         public static int ToHex(this Color32 color)

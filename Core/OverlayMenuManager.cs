@@ -1,5 +1,12 @@
 ﻿using Core.IO;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace Core
 {
@@ -30,7 +37,7 @@ namespace Core
                     toggleInfo.toggle.fgImage.sprite = FileManager.LoadSpriteFromFile(Common.Paths.MaterialColorOverlayIconPath, 256, 256);
                 }
             }
-            catch (Exception) { }
+            catch (Exception e) { }
         }
     }
 }

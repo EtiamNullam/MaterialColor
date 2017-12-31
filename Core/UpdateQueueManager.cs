@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Core
 {
@@ -10,7 +13,7 @@ namespace Core
             _actionQueue.Enqueue(action);
         }
 
-        private static readonly Queue<EventHandler> _actionQueue = new Queue<EventHandler>();
+        private static Queue<EventHandler> _actionQueue = new Queue<EventHandler>();
 
         public static void OnGameUpdate()
         {
