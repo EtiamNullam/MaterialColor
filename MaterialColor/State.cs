@@ -9,19 +9,11 @@ namespace MaterialColor
 {
     public static class State
     {
-        private static JsonFileLoader _jsonLoader = new JsonFileLoader(new JsonManager(), Logger);
+        private static readonly JsonFileLoader _jsonLoader = new JsonFileLoader(new JsonManager(), Logger);
 
         public static Common.IO.Logger Logger
         {
-            get
-            {
-                if (_logger == null)
-                {
-                    _logger = new Common.IO.Logger(Paths.MaterialCoreLogFileName);
-                }
-
-                return _logger;
-            }
+            get { return _logger ?? (_logger = new Common.IO.Logger(Paths.MaterialCoreLogFileName)); }
         }
 
         private static Common.IO.Logger _logger;
@@ -30,12 +22,11 @@ namespace MaterialColor
         {
             get
             {
-                if (_typeColorOffsets == null)
-                {
-                    Dictionary<string, Color32> colorOffsets;
-                    _jsonLoader.TryLoadTypeColorOffsets(out colorOffsets);
-                    TypeColorOffsets = colorOffsets;
-                }
+                if (_typeColorOffsets != null) return _typeColorOffsets;
+
+                Dictionary<string, Color32> colorOffsets;
+                _jsonLoader.TryLoadTypeColorOffsets(out colorOffsets);
+                TypeColorOffsets = colorOffsets;
 
                 return _typeColorOffsets;
             }
@@ -45,24 +36,17 @@ namespace MaterialColor
             }
         }
 
-        private static Dictionary<string, Color32> _typeColorOffsets = null;
+        private static Dictionary<string, Color32> _typeColorOffsets;
 
         public static Dictionary<SimHashes, ElementColorInfo> ElementColorInfos
         {
             get
             {
-                if (_elementColorInfos == null)
-                {
-                    Dictionary<SimHashes, ElementColorInfo> colorInfos;
-                    if (_jsonLoader.TryLoadElementColorInfos(out colorInfos))
-                    {
-                        ElementColorInfos = colorInfos;
-                    }
-                    else
-                    {
-                        ElementColorInfos = new Dictionary<SimHashes, ElementColorInfo>();
-                    }
-                }
+                if (_elementColorInfos != null) return _elementColorInfos;
+
+                Dictionary<SimHashes, ElementColorInfo> colorInfos;
+                _jsonLoader.TryLoadElementColorInfos(out colorInfos);
+                ElementColorInfos = colorInfos;
 
                 return _elementColorInfos;
             }
@@ -72,18 +56,17 @@ namespace MaterialColor
             }
         }
 
-        private static Dictionary<SimHashes, ElementColorInfo> _elementColorInfos = null;
+        private static Dictionary<SimHashes, ElementColorInfo> _elementColorInfos;
 
         public static MaterialColorState ConfiguratorState
         {
             get
             {
-                if (_configuratorState == null)
-                {
-                    MaterialColorState state;
-                    _jsonLoader.TryLoadConfiguratorState(out state);
-                    ConfiguratorState = state;
-                }
+                if (_configuratorState != null) return _configuratorState;
+
+                MaterialColorState state;
+                _jsonLoader.TryLoadConfiguratorState(out state);
+                ConfiguratorState = state;
 
                 return _configuratorState;
             }
@@ -93,42 +76,33 @@ namespace MaterialColor
             }
         }
 
-        private static MaterialColorState _configuratorState = null;
+        private static MaterialColorState _configuratorState;
 
         public static bool TryReloadConfiguratorState()
         {
             MaterialColorState state;
-            if (_jsonLoader.TryLoadConfiguratorState(out state))
-            {
-                ConfiguratorState = state;
-                return true;
-            }
+            if (!_jsonLoader.TryLoadConfiguratorState(out state)) return false;
+            ConfiguratorState = state;
 
-            return false;
+            return true;
         }
 
         public static bool TryReloadTypeColorOffsets()
         {
             Dictionary<string, Color32> colorOffsets;
-            if (_jsonLoader.TryLoadTypeColorOffsets(out colorOffsets))
-            {
-                TypeColorOffsets = colorOffsets;
-                return true;
-            }
+            if (!_jsonLoader.TryLoadTypeColorOffsets(out colorOffsets)) return false;
+            TypeColorOffsets = colorOffsets;
 
-            return false;
+            return true;
         }
 
         public static bool TryReloadElementColorInfos()
         {
             Dictionary<SimHashes, ElementColorInfo> colorInfos;
-            if (_jsonLoader.TryLoadElementColorInfos(out colorInfos))
-            {
-                ElementColorInfos = colorInfos;
-                return true;
-            }
+            if (!_jsonLoader.TryLoadElementColorInfos(out colorInfos)) return false;
+            ElementColorInfos = colorInfos;
 
-            return false;
+            return true;
         }
 
         // TODO: load from file instead

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.IO
 {
@@ -14,7 +11,7 @@ namespace Common.IO
             _fileName = fileName;
         }
 
-        private string _fileName;
+        private readonly string _fileName;
 
         public void Log(string message)
         {

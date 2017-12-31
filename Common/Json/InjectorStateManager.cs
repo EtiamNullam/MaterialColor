@@ -1,5 +1,4 @@
 ﻿using Common.Data;
-using System.Collections.Generic;
 
 namespace Common.Json
 {
@@ -10,7 +9,7 @@ namespace Common.Json
             _manager = manager;
         }
 
-        private JsonManager _manager;
+        private readonly JsonManager _manager;
 
         public InjectorState LoadState()
         {

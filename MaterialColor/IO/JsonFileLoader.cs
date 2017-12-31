@@ -2,9 +2,6 @@
 using Common.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace MaterialColor.IO
@@ -18,7 +15,7 @@ namespace MaterialColor.IO
             InitializeManagers(jsonManager);
         }
 
-        private Common.IO.Logger _logger;
+        private readonly Common.IO.Logger _logger;
 
         private ConfiguratorStateManager _configuratorStateManager;
         private ElementColorInfosManager _elementColorInfosManager;
@@ -40,12 +37,12 @@ namespace MaterialColor.IO
             }
             catch (Exception ex)
             {
-                var message = "Can't load configurator state.";
+                const string Message = "Can't load configurator state.";
 
                 _logger.Log(ex);
-                _logger.Log(message);
+                _logger.Log(Message);
 
-                Debug.LogError(message);
+                Debug.LogError(Message);
 
                 state = new MaterialColorState();
 
@@ -62,11 +59,11 @@ namespace MaterialColor.IO
             }
             catch (Exception e)
             {
-                var message = "Can't load ElementColorInfos";
+                const string Message = "Can't load ElementColorInfos";
 
-                Debug.LogError(message + '\n' + e.Message + '\n');
+                Debug.LogError(Message + '\n' + e.Message + '\n');
 
-                State.Logger.Log(message);
+                State.Logger.Log(Message);
                 State.Logger.Log(e);
 
                 elementColorInfos = new Dictionary<SimHashes, ElementColorInfo>();
@@ -83,11 +80,11 @@ namespace MaterialColor.IO
             }
             catch (Exception e)
             {
-                var message = "Can't load TypeColorOffsets";
+                const string Message = "Can't load TypeColorOffsets";
 
-                Debug.LogError(message + '\n' + e.Message + '\n');
+                Debug.LogError(Message + '\n' + e.Message + '\n');
 
-                State.Logger.Log(message);
+                State.Logger.Log(Message);
                 State.Logger.Log(e);
 
                 typeColorOffsets = new Dictionary<string, Color32>();

@@ -4,8 +4,8 @@
     {
         public ElementColorInfo(Color32Multiplier multiplier, float brightness = 1)
         {
-            this.ColorMultiplier = multiplier;
-            this.Brightness = brightness;
+            ColorMultiplier = multiplier;
+            Brightness = brightness;
         }
 
         public Color32Multiplier ColorMultiplier { get; set; }

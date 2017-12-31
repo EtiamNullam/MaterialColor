@@ -3,6 +3,7 @@ using Common.IO;
 using MaterialColor.Helpers;
 using System;
 using System.IO;
+using Common.Data;
 using UnityEngine;
 
 namespace MaterialColor
@@ -10,11 +11,11 @@ namespace MaterialColor
     // TODO: move most of this stuff to Core
     public static class InjectionEntry
     {
-        private static bool Initialized = false;
+        private static bool _initialized;
 
-        private static bool ElementColorInfosChanged = false;
-        private static bool TypeColorOffsetsChanged = false;
-        private static bool ConfiguratorStateChanged = false;
+        private static bool _elementColorInfosChanged;
+        private static bool _typeColorOffsetsChanged;
+        private static bool _configuratorStateChanged;
 
         // TODO: merge with EnterEveryUpdate?
         public static void EnterOnce()
@@ -23,9 +24,9 @@ namespace MaterialColor
             {
                 Components.BuildingCompletes.OnAdd += OnBuildingsCompletesAdd;
 
-                if (!Initialized) Initialize();
+                if (!_initialized) Initialize();
 
-                ElementColorInfosChanged = TypeColorOffsetsChanged = ConfiguratorStateChanged = true;
+                _elementColorInfosChanged = _typeColorOffsetsChanged = _configuratorStateChanged = true;
             }
             catch (Exception e)
             {
@@ -41,17 +42,17 @@ namespace MaterialColor
         private static void Initialize()
         {
             SubscribeToFileChangeNotifier();
-            Initialized = true;
+            _initialized = true;
         }
 
         public static void EnterEveryUpdate()
         {
             try
             {
-                if (ElementColorInfosChanged || TypeColorOffsetsChanged || ConfiguratorStateChanged)
+                if (_elementColorInfosChanged || _typeColorOffsetsChanged || _configuratorStateChanged)
                 {
                     RefreshMaterialColor();
-                    ElementColorInfosChanged = TypeColorOffsetsChanged = ConfiguratorStateChanged = false;
+                    _elementColorInfosChanged = _typeColorOffsetsChanged = _configuratorStateChanged = false;
                 }
             }
             catch (Exception e)
@@ -79,6 +80,7 @@ namespace MaterialColor
                             case Common.Data.ColorMode.DebugColor:
                                 tileColor = ColorHelper.GetCellColorDebug(cellIndex);
                                 break;
+                            case ColorMode.None:
                             default:
                                 tileColor = ColorHelper.DefaultCellColor;
                                 break;
@@ -93,13 +95,9 @@ namespace MaterialColor
                         else
                         {
                             if (cellIndex == blockRenderer.invalidPlaceCell)
-                            {
                                 return ColorHelper.InvalidCellColor;
-                            }
-                            else
-                            {
-                                tileColor = ColorHelper.DefaultCellColor;
-                            }
+
+                            tileColor = ColorHelper.DefaultCellColor;
                         }
                     }
                 }
@@ -109,17 +107,12 @@ namespace MaterialColor
                 }
 
                 if (cellIndex == blockRenderer.selectedCell)
-                {
                     return tileColor * 1.5f;
-                }
-                else if (cellIndex == blockRenderer.highlightCell)
-                {
+
+                if (cellIndex == blockRenderer.highlightCell)
                     return tileColor * 1.25f;
-                }
-                else
-                {
-                    return tileColor;
-                }
+
+                return tileColor;
             }
             catch (Exception e)
             {
@@ -130,23 +123,21 @@ namespace MaterialColor
             }
         }
 
-        private static bool firstTimeEnumerate = true;
+        private static bool _firstTimeEnumerate = true;
 
         private static void EnumerateOtherComponentsOnce(Component component)
         {
-            if (firstTimeEnumerate)
+            if (!_firstTimeEnumerate) return;
+
+            var comps = component.GetComponents<Component>();
+
+            if (comps.Length <= 0) return;
+
+            _firstTimeEnumerate = false;
+
+            foreach (var comp in comps)
             {
-                var comps = component.GetComponents<Component>();
-
-                if (comps.Length > 0)
-                {
-                    firstTimeEnumerate = false;
-
-                    foreach (var comp in comps)
-                    {
-                        State.Logger.Log($"Component (BlockTileRenderer) Name/Type: {comp.name} / {comp.GetType()} ");
-                    }
-                }
+                State.Logger.Log($"Component (BlockTileRenderer) Name/Type: {comp.name} / {comp.GetType()} ");
             }
         }
 
@@ -156,14 +147,13 @@ namespace MaterialColor
             {
                 var toggleMaterialColor = toggleInfo.simView == (SimViewMode)Common.IDs.ToggleMaterialColorOverlayID;
 
-                if (toggleMaterialColor)
-                {
-                    State.ConfiguratorState.Enabled = !State.ConfiguratorState.Enabled;
+                if (!toggleMaterialColor) return false;
 
-                    RefreshMaterialColor();
-                }
+                State.ConfiguratorState.Enabled = !State.ConfiguratorState.Enabled;
 
-                return toggleMaterialColor;
+                RefreshMaterialColor();
+
+                return true;
             }
             catch (Exception e)
             {
@@ -211,12 +201,12 @@ namespace MaterialColor
 
         private static void SubscribeToFileChangeNotifier()
         {
-            var jsonFilter = "*.json";
+            const string JSONFilter = "*.json";
 
             try
             {
-                FileChangeNotifier.StartFileWatch(jsonFilter, Paths.ElementColorInfosDirectory, OnElementColorsInfosChanged);
-                FileChangeNotifier.StartFileWatch(jsonFilter, Paths.TypeColorOffsetsDirectory, OnTypeColorOffsetsChanged);
+                FileChangeNotifier.StartFileWatch(JSONFilter, Paths.ElementColorInfosDirectory, OnElementColorsInfosChanged);
+                FileChangeNotifier.StartFileWatch(JSONFilter, Paths.TypeColorOffsetsDirectory, OnTypeColorOffsetsChanged);
 
                 FileChangeNotifier.StartFileWatch(Paths.MaterialColorStateFileName, Paths.MaterialConfigPath, OnMaterialStateChanged);
             }
@@ -237,7 +227,7 @@ namespace MaterialColor
                 {
                     OnBuildingsCompletesAdd(building);
                 }
-                State.Logger.Log($"Buildings updated successfully.");
+                State.Logger.Log("Buildings updated successfully.");
             }
             catch (Exception e)
             {
@@ -247,7 +237,7 @@ namespace MaterialColor
         }
 
         // TODO: Move
-        private static Color NotGasColor = new Color(0.6f, 0.6f, 0.6f);
+        private static readonly Color _notGasColor = new Color(0.6f, 0.6f, 0.6f);
 
         // WIP
         // TODO: refactor
@@ -260,7 +250,7 @@ namespace MaterialColor
 
             if (!element.IsGas)
             {
-                return NotGasColor;
+                return _notGasColor;
             }
 
             Color gasColor = ColorHelper.GetCellOverlayColor(cellIndex);
@@ -330,12 +320,12 @@ namespace MaterialColor
 
             if (reloadColorInfosResult)
             {
-                ElementColorInfosChanged = true;
+                _elementColorInfosChanged = true;
 
-                var message = "Element color infos changed.";
+                const string Message = "Element color infos changed.";
 
-                State.Logger.Log(message);
-                Debug.LogError(message);
+                State.Logger.Log(Message);
+                Debug.LogError(Message);
             }
             else
             {
@@ -345,28 +335,26 @@ namespace MaterialColor
 
         private static void OnTypeColorOffsetsChanged(object sender, FileSystemEventArgs e)
         {
-            if (State.TryReloadTypeColorOffsets())
-            {
-                TypeColorOffsetsChanged = true;
+            if (!State.TryReloadTypeColorOffsets()) return;
 
-                var message = "Type colors changed.";
+            _typeColorOffsetsChanged = true;
 
-                State.Logger.Log(message);
-                Debug.LogError(message);
-            }
+            const string Message = "Type colors changed.";
+
+            State.Logger.Log(Message);
+            Debug.LogError(Message);
         }
 
         private static void OnMaterialStateChanged(object sender, FileSystemEventArgs e)
         {
-            if (State.TryReloadConfiguratorState())
-            {
-                ConfiguratorStateChanged = true;
+            if (!State.TryReloadConfiguratorState()) return;
 
-                var message = "Configurator state changed.";
+            _configuratorStateChanged = true;
 
-                State.Logger.Log(message);
-                Debug.LogError(message);
-            }
+            const string Message = "Configurator state changed.";
+
+            State.Logger.Log(Message);
+            Debug.LogError(Message);
         }
 
         private static void OnBuildingsCompletesAdd(BuildingComplete building)
