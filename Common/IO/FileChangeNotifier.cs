@@ -52,14 +52,13 @@ namespace Common.IO
                 info => info.FileWatcher.Filter == filter &&
                         info.FileWatcher.Path == parentDirectory);
 
-            if (watcherInfo != null)
-            {
-                watcherInfo.TryRemoveSubscriber(callback);
+            if (watcherInfo == null) return;
 
-                if (!watcherInfo.HasSubscribers())
-                {
-                    _fileWatcherInfos.Remove(watcherInfo);
-                }
+            watcherInfo.TryRemoveSubscriber(callback);
+
+            if (!watcherInfo.HasSubscribers())
+            {
+                _fileWatcherInfos.Remove(watcherInfo);
             }
         }
 

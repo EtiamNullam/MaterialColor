@@ -14,21 +14,20 @@ namespace OnionHooks
         {
             get
             {
-                if (_config == null)
-                {
-                    try
-                    {
-                        _stateManager = _stateManager ?? new ConfiguratorStateManager(new JsonManager());
+                if (_config != null) return _config;
 
-                        TryLoadConfig();
-                        StartConfigFileWatcher();
-                    }
-                    catch( Exception e)
-                    {
-                        _logger.Log("State load/init failed");
-                        _logger.Log(e);
-                        _config = new OnionState();
-                    }
+                try
+                {
+                    _stateManager = _stateManager ?? new ConfiguratorStateManager(new JsonManager());
+
+                    TryLoadConfig();
+                    StartConfigFileWatcher();
+                }
+                catch( Exception e)
+                {
+                    _logger.Log("State load/init failed");
+                    _logger.Log(e);
+                    _config = new OnionState();
                 }
 
                 return _config;
@@ -93,13 +92,12 @@ namespace OnionHooks
             terrainSeed = Config.TerrainSeed >= 0   ?   Config.TerrainSeed    : terrainSeed;
             noiseSeed   = Config.NoiseSeed >= 0     ?   Config.NoiseSeed      : noiseSeed;
 
-            if (Config.LogSeed)
-            {
-                var message = string.Format($"Size: {Config.Width}x{Config.Height} World Seed: {worldSeed} Layout Seed: {layoutSeed}" +
-                    $"Terrain Seed: {terrainSeed} Noise Seed: {noiseSeed}");
+            if (!Config.LogSeed) return;
 
-                _logger.Log(message);
-            }
+            var message = string.Format($"Size: {Config.Width}x{Config.Height} World Seed: {worldSeed} Layout Seed: {layoutSeed}" +
+                                        $"Terrain Seed: {terrainSeed} Noise Seed: {noiseSeed}");
+
+            _logger.Log(message);
         }
 
         public static void OnDoOfflineWorldGen()

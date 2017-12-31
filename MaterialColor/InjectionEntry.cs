@@ -134,19 +134,17 @@ namespace MaterialColor
 
         private static void EnumerateOtherComponentsOnce(Component component)
         {
-            if (_firstTimeEnumerate)
+            if (!_firstTimeEnumerate) return;
+
+            var comps = component.GetComponents<Component>();
+
+            if (comps.Length <= 0) return;
+
+            _firstTimeEnumerate = false;
+
+            foreach (var comp in comps)
             {
-                var comps = component.GetComponents<Component>();
-
-                if (comps.Length > 0)
-                {
-                    _firstTimeEnumerate = false;
-
-                    foreach (var comp in comps)
-                    {
-                        State.Logger.Log($"Component (BlockTileRenderer) Name/Type: {comp.name} / {comp.GetType()} ");
-                    }
-                }
+                State.Logger.Log($"Component (BlockTileRenderer) Name/Type: {comp.name} / {comp.GetType()} ");
             }
         }
 
@@ -156,14 +154,13 @@ namespace MaterialColor
             {
                 var toggleMaterialColor = toggleInfo.simView == (SimViewMode)Common.IDs.ToggleMaterialColorOverlayID;
 
-                if (toggleMaterialColor)
-                {
-                    State.ConfiguratorState.Enabled = !State.ConfiguratorState.Enabled;
+                if (!toggleMaterialColor) return false;
 
-                    RefreshMaterialColor();
-                }
+                State.ConfiguratorState.Enabled = !State.ConfiguratorState.Enabled;
 
-                return toggleMaterialColor;
+                RefreshMaterialColor();
+
+                return true;
             }
             catch (Exception e)
             {
@@ -345,28 +342,26 @@ namespace MaterialColor
 
         private static void OnTypeColorOffsetsChanged(object sender, FileSystemEventArgs e)
         {
-            if (State.TryReloadTypeColorOffsets())
-            {
-                _typeColorOffsetsChanged = true;
+            if (!State.TryReloadTypeColorOffsets()) return;
 
-                const string Message = "Type colors changed.";
+            _typeColorOffsetsChanged = true;
 
-                State.Logger.Log(Message);
-                Debug.LogError(Message);
-            }
+            const string Message = "Type colors changed.";
+
+            State.Logger.Log(Message);
+            Debug.LogError(Message);
         }
 
         private static void OnMaterialStateChanged(object sender, FileSystemEventArgs e)
         {
-            if (State.TryReloadConfiguratorState())
-            {
-                _configuratorStateChanged = true;
+            if (!State.TryReloadConfiguratorState()) return;
 
-                const string Message = "Configurator state changed.";
+            _configuratorStateChanged = true;
 
-                State.Logger.Log(Message);
-                Debug.LogError(Message);
-            }
+            const string Message = "Configurator state changed.";
+
+            State.Logger.Log(Message);
+            Debug.LogError(Message);
         }
 
         private static void OnBuildingsCompletesAdd(BuildingComplete building)

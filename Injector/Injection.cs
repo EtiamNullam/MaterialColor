@@ -614,7 +614,7 @@ namespace Injector
             {
                 _csharpModule.Types.FirstOrDefault(t => t.Name == "LogicPressureSensorGasConfig")
                     .Methods.FirstOrDefault(m => m.Name == "DoPostConfigureComplete").Body
-                    .Instructions.LastOrDefault(i => i.OpCode == OpCodes.Ldc_R4 && (float)i.Operand == 2).Operand = newMax;
+                    .Instructions.LastOrDefault(i => i.OpCode == OpCodes.Ldc_R4 && (float)i.Operand == 2).Operand = newMax; // TODO: fix floating point equality comparison?
             }
             catch (Exception e)
             {
@@ -631,7 +631,7 @@ namespace Injector
             {
                 _csharpModule.Types.FirstOrDefault(t => t.Name == "LogicPressureSensorLiquidConfig")
                     .Methods.FirstOrDefault(m => m.Name == "DoPostConfigureComplete").Body
-                    .Instructions.LastOrDefault(i => i.OpCode == OpCodes.Ldc_R4 && (float)i.Operand == 2000).Operand = newMax;
+                    .Instructions.LastOrDefault(i => i.OpCode == OpCodes.Ldc_R4 && (float)i.Operand == 2000).Operand = newMax; // TODO: fix floating point equality comparison?
             }
             catch (Exception e)
             {

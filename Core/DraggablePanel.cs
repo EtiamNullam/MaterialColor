@@ -25,12 +25,12 @@ namespace Core
                 _isDragging = false;
             }
 
-            if (_isDragging)
-            {
-                var newPosition = mousePos - Offset;
+            if (!_isDragging) return;
 
-                Screen.transform.position = newPosition;
-            }
+
+            var newPosition = mousePos - Offset;
+
+            Screen.transform.position = newPosition;
         }
 
         private bool _isDragging = false;

@@ -22,12 +22,11 @@ namespace MaterialColor
         {
             get
             {
-                if (_typeColorOffsets == null)
-                {
-                    Dictionary<string, Color32> colorOffsets;
-                    _jsonLoader.TryLoadTypeColorOffsets(out colorOffsets);
-                    TypeColorOffsets = colorOffsets;
-                }
+                if (_typeColorOffsets != null) return _typeColorOffsets;
+
+                Dictionary<string, Color32> colorOffsets;
+                _jsonLoader.TryLoadTypeColorOffsets(out colorOffsets);
+                TypeColorOffsets = colorOffsets;
 
                 return _typeColorOffsets;
             }
@@ -43,11 +42,11 @@ namespace MaterialColor
         {
             get
             {
-                if (_elementColorInfos == null)
-                {
-                    Dictionary<SimHashes, ElementColorInfo> colorInfos;
-                    ElementColorInfos = _jsonLoader.TryLoadElementColorInfos(out colorInfos) ? colorInfos : new Dictionary<SimHashes, ElementColorInfo>();
-                }
+                if (_elementColorInfos != null) return _elementColorInfos;
+
+                Dictionary<SimHashes, ElementColorInfo> colorInfos;
+                _jsonLoader.TryLoadElementColorInfos(out colorInfos);
+                ElementColorInfos = colorInfos;
 
                 return _elementColorInfos;
             }
@@ -63,12 +62,11 @@ namespace MaterialColor
         {
             get
             {
-                if (_configuratorState == null)
-                {
-                    MaterialColorState state;
-                    _jsonLoader.TryLoadConfiguratorState(out state);
-                    ConfiguratorState = state;
-                }
+                if (_configuratorState != null) return _configuratorState;
+
+                MaterialColorState state;
+                _jsonLoader.TryLoadConfiguratorState(out state);
+                ConfiguratorState = state;
 
                 return _configuratorState;
             }
@@ -83,37 +81,28 @@ namespace MaterialColor
         public static bool TryReloadConfiguratorState()
         {
             MaterialColorState state;
-            if (_jsonLoader.TryLoadConfiguratorState(out state))
-            {
-                ConfiguratorState = state;
-                return true;
-            }
+            if (!_jsonLoader.TryLoadConfiguratorState(out state)) return false;
+            ConfiguratorState = state;
 
-            return false;
+            return true;
         }
 
         public static bool TryReloadTypeColorOffsets()
         {
             Dictionary<string, Color32> colorOffsets;
-            if (_jsonLoader.TryLoadTypeColorOffsets(out colorOffsets))
-            {
-                TypeColorOffsets = colorOffsets;
-                return true;
-            }
+            if (!_jsonLoader.TryLoadTypeColorOffsets(out colorOffsets)) return false;
+            TypeColorOffsets = colorOffsets;
 
-            return false;
+            return true;
         }
 
         public static bool TryReloadElementColorInfos()
         {
             Dictionary<SimHashes, ElementColorInfo> colorInfos;
-            if (_jsonLoader.TryLoadElementColorInfos(out colorInfos))
-            {
-                ElementColorInfos = colorInfos;
-                return true;
-            }
+            if (!_jsonLoader.TryLoadElementColorInfos(out colorInfos)) return false;
+            ElementColorInfos = colorInfos;
 
-            return false;
+            return true;
         }
 
         // TODO: load from file instead
