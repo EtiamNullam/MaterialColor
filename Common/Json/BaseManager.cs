@@ -2,7 +2,7 @@
 {
     public abstract class BaseManager
     {
-        public BaseManager(JsonManager manager, IO.Logger logger = null)
+        protected BaseManager(JsonManager manager, IO.Logger logger = null)
         {
             _logger = logger;
             _manager = manager;
