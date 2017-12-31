@@ -88,10 +88,10 @@ namespace OnionHooks
         {
             if (!Config.Enabled || !Config.CustomSeeds) return;
 
-            worldSeed   = (Config.WorldSeed >= 0)     ?   Config.WorldSeed      : worldSeed;
-            layoutSeed  = (Config.LayoutSeed >= 0)    ?   Config.LayoutSeed     : layoutSeed;
-            terrainSeed = (Config.TerrainSeed >= 0)   ?   Config.TerrainSeed    : terrainSeed;
-            noiseSeed   = (Config.NoiseSeed >= 0)     ?   Config.NoiseSeed      : noiseSeed;
+            worldSeed   = Config.WorldSeed >= 0     ?   Config.WorldSeed      : worldSeed;
+            layoutSeed  = Config.LayoutSeed >= 0    ?   Config.LayoutSeed     : layoutSeed;
+            terrainSeed = Config.TerrainSeed >= 0   ?   Config.TerrainSeed    : terrainSeed;
+            noiseSeed   = Config.NoiseSeed >= 0     ?   Config.NoiseSeed      : noiseSeed;
 
             if (Config.LogSeed)
             {
