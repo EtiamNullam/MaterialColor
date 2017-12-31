@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Common.Data;
-using UnityEngine;
 using Common.Json;
+using UnityEngine;
 
 namespace JsonSorter.Console
 {
@@ -15,7 +15,7 @@ namespace JsonSorter.Console
             {
                 return;
             }
-            else if (args.Length <= 2)
+            if (args.Length <= 2)
             {
                 _filePath = args[1];
             }
@@ -26,19 +26,15 @@ namespace JsonSorter.Console
                     ? Mode.Type
                     : Mode.None;
 
-            if (mode == Mode.None) return;
-
             if (mode == Mode.Element)
             {
                 try
                 {
                     SortElementColorInfos();
-                    return;
                 }
                 catch (Exception e)
                 {
                     System.Console.WriteLine($"ElementColorInfos sorting failed.\n{e.Message}\n{e.StackTrace}");
-                    return;
                 }
             }
 
@@ -47,17 +43,15 @@ namespace JsonSorter.Console
                 try
                 {
                     SortTypeColorOffsets();
-                    return;
                 }
                 catch (Exception e)
                 {
                     System.Console.WriteLine($"TypeColorOffsets sorting failed.\n{e.Message}\n{e.StackTrace}");
-                    return;
                 }
             }
         }
 
-        private static string _filePath = null;
+        private static string _filePath;
         private static readonly JsonManager _jsonManager = new JsonManager();
         private static readonly ElementColorInfosManager _elementColorInfosManager = new ElementColorInfosManager(_jsonManager);
         private static readonly TypeColorOffsetsManager _typeColorOffsetsManager = new TypeColorOffsetsManager(_jsonManager);
@@ -76,7 +70,7 @@ namespace JsonSorter.Console
         {
             var elementColorInfos = _elementColorInfosManager.LoadSingleElementColorInfosFile(_filePath).ToList();
 
-            elementColorInfos.Sort(new Comparison<KeyValuePair<SimHashes, ElementColorInfo>>(CompareElementColorInfoDictionaryPairs));
+            elementColorInfos.Sort(CompareElementColorInfoDictionaryPairs);
 
             _elementColorInfosManager.SaveElementsColorInfo(elementColorInfos.ToDictionary(element => element.Key, element => element.Value), _filePath);
         }
@@ -85,7 +79,7 @@ namespace JsonSorter.Console
         {
             var typeColorOffsets = _typeColorOffsetsManager.LoadSingleTypeColorOffsetsFile(_filePath).ToList();
 
-            typeColorOffsets.Sort(new Comparison<KeyValuePair<string, Color32>>(CompareTypeColorOffsetDictionaryPairs));
+            typeColorOffsets.Sort(CompareTypeColorOffsetDictionaryPairs);
 
             _typeColorOffsetsManager.SaveTypesColors(typeColorOffsets.ToDictionary(element => element.Key, element => element.Value), _filePath);
         }
