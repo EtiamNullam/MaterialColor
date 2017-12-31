@@ -298,9 +298,9 @@ namespace Injector
             AddDefaultKeybinding(_csharpModule, _firstPassModule, KKeyCode.F6, Modifier.Alt, (Action)Common.IDs.ToggleMaterialColorOverlayAction);
         }
 
-        private void AddDefaultKeybinding(ModuleDefinition CSharpModule, ModuleDefinition FirstPassModule, KKeyCode keyCode, Modifier keyModifier, Action action, string screen = "Root")
+        private void AddDefaultKeybinding(ModuleDefinition CSharpModule, ModuleDefinition firstPassModule, KKeyCode keyCode, Modifier keyModifier, Action action, string screen = "Root")
         {
-            var beforeFieldInit = CecilHelper.GetMethodDefinition(FirstPassModule, CecilHelper.GetTypeDefinition(FirstPassModule, "GameInputMapping"), ".cctor");
+            var beforeFieldInit = CecilHelper.GetMethodDefinition(firstPassModule, CecilHelper.GetTypeDefinition(firstPassModule, "GameInputMapping"), ".cctor");
 
             var lastKeybindingDeclarationEnd = beforeFieldInit.Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Stobj);
             var stoBindingEntryInstruction = beforeFieldInit.Body.Instructions.First(instruction => instruction.OpCode == OpCodes.Stobj);

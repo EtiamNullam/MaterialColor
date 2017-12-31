@@ -20,9 +20,9 @@ namespace JsonSorter.Console
                 _filePath = args[1];
             }
 
-            var mode = ElementArgAliases.Contains(args[0].ToLower())
+            var mode = _elementArgAliases.Contains(args[0].ToLower())
                 ? Mode.Element
-                : TypeArgAliases.Contains(args[0].ToLower())
+                : _typeArgAliases.Contains(args[0].ToLower())
                     ? Mode.Type
                     : Mode.None;
 
@@ -62,12 +62,12 @@ namespace JsonSorter.Console
         private static readonly ElementColorInfosManager _elementColorInfosManager = new ElementColorInfosManager(_jsonManager);
         private static readonly TypeColorOffsetsManager _typeColorOffsetsManager = new TypeColorOffsetsManager(_jsonManager);
 
-        private static readonly List<string> TypeArgAliases = new List<string>
+        private static readonly List<string> _typeArgAliases = new List<string>
         {
             "-type", "-t"
         };
 
-        private static readonly List<string> ElementArgAliases = new List<string>
+        private static readonly List<string> _elementArgAliases = new List<string>
         {
             "-element", "-e"
         };
