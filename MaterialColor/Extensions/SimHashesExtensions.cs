@@ -8,7 +8,8 @@ namespace MaterialColor.Extensions
     {
         public static Color32 GetMaterialColorForType(this SimHashes material, string objectTypeName)
         {
-            if (!ColorHelper.TryGetTypeStandardColor(objectTypeName, out var typeStandardColor))
+            Color32 typeStandardColor;
+            if (!ColorHelper.TryGetTypeStandardColor(objectTypeName, out typeStandardColor))
             {
                 if (State.ConfiguratorState.ShowMissingTypeColorOffsets)
                 {
@@ -32,7 +33,8 @@ namespace MaterialColor.Extensions
 
         public static ElementColorInfo GetMaterialColorInfo(this SimHashes materialHash)
         {
-            if (!State.ElementColorInfos.TryGetValue(materialHash, out ElementColorInfo elementColorInfo))
+            ElementColorInfo elementColorInfo;
+            if (!State.ElementColorInfos.TryGetValue(materialHash, out elementColorInfo))
             {
                 if (State.ConfiguratorState.ShowMissingElementColorInfos)
                 {

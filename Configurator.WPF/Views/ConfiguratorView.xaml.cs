@@ -25,10 +25,8 @@ namespace Configurator.WPF.Views
 
         private void OnStatusChanged(object sender, TextChangedEventArgs e)
         {
-            if (sender is TextBox statusTextBox)
-            {
-                statusTextBox.ScrollToEnd();
-            }
+            var statusTextBox = sender as TextBox;
+            statusTextBox?.ScrollToEnd();
         }
     }
 }

@@ -48,6 +48,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>073B444343D10EA85DF946974ADAE17D0D5EAC37</ManifestCertificateThumbprint>
@@ -155,6 +156,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>powershell "&amp; ""$(ProjectDir)BuildActions\PostBuild.ps1"""</PostBuildEvent>
+    <PostBuildEvent>powershell -ExecutionPolicy Unrestricted "&amp; ""$(ProjectDir)BuildActions\PostBuild.ps1"""</PostBuildEvent>
   </PropertyGroup>
 </Project>

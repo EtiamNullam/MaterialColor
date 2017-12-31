@@ -57,7 +57,7 @@ namespace Injector.WPF.ViewModels
 
         public string Status
         {
-            get => _status;
+            get { return _status; }
             set
             {
                 SetProperty(ref _status, $"{_status}\n{value}".Trim());
@@ -67,7 +67,7 @@ namespace Injector.WPF.ViewModels
 
         public InjectorState State
         {
-            get => _state;
+            get { return _state; }
             set
             {
                 SetProperty(ref _state, value);
