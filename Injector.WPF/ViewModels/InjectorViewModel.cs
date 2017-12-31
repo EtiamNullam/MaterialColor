@@ -276,7 +276,7 @@ namespace Injector.WPF.ViewModels
             }
             catch (Exception e)
             {
-                Status = $"Can't restore backup.";
+                Status = "Can\'t restore backup.";
                 _logger.Log(e);
 
                 result = false;

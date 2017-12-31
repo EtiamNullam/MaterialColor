@@ -237,7 +237,7 @@ namespace MaterialColor
                 {
                     OnBuildingsCompletesAdd(building);
                 }
-                State.Logger.Log($"Buildings updated successfully.");
+                State.Logger.Log("Buildings updated successfully.");
             }
             catch (Exception e)
             {

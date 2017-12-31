@@ -173,7 +173,7 @@ namespace Configurator.WPF.ViewModels
             }
             catch (Exception e)
             {
-                Status = $"Can't save current state.";
+                Status = "Can\'t save current state.";
 
                 _logger.Log(e);
 
