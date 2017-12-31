@@ -4,8 +4,6 @@ using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Injector
 {
@@ -32,7 +30,7 @@ namespace Injector
         private InstructionRemover _csharpInstructionRemover;
         private Publisher _csharpPublisher;
 
-        public bool Failed { get; set; } = false;
+        public bool Failed { get; set; }
 
         private void Initialize(ModuleDefinition coreModule, ModuleDefinition materialModule, ModuleDefinition onionModule, ModuleDefinition csharpModule, ModuleDefinition firstPassModule)
         {
@@ -300,9 +298,9 @@ namespace Injector
             AddDefaultKeybinding(_csharpModule, _firstPassModule, KKeyCode.F6, Modifier.Alt, (Action)Common.IDs.ToggleMaterialColorOverlayAction);
         }
 
-        private void AddDefaultKeybinding(ModuleDefinition CSharpModule, ModuleDefinition FirstPassModule, KKeyCode keyCode, Modifier keyModifier, Action action, string screen = "Root")
+        private void AddDefaultKeybinding(ModuleDefinition CSharpModule, ModuleDefinition firstPassModule, KKeyCode keyCode, Modifier keyModifier, Action action, string screen = "Root")
         {
-            var beforeFieldInit = CecilHelper.GetMethodDefinition(FirstPassModule, CecilHelper.GetTypeDefinition(FirstPassModule, "GameInputMapping"), ".cctor");
+            var beforeFieldInit = CecilHelper.GetMethodDefinition(firstPassModule, CecilHelper.GetTypeDefinition(firstPassModule, "GameInputMapping"), ".cctor");
 
             var lastKeybindingDeclarationEnd = beforeFieldInit.Body.Instructions.Last(instruction => instruction.OpCode == OpCodes.Stobj);
             var stoBindingEntryInstruction = beforeFieldInit.Body.Instructions.First(instruction => instruction.OpCode == OpCodes.Stobj);
@@ -559,12 +557,12 @@ namespace Injector
 
         private void InjectOnionCameraController()
         {
-            var typeName = "CameraController";
+            const string TypeName = "CameraController";
 
-            _csharpPublisher.MakeFieldPublic(typeName, "maxOrthographicSize");
-            _csharpPublisher.MakeFieldPublic(typeName, "maxOrthographicSizeDebug");
+            _csharpPublisher.MakeFieldPublic(TypeName, "maxOrthographicSize");
+            _csharpPublisher.MakeFieldPublic(TypeName, "maxOrthographicSizeDebug");
 
-            var cameraControllerOnSpawnBody = CecilHelper.GetMethodDefinition(_csharpModule, typeName, "OnSpawn").Body;
+            var cameraControllerOnSpawnBody = CecilHelper.GetMethodDefinition(_csharpModule, TypeName, "OnSpawn").Body;
             var restoreCall = cameraControllerOnSpawnBody.Instructions.Last(instruction => instruction.OpCode == OpCodes.Call);
 
             _onionToCSharpInjector.InjectBefore(
@@ -616,7 +614,7 @@ namespace Injector
             {
                 _csharpModule.Types.FirstOrDefault(t => t.Name == "LogicPressureSensorGasConfig")
                     .Methods.FirstOrDefault(m => m.Name == "DoPostConfigureComplete").Body
-                    .Instructions.LastOrDefault(i => i.OpCode == OpCodes.Ldc_R4 && (float)i.Operand == 2).Operand = newMax;
+                    .Instructions.LastOrDefault(i => i.OpCode == OpCodes.Ldc_R4 && (float)i.Operand == 2).Operand = newMax; // TODO: fix floating point equality comparison?
             }
             catch (Exception e)
             {
@@ -633,7 +631,7 @@ namespace Injector
             {
                 _csharpModule.Types.FirstOrDefault(t => t.Name == "LogicPressureSensorLiquidConfig")
                     .Methods.FirstOrDefault(m => m.Name == "DoPostConfigureComplete").Body
-                    .Instructions.LastOrDefault(i => i.OpCode == OpCodes.Ldc_R4 && (float)i.Operand == 2000).Operand = newMax;
+                    .Instructions.LastOrDefault(i => i.OpCode == OpCodes.Ldc_R4 && (float)i.Operand == 2000).Operand = newMax; // TODO: fix floating point equality comparison?
             }
             catch (Exception e)
             {

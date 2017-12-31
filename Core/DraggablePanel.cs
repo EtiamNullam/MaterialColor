@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Core
 {
@@ -30,20 +25,20 @@ namespace Core
                 _isDragging = false;
             }
 
-            if (_isDragging)
-            {
-                var newPosition = mousePos - Offset;
+            if (!_isDragging) return;
 
-                Screen.transform.position = newPosition;
-            }
+
+            var newPosition = mousePos - Offset;
+
+            Screen.transform.position = newPosition;
         }
 
-        private bool _isDragging = false;
+        private bool _isDragging;
 
         // Use GetComponent<KScreen>() instead?
         public KScreen Screen;
 
-        public Vector3 Offset = new Vector3();
+        public Vector3 Offset;
 
         public static void Attach(KScreen screen)
         {
