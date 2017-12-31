@@ -1,8 +1,5 @@
-﻿using System;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 using System.Linq;
-using Mono.Cecil.Cil;
-using System.Collections.Generic;
 using Injector.IO;
 using Common.Data;
 

@@ -1,5 +1,4 @@
 ﻿using Common.Data;
-using System.Collections.Generic;
 
 namespace Common.Json
 {
