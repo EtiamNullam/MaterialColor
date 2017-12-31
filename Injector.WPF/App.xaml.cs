@@ -78,7 +78,7 @@ namespace Injector.WPF
             }
         }
 
-        private void Recover()
+        private static void Recover()
         {
             var fileManager = new IO.FileManager();
 

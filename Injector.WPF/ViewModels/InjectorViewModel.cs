@@ -46,7 +46,7 @@ namespace Injector.WPF.ViewModels
             }
         }
 
-        private string GetNotPatchedWithBackupMessage(string fileName)
+        private static string GetNotPatchedWithBackupMessage(string fileName)
         {
             return $"Warning: A backup for {fileName} exists, but current assembly doesn't appear to be patched. Patching without restoring backup is advised.";
         }

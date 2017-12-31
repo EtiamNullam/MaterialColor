@@ -44,7 +44,7 @@ namespace Injector
         public bool IsCurrentAssemblyFirstpassPatched()
             => CecilHelper.GetModule(Paths.DefaultAssemblyFirstPassPath, Paths.ManagedDirectoryPath).Types.Any(TypePatched);
 
-        private bool TypePatched(TypeDefinition type)
+        private static bool TypePatched(TypeDefinition type)
         {
             return type.Namespace == "Mods" && type.Name == "Patched";
         }

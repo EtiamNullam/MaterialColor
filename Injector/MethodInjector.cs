@@ -76,7 +76,7 @@ namespace Injector
         private MethodBody GetMethodBody(string typeName, string methodName)
             => CecilHelper.GetMethodDefinition(_targetModule, typeName, methodName).Body;
 
-        private void IncludeCallingObject(Instruction nextInstruction, MethodBody methodBody)
+        private static void IncludeCallingObject(Instruction nextInstruction, MethodBody methodBody)
         {
             var thisInstruction = Instruction.Create(OpCodes.Ldarg_0);
             methodBody.GetILProcessor().InsertBefore(nextInstruction, thisInstruction);
