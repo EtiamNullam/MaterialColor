@@ -106,7 +106,8 @@ namespace OnionHooks
             {
                 try
                 {
-                    GridSettings.Reset(Config.Width * 32, Config.Height * 32);
+                    ResetGridSettingsChunks(Config.Width, Config.Height);
+
                     _logger.Log("Custom world dimensions applied");
                 }
                 catch (Exception e)
@@ -119,8 +120,13 @@ namespace OnionHooks
             {
                 var defaultConfig = new OnionState();
 
-                GridSettings.Reset(defaultConfig.Width, defaultConfig.Height);
+                ResetGridSettingsChunks(defaultConfig.Width, defaultConfig.Height);
             }
+        }
+
+        private static void ResetGridSettingsChunks(int width, int height)
+        {
+            GridSettings.Reset(width * 32, height * 32);
         }
 
         public static void OnDebugHandlerCtor()
