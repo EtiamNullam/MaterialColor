@@ -15,6 +15,13 @@ namespace Common
 
         public static readonly string OnionStatePath = OnionConfigPath + Path.DirectorySeparatorChar + OnionStateFileName;
 
+        public static readonly string OverlayMainPath = ModsDirectory + Path.DirectorySeparatorChar + "Overlays";
+        public static readonly string OverlayConfigPath = OverlayMainPath + Path.DirectorySeparatorChar + "Config";
+
+        public const string TemperatureStateFileName = "TemperatureOverlayState.json";
+
+        public static readonly string TemperatureStatePath = OverlayConfigPath + Path.DirectorySeparatorChar + TemperatureStateFileName;
+
         public static readonly string MaterialMainPath = ModsDirectory + Path.DirectorySeparatorChar + "MaterialColor";
         public static readonly string MaterialConfigPath = MaterialMainPath + Path.DirectorySeparatorChar + "Config";
 

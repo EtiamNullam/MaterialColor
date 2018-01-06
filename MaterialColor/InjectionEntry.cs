@@ -2,9 +2,12 @@
 using Common.IO;
 using MaterialColor.Helpers;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Common.Data;
+using System.Linq;
 using UnityEngine;
+using MaterialColor.TemperatureOverlay;
 
 namespace MaterialColor
 {
@@ -36,6 +39,55 @@ namespace MaterialColor
                 State.Logger.Log(e);
 
                 Debug.LogError(message);
+            }
+
+            try
+            {
+                SaveTemperatureThresholdsAsDefault();
+
+                if (State.TemperatureOverlayState.LogThresholds)
+                {
+                    LogTemperatureThresholds();
+                }
+
+                UpdateTemperatureThresholds();
+            }
+            catch (Exception e)
+            {
+                State.Logger.Log("Custom temperature overlay init error");
+                State.Logger.Log(e);
+            }
+        }
+
+        private static void UpdateTemperatureThresholds()
+        {
+            var newTemperatures = (State.TemperatureOverlayState.CustomRangesEnabled
+                ? State.TemperatureOverlayState.Temperatures
+                : State.DefaultTemperatures);
+
+            for (int i = 0; i < newTemperatures.Count; i++)
+            {
+                SimDebugView.Instance.temperatureThresholds[i] = new SimDebugView.ColorThreshold { color = State.DefaultTemperatureColors[i], value = newTemperatures[i] };
+            }
+
+            Array.Sort(SimDebugView.Instance.temperatureThresholds, new ColorThresholdTemperatureSorter());
+        }
+
+        private static void LogTemperatureThresholds()
+        {
+            for (int i = 0; i < SimDebugView.Instance.temperatureThresholds.Length; i++)
+            {
+                State.Logger.Log(SimDebugView.Instance.temperatureThresholds[i].value.ToString());
+                State.Logger.Log(SimDebugView.Instance.temperatureThresholds[i].color.ToString());
+            }
+        }
+
+        private static void SaveTemperatureThresholdsAsDefault()
+        {
+            foreach (var threshold in SimDebugView.Instance.temperatureThresholds)
+            {
+                State.DefaultTemperatureColors.Add(threshold.color);
+                State.DefaultTemperatures.Add(threshold.value);
             }
         }
 
@@ -209,10 +261,15 @@ namespace MaterialColor
                 FileChangeNotifier.StartFileWatch(JSONFilter, Paths.TypeColorOffsetsDirectory, OnTypeColorOffsetsChanged);
 
                 FileChangeNotifier.StartFileWatch(Paths.MaterialColorStateFileName, Paths.MaterialConfigPath, OnMaterialStateChanged);
+
+                if (State.TemperatureOverlayState.CustomRangesEnabled)
+                {
+                    FileChangeNotifier.StartFileWatch(Paths.TemperatureStateFileName, Paths.OverlayConfigPath, OnTemperatureStateChanged);
+                }
             }
             catch (Exception e)
             {
-                State.Logger.Log("SubscribeToFIleChangeNotifierFailed");
+                State.Logger.Log("SubscribeToFileChangeNotifier failed");
                 State.Logger.Log(e);
             }
         }
@@ -355,6 +412,25 @@ namespace MaterialColor
 
             State.Logger.Log(Message);
             Debug.LogError(Message);
+        }
+
+        // TODO: log failed reload on other eventhandlers
+        private static void OnTemperatureStateChanged(object sender, FileSystemEventArgs e)
+        {
+            string message;
+
+            if (State.TryReloadTemperatureState())
+            {
+                UpdateTemperatureThresholds();
+                message = "Temperature overlay state changed.";
+            }
+            else
+            {
+                message = "Temperature overlay state load failed.";
+            }
+
+            State.Logger.Log(message);
+            Debug.LogError(message);
         }
 
         private static void OnBuildingsCompletesAdd(BuildingComplete building)

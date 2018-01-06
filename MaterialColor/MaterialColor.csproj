@@ -57,6 +57,7 @@
     <Compile Include="Helpers\MaterialHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extensions\SimHashesExtensions.cs" />
+    <Compile Include="TemperatureOverlay\ColorThresholdTemperatureSorter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

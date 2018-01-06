@@ -38,6 +38,14 @@ namespace Configurator.WPF.ViewModels
 
         private OnionState _onionState;
 
+        public TemperatureOverlayState TemperatureOverlayState
+        {
+            get { return _temperatureOverlayState; }
+            set { SetProperty(ref _temperatureOverlayState, value); }
+        }
+
+        private TemperatureOverlayState _temperatureOverlayState;
+
         public bool OnionEnabled
         {
             get
@@ -128,24 +136,54 @@ namespace Configurator.WPF.ViewModels
 
         private bool TryLoadLastAppState()
         {
+            var result = true;
+
             try
             {
                 MaterialState = _stateManager.LoadMaterialColorState();
-                OnionState = _stateManager.LoadOnionState();
-
-                return true;
             }
             catch (Exception e)
             {
-                Status = "Can't load last state";
-
+                Status = "Can't load last material state";
+                
                 _logger.Log(e);
 
                 MaterialState = new MaterialColorState();
+
+                    result = false;
+            }
+
+            try
+            {
+                OnionState = _stateManager.LoadOnionState();
+            }
+            catch (Exception e)
+            {
+                Status = "Can't load last onion state";
+
+                _logger.Log(e);
+                
                 OnionState = new OnionState();
 
-                return false;
+                result = false;
             }
+
+            try
+            {
+                TemperatureOverlayState = _stateManager.LoadTemperatureState();
+            }
+            catch (Exception e)
+            {
+                Status = "Can't load last temperature overlay state";
+
+                _logger.Log(e);
+
+                TemperatureOverlayState = new TemperatureOverlayState();
+
+                result = false;
+            }
+
+            return result;
         }
 
         private void Apply()
@@ -157,6 +195,7 @@ namespace Configurator.WPF.ViewModels
             {
                 Common.IO.IOHelper.EnsureDirectoryExists(Common.Paths.MaterialConfigPath);
                 Common.IO.IOHelper.EnsureDirectoryExists(Common.Paths.OnionConfigPath);
+                Common.IO.IOHelper.EnsureDirectoryExists(Common.Paths.OverlayConfigPath);
             }
             catch (Exception e)
             {
@@ -171,6 +210,7 @@ namespace Configurator.WPF.ViewModels
             {
                 _stateManager.SaveMaterialColorState(MaterialState);
                 _stateManager.SaveOnionState(OnionState);
+                _stateManager.SaveTemperatureState(TemperatureOverlayState);
             }
             catch (Exception e)
             {

@@ -110,5 +110,38 @@ namespace MaterialColor
         {
             "Tile", "MeshTile", "InsulationTile", "GasPermeableMembrane", "TilePOI", "PlasticTile", "MetalTile"
         };
+
+        public static TemperatureOverlayState TemperatureOverlayState
+        {
+            get
+            {
+                if (_temperatureOvelayState != null) return _temperatureOvelayState;
+
+                TemperatureOverlayState state;
+                _jsonLoader.TryLoadTemperatureState(out state);
+                TemperatureOverlayState = state;
+
+                return _temperatureOvelayState;
+            }
+            private set
+            {
+                _temperatureOvelayState = value;
+            }
+        }
+
+        public static List<float> DefaultTemperatures = new List<float>();
+
+        public static List<Color> DefaultTemperatureColors = new List<Color>();
+
+        private static TemperatureOverlayState _temperatureOvelayState;
+
+        public static bool TryReloadTemperatureState()
+        {
+            TemperatureOverlayState temperatureState;
+            if (!_jsonLoader.TryLoadTemperatureState(out temperatureState)) return false;
+            TemperatureOverlayState = temperatureState;
+
+            return true;
+        }
     }
 }

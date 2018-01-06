@@ -187,6 +187,122 @@
                     <TextBox Text="{Binding MaterialState.GasPressureEnd}"/>
                 </StackPanel>
             </TabItem>
+
+            <TabItem Header="Temperature overlay">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="20"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel>
+                        <StackPanel.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Margin">
+                                    <Setter.Value>
+                                        <Thickness>
+                                            3,7
+                                        </Thickness>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </StackPanel.Resources>
+
+                        <TextBlock Text="Custom ranges"/>
+
+                        <TextBlock Text="Molten (Red)"/>
+                        <TextBlock Text="Scorching (Red Orange)"/>
+                        <TextBlock Text="Hot (Orange)"/>
+                        <TextBlock Text="Warm (Lime)"/>
+                        <TextBlock Text="Temperate (Green)"/>
+                        <TextBlock Text="Chilled (Blue)"/>
+                        <TextBlock Text="Cold (Turquoise)"/>
+                        <TextBlock Text="Absolute Zero (Aqua)"/>
+                        <TextBlock>
+                                Log temperature <LineBreak/> thresholds on launch
+                        </TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="0,31,0,0">
+                        <StackPanel.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="Margin">
+                                    <Setter.Value>
+                                        <Thickness>
+                                            0,7
+                                        </Thickness>
+                                    </Setter.Value>
+                                </Setter>
+
+                                <Setter Property="Width" Value="16"/>
+                                <Setter Property="Height" Value="16"/>
+                            </Style>
+                        </StackPanel.Resources>
+                        
+                        <Border Background="#FFFB0200"/>
+                        <Border Background="#FFFB5350"/>
+                        <Border Background="#FFFFA924"/>
+                        <Border Background="#FFEFFF00"/>
+                        <Border Background="#FF3BFE4A"/>
+                        <Border Background="#FF1FA1FF"/>
+                        <Border Background="#FF2BCBFF"/>
+                        <Border Background="#FF80FEF0"/>
+                    </StackPanel>
+                    
+                    <StackPanel Grid.Column="2">
+                        <StackPanel.Resources>
+                            <Style TargetType="TextBox">
+                                <Setter Property="Margin">
+                                    <Setter.Value>
+                                        <Thickness>
+                                            4,6
+                                        </Thickness>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </StackPanel.Resources>
+                        
+                        <CheckBox IsChecked="{Binding TemperatureOverlayState.CustomRangesEnabled}" Margin="3,8" HorizontalAlignment="Center"/>
+                        
+                        <TextBox Text="{Binding TemperatureOverlayState.Red, Mode=TwoWay, FallbackValue=0}"/>
+                        <TextBox Text="{Binding TemperatureOverlayState.RedOrange, Mode=TwoWay, FallbackValue=0}"/>
+                        <TextBox Text="{Binding TemperatureOverlayState.Orange, Mode=TwoWay, FallbackValue=0}"/>
+                        <TextBox Text="{Binding TemperatureOverlayState.Lime, Mode=TwoWay, FallbackValue=0}"/>
+                        <TextBox Text="{Binding TemperatureOverlayState.Green, Mode=TwoWay, FallbackValue=0}"/>
+                        <TextBox Text="{Binding TemperatureOverlayState.Blue, Mode=TwoWay, FallbackValue=0}"/>
+                        <TextBox Text="{Binding TemperatureOverlayState.Turquoise, Mode=TwoWay, FallbackValue=0}"/>
+                        <TextBox Text="{Binding TemperatureOverlayState.Aquamarine, Mode=TwoWay, FallbackValue=0}" IsEnabled="False"/>
+                        
+                        <CheckBox IsChecked="{Binding TemperatureOverlayState.LogThresholds}" Margin="3,14" HorizontalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="3">
+                        <StackPanel.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Margin">
+                                    <Setter.Value>
+                                        <Thickness>
+                                            0,7
+                                        </Thickness>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </StackPanel.Resources>
+                        
+                        <TextBlock />
+                        <TextBlock Text="K"/>
+                        <TextBlock Text="K"/>
+                        <TextBlock Text="K"/>
+                        <TextBlock Text="K"/>
+                        <TextBlock Text="K"/>
+                        <TextBlock Text="K"/>
+                        <TextBlock Text="K"/>
+                        <TextBlock Text="K"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
         </TabControl>
             
         <Grid Grid.Row="1" Grid.ColumnSpan="2">

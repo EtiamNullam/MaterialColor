@@ -54,6 +54,7 @@
     <Compile Include="Data\ColorMode.cs" />
     <Compile Include="Data\InjectorState.cs" />
     <Compile Include="Data\MaterialColorState.cs" />
+    <Compile Include="Data\TemperatureOverlayState.cs" />
     <Compile Include="Data\OnionState.cs" />
     <Compile Include="ExitCode.cs" />
     <Compile Include="EventHashes.cs" />
