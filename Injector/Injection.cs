@@ -141,7 +141,17 @@ namespace Injector
 
             if (injectorState.InjectOnion)
             {
-                InjectOnionPatcher();
+                try
+                {
+                    InjectOnionPatcher();
+                }
+                catch (Exception e)
+                {
+                    Logger.Log("OnionPatcher injection failed");
+                    Logger.Log(e);
+
+                    Failed = true;
+                }
             }
 
             if (injectorState.CustomSensorRanges)
@@ -500,26 +510,36 @@ namespace Injector
 
         private void InjectOnionDoWorldGen()
         {
-            var doWorldGenInitialiseBody = CecilHelper.GetMethodDefinition(_csharpModule, "OfflineWorldGen", "DoWordGenInitialise").Body;
+            try
+            {
+                var doWorldGenInitialiseBody = CecilHelper.GetMethodDefinition(_csharpModule, "OfflineWorldGen", "DoWordGenInitialise").Body;
 
-            var callResetInstruction = doWorldGenInitialiseBody
-                .Instructions
-                .Where(instruction => instruction.OpCode == OpCodes.Call)
-                .Reverse()
-                .Skip(3)
-                .First();
+                var callResetInstruction = doWorldGenInitialiseBody
+                    .Instructions
+                    .Where(instruction => instruction.OpCode == OpCodes.Call)
+                    .Reverse()
+                    .Skip(3)
+                    .First();
 
-            var instructionInserter = new InstructionInserter(doWorldGenInitialiseBody);
+                var instructionInserter = new InstructionInserter(doWorldGenInitialiseBody);
 
-            instructionInserter.InsertBefore(callResetInstruction, Instruction.Create(OpCodes.Pop));
-            instructionInserter.InsertBefore(callResetInstruction, Instruction.Create(OpCodes.Pop));
+                instructionInserter.InsertBefore(callResetInstruction, Instruction.Create(OpCodes.Pop));
+                instructionInserter.InsertBefore(callResetInstruction, Instruction.Create(OpCodes.Pop));
 
-            _onionToCSharpInjector.InjectBefore(
-                "Hooks", "OnDoOfflineWorldGen",
-                doWorldGenInitialiseBody,
-                callResetInstruction);
+                _onionToCSharpInjector.InjectBefore(
+                    "Hooks", "OnDoOfflineWorldGen",
+                    doWorldGenInitialiseBody,
+                    callResetInstruction);
 
-            _csharpInstructionRemover.ReplaceByNop(doWorldGenInitialiseBody, callResetInstruction);
+                _csharpInstructionRemover.ReplaceByNop(doWorldGenInitialiseBody, callResetInstruction);
+            }
+            catch (Exception e)
+            {
+                Logger.Log("World generation injection failed");
+                Logger.Log(e);
+
+                Failed = true;
+            }
         }
 
         private void InjectOnionDebugHandler()
