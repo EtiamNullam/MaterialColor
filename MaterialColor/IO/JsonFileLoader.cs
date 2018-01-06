@@ -91,5 +91,23 @@ namespace MaterialColor.IO
                 return false;
             }
         }
+
+        public bool TryLoadTemperatureState(out TemperatureOverlayState state)
+        {
+            try
+            {
+                state = _configuratorStateManager.LoadTemperatureState();
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.Log(e);
+                _logger.Log("Can't load overlay temperature state");
+
+                state = new TemperatureOverlayState();
+
+                return false;
+            }
+        }
     }
 }
