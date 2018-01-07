@@ -8,7 +8,8 @@ namespace MaterialColor.Extensions
     {
         public static Color32 GetMaterialColorForType(this SimHashes material, string objectTypeName)
         {
-            if (!ColorHelper.TryGetTypeStandardColor(objectTypeName, out var typeStandardColor))
+            Color32 typeStandardColor;
+            if (!ColorHelper.TryGetTypeStandardColor(objectTypeName, out typeStandardColor))
             {
                 if (State.ConfiguratorState.ShowMissingTypeColorOffsets)
                 {
@@ -32,17 +33,16 @@ namespace MaterialColor.Extensions
 
         public static ElementColorInfo GetMaterialColorInfo(this SimHashes materialHash)
         {
-            if (!State.ElementColorInfos.TryGetValue(materialHash, out ElementColorInfo elementColorInfo))
-            {
-                if (State.ConfiguratorState.ShowMissingElementColorInfos)
-                {
-                    Debug.LogError($"Can't find <{materialHash}> color info");
-                    return new ElementColorInfo(new Color32Multiplier(1, 0, 1), 1);
-                }
-                return new ElementColorInfo(Color32Multiplier.One);
-            }
+            ElementColorInfo elementColorInfo;
+            if (State.ElementColorInfos.TryGetValue(materialHash, out elementColorInfo))
+                return elementColorInfo;
 
-            return elementColorInfo;
+            if (!State.ConfiguratorState.ShowMissingElementColorInfos)
+                return new ElementColorInfo(Color32Multiplier.One);
+
+
+            Debug.LogError($"Can't find <{materialHash}> color info");
+            return new ElementColorInfo(new Color32Multiplier(1, 0, 1), 1);
         }
 
         public static Color ToCellMaterialColor(this SimHashes material)

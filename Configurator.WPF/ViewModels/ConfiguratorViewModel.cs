@@ -4,6 +4,7 @@ using Common.Json;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
+using System.Windows;
 
 namespace Configurator.WPF.ViewModels
 {
@@ -18,24 +19,32 @@ namespace Configurator.WPF.ViewModels
             TryLoadLastAppState();
 
             ApplyCommand = new DelegateCommand(Apply);
-            ExitCommand = new DelegateCommand(App.Current.Shutdown);
+            ExitCommand = new DelegateCommand(Application.Current.Shutdown);
         }
 
         public MaterialColorState MaterialState
         {
-            get => _materialState;
-            set => SetProperty(ref _materialState, value);
+            get { return _materialState; }
+            set { SetProperty(ref _materialState, value); }
         }
 
         private MaterialColorState _materialState;
 
         public OnionState OnionState
         {
-            get => _onionState;
-            set => SetProperty(ref _onionState, value);
+            get { return _onionState; }
+            set { SetProperty(ref _onionState, value); }
         }
 
         private OnionState _onionState;
+
+        public TemperatureOverlayState TemperatureOverlayState
+        {
+            get { return _temperatureOverlayState; }
+            set { SetProperty(ref _temperatureOverlayState, value); }
+        }
+
+        private TemperatureOverlayState _temperatureOverlayState;
 
         public bool OnionEnabled
         {
@@ -55,12 +64,12 @@ namespace Configurator.WPF.ViewModels
 
         public bool OnionCustomMaxCameraEnabled
         {
-            get => _onionState.Enabled && OnionCustomMaxCamera;
+            get { return _onionState.Enabled && OnionCustomMaxCamera; }
         }
 
         public bool OnionCustomMaxCamera
         {
-            get => _onionState.CustomMaxCameraDistance;
+            get { return _onionState.CustomMaxCameraDistance; }
             set
             {
                 _onionState.CustomMaxCameraDistance = value;
@@ -93,12 +102,12 @@ namespace Configurator.WPF.ViewModels
 
         public bool OnionCustomSeedsEnabled
         {
-            get => _onionState.Enabled && OnionCustomSeeds;
+            get { return _onionState.Enabled && OnionCustomSeeds; }
         }
 
         public bool OnionCustomSeeds
         {
-            get => _onionState.CustomSeeds;
+            get { return _onionState.CustomSeeds; }
             set
             {
                 _onionState.CustomSeeds = value;
@@ -107,15 +116,15 @@ namespace Configurator.WPF.ViewModels
             }
         }
 
-        private Common.IO.Logger _logger;
-        private ConfiguratorStateManager _stateManager;
+        private readonly Common.IO.Logger _logger;
+        private readonly ConfiguratorStateManager _stateManager;
 
-        public DelegateCommand ApplyCommand { get; private set; }
-        public DelegateCommand ExitCommand { get; private set; }
+        public DelegateCommand ApplyCommand { get; }
+        public DelegateCommand ExitCommand { get; }
 
         public string Status
         {
-            get => _status;
+            get { return _status; }
             set
             {
                 SetProperty(ref _status, $"{_status}\n[{DateTime.Now.TimeOfDay}]: {value}".Trim());
@@ -127,24 +136,54 @@ namespace Configurator.WPF.ViewModels
 
         private bool TryLoadLastAppState()
         {
+            var result = true;
+
             try
             {
                 MaterialState = _stateManager.LoadMaterialColorState();
-                OnionState = _stateManager.LoadOnionState();
-
-                return true;
             }
             catch (Exception e)
             {
-                Status = "Can't load last state";
-
+                Status = "Can't load last material state";
+                
                 _logger.Log(e);
 
                 MaterialState = new MaterialColorState();
+
+                    result = false;
+            }
+
+            try
+            {
+                OnionState = _stateManager.LoadOnionState();
+            }
+            catch (Exception e)
+            {
+                Status = "Can't load last onion state";
+
+                _logger.Log(e);
+                
                 OnionState = new OnionState();
 
-                return false;
+                result = false;
             }
+
+            try
+            {
+                TemperatureOverlayState = _stateManager.LoadTemperatureState();
+            }
+            catch (Exception e)
+            {
+                Status = "Can't load last temperature overlay state";
+
+                _logger.Log(e);
+
+                TemperatureOverlayState = new TemperatureOverlayState();
+
+                result = false;
+            }
+
+            return result;
         }
 
         private void Apply()
@@ -156,6 +195,7 @@ namespace Configurator.WPF.ViewModels
             {
                 Common.IO.IOHelper.EnsureDirectoryExists(Common.Paths.MaterialConfigPath);
                 Common.IO.IOHelper.EnsureDirectoryExists(Common.Paths.OnionConfigPath);
+                Common.IO.IOHelper.EnsureDirectoryExists(Common.Paths.OverlayConfigPath);
             }
             catch (Exception e)
             {
@@ -170,10 +210,11 @@ namespace Configurator.WPF.ViewModels
             {
                 _stateManager.SaveMaterialColorState(MaterialState);
                 _stateManager.SaveOnionState(OnionState);
+                _stateManager.SaveTemperatureState(TemperatureOverlayState);
             }
             catch (Exception e)
             {
-                Status = $"Can't save current state.";
+                Status = "Can\'t save current state.";
 
                 _logger.Log(e);
 

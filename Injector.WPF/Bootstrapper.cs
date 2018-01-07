@@ -14,10 +14,5 @@ namespace Injector.WPF
         {
             Application.Current.MainWindow.Show();
         }
-
-        protected override void ConfigureContainer()
-        {
-            base.ConfigureContainer();
-        }
     }
 }

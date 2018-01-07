@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Core
 {
@@ -25,31 +20,66 @@ namespace Core
                 }
             }
 
-            if (Input.GetMouseButtonUp(0))
+            if (_isDragging && Input.GetMouseButtonUp(0))
             {
                 _isDragging = false;
+
+                SavePosition(mousePos - Offset);
             }
 
-            if (_isDragging)
-            {
-                var newPosition = mousePos - Offset;
+            if (!_isDragging) return;
 
-                Screen.transform.position = newPosition;
-            }
+            var newPosition = mousePos - Offset;
+
+            SetPosition(newPosition);
         }
 
-        private bool _isDragging = false;
+        private bool _isDragging;
 
         // Use GetComponent<KScreen>() instead?
         public KScreen Screen;
 
-        public Vector3 Offset = new Vector3();
+        public Vector3 Offset;
 
         public static void Attach(KScreen screen)
         {
-            var draggable = screen.FindOrAddUnityComponent<DraggablePanel>();
+            var panel = screen.FindOrAddUnityComponent<DraggablePanel>();
 
-            draggable.Screen = screen;
+            if (panel == null) return;
+
+            panel.Screen = screen;
+        }
+
+        // TODO: call when position is set by game
+        public static void SetPositionFromFile(KScreen screen)
+        {
+            Vector2 newPosition;
+
+            var panel = screen.FindOrAddUnityComponent<DraggablePanel>();
+
+            if (panel != null && panel.LoadPosition(out newPosition))
+            {
+                panel.SetPosition(newPosition);
+            }
+        }
+
+        // TODO: queue save to file
+        private void SavePosition(Vector2 position)
+        {
+            State.UIState.SaveWindowPosition(gameObject, position);
+        }
+
+        private bool LoadPosition(out Vector2 position)
+        {
+            return State.UIState.LoadWindowPosition(gameObject, out position);
+        }
+
+        // use offset?
+        private void SetPosition(Vector3 newPosition)
+        {
+            if (Screen == null) return;
+
+            Screen.transform.position = newPosition;
         }
     }
 }

@@ -7,12 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{7FC11D0E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonSorter.Console", "Tools\JsonSorter.Console\JsonSorter.Console.csproj", "{2C9D4A0D-84DB-4B65-8958-223F5B7B5E96}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnionHooks", "onion-hooks\OnionHooks\OnionHooks.csproj", "{55AF1803-0A1E-4794-9AA0-1118BE5FE0C3}"
-	ProjectSection(ProjectDependencies) = postProject
-		{EDA0CD77-3605-4C5A-ACA6-6BBDA16A24AF} = {EDA0CD77-3605-4C5A-ACA6-6BBDA16A24AF}
-		{9B1E30B1-026D-44AE-819E-FD036DC03A43} = {9B1E30B1-026D-44AE-819E-FD036DC03A43}
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{9B1E30B1-026D-44AE-819E-FD036DC03A43}"
 	ProjectSection(ProjectDependencies) = postProject
 		{EDA0CD77-3605-4C5A-ACA6-6BBDA16A24AF} = {EDA0CD77-3605-4C5A-ACA6-6BBDA16A24AF}
@@ -37,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterialColor", "MaterialCo
 		{EDA0CD77-3605-4C5A-ACA6-6BBDA16A24AF} = {EDA0CD77-3605-4C5A-ACA6-6BBDA16A24AF}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnionHooks", "OnionHooks\OnionHooks.csproj", "{55AF1803-0A1E-4794-9AA0-1118BE5FE0C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,10 +43,6 @@ Global
 		{2C9D4A0D-84DB-4B65-8958-223F5B7B5E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C9D4A0D-84DB-4B65-8958-223F5B7B5E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C9D4A0D-84DB-4B65-8958-223F5B7B5E96}.Release|Any CPU.Build.0 = Release|Any CPU
-		{55AF1803-0A1E-4794-9AA0-1118BE5FE0C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{55AF1803-0A1E-4794-9AA0-1118BE5FE0C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{55AF1803-0A1E-4794-9AA0-1118BE5FE0C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{55AF1803-0A1E-4794-9AA0-1118BE5FE0C3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9B1E30B1-026D-44AE-819E-FD036DC03A43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9B1E30B1-026D-44AE-819E-FD036DC03A43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B1E30B1-026D-44AE-819E-FD036DC03A43}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -75,6 +67,10 @@ Global
 		{837986FE-5DB2-44FC-9F76-110C1D4178BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{837986FE-5DB2-44FC-9F76-110C1D4178BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{837986FE-5DB2-44FC-9F76-110C1D4178BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55AF1803-0A1E-4794-9AA0-1118BE5FE0C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55AF1803-0A1E-4794-9AA0-1118BE5FE0C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55AF1803-0A1E-4794-9AA0-1118BE5FE0C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55AF1803-0A1E-4794-9AA0-1118BE5FE0C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
