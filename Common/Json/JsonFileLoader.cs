@@ -1,10 +1,9 @@
 ﻿using Common.Data;
-using Common.Json;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MaterialColor.IO
+namespace Common.Json
 {
     public class JsonFileLoader
     {
