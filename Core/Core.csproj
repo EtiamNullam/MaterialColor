@@ -68,6 +68,7 @@
     <Compile Include="IO\FileManager.cs" />
     <Compile Include="KeybindingsManager.cs" />
     <Compile Include="OverlayMenuManager.cs" />
+    <Compile Include="State.cs" />
     <Compile Include="UpdateQueueManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

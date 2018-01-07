@@ -1,7 +1,6 @@
 ﻿using Common;
 using Common.Data;
 using Common.Json;
-using MaterialColor.IO;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,7 +12,7 @@ namespace MaterialColor
 
         public static Common.IO.Logger Logger
         {
-            get { return _logger ?? (_logger = new Common.IO.Logger(Paths.MaterialCoreLogFileName)); }
+            get { return _logger ?? (_logger = new Common.IO.Logger(Paths.MaterialColorLogFileName)); }
         }
 
         private static Common.IO.Logger _logger;
