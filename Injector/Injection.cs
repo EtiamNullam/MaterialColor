@@ -91,7 +91,22 @@ namespace Injector
                 try
                 {
                     var coreToFirstpass = new MethodInjector(_coreModule, _firstPassModule);
+
                     coreToFirstpass.InjectAsFirst("DraggablePanel", "Attach", "KScreen", "OnPrefabInit", includeCallingObject: true);
+
+                    var kScreen = _firstPassModule.Types.First(t => t.Name == "KScreen");
+                    var onSpawnBody = kScreen.Methods.First(m => m.Name == "OnSpawn").Body;
+
+                    var lastInstruction = onSpawnBody.Instructions.Last();
+
+                    coreToFirstpass.InjectBefore("DraggablePanel", "SetPositionFromFile", onSpawnBody, lastInstruction, includeCallingObject: true);
+
+                    var injectedCallFirstInstruction = onSpawnBody.Instructions.Last(i => i.OpCode == OpCodes.Ldarg_0);
+
+                    foreach (var branch in onSpawnBody.Instructions.Where(i => i.OpCode == OpCodes.Brtrue || i.OpCode == OpCodes.Brfalse))
+                    {
+                        branch.Operand = injectedCallFirstInstruction;
+                    }
                 }
                 catch (Exception e)
                 {
