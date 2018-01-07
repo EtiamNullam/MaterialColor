@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using Mono.Cecil;
-using System;
 
 namespace Injector.IO
 {
@@ -23,7 +22,7 @@ namespace Injector.IO
         public bool BackupForFileExists(string filePath)
             => File.Exists(GetBackupPathForFile(filePath));
 
-        private string GetBackupPathForFile(string filePath)
+        private static string GetBackupPathForFile(string filePath)
             => filePath + BackupString;
 
         public bool RestoreBackupForFile(string filePath)
@@ -32,18 +31,16 @@ namespace Injector.IO
             var backupExists = BackupForFileExists(filePath);
             var pathBlocked = File.Exists(filePath);
 
-            if (backupExists)
+            if (!backupExists) return false;
+
+            if (pathBlocked)
             {
-                if (pathBlocked)
-                {
-                    File.Delete(filePath);
-                }
-
-                File.Move(backupPath, filePath);
-
-                return true;
+                File.Delete(filePath);
             }
-            else return false;
+
+            File.Move(backupPath, filePath);
+
+            return true;
         }
 
         public void SaveModule(ModuleDefinition module, string filePath)

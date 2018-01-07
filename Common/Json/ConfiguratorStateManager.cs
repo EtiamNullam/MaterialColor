@@ -26,5 +26,15 @@ namespace Common.Json
         {
             _manager.Serialize(state, Paths.OnionStatePath);
         }
+
+        public TemperatureOverlayState LoadTemperatureState()
+        {
+            return _manager.Deserialize<TemperatureOverlayState>(Paths.TemperatureStatePath);
+        }
+
+        public void SaveTemperatureState(TemperatureOverlayState state)
+        {
+            _manager.Serialize(state, Paths.TemperatureStatePath);
+        }
     }
 }

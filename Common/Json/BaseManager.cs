@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.Json
+﻿namespace Common.Json
 {
     public abstract class BaseManager
     {
-        public BaseManager(JsonManager manager, IO.Logger logger = null)
+        protected BaseManager(JsonManager manager, IO.Logger logger = null)
         {
             _logger = logger;
             _manager = manager;

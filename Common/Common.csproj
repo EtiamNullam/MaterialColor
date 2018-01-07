@@ -28,6 +28,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -53,13 +54,17 @@
     <Compile Include="Data\ColorMode.cs" />
     <Compile Include="Data\InjectorState.cs" />
     <Compile Include="Data\MaterialColorState.cs" />
+    <Compile Include="Data\SerializeableVector2.cs" />
+    <Compile Include="Data\TemperatureOverlayState.cs" />
     <Compile Include="Data\OnionState.cs" />
+    <Compile Include="Data\DraggableUIState.cs" />
     <Compile Include="ExitCode.cs" />
     <Compile Include="EventHashes.cs" />
     <Compile Include="IDs.cs" />
     <Compile Include="IO\FileChangeNotifier.cs" />
     <Compile Include="IO\Logger.cs" />
     <Compile Include="Json\BaseManager.cs" />
+    <Compile Include="Json\JsonFileLoader.cs" />
     <Compile Include="Paths.cs" />
     <Compile Include="Data\ElementColorInfo.cs" />
     <Compile Include="IO\IOHelper.cs" />
@@ -79,6 +84,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>powershell "&amp; ""$(ProjectDir)BuildActions\PostBuild.ps1"""</PostBuildEvent>
+    <PostBuildEvent>powershell -ExecutionPolicy Unrestricted "&amp; ""$(ProjectDir)BuildActions\PostBuild.ps1"""</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -5,7 +5,7 @@ using Injector.IO;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
-using System.Collections.Generic;
+using System.Windows;
 
 namespace Injector.WPF.ViewModels
 {
@@ -17,7 +17,7 @@ namespace Injector.WPF.ViewModels
 
             PatchCommand = new DelegateCommand(Patch, CanPatch);
             RestoreBackupCommand = new DelegateCommand(RestoreBackup, CanRestoreBackup);
-            ExitCommand = new DelegateCommand(App.Current.Shutdown);
+            ExitCommand = new DelegateCommand(Application.Current.Shutdown);
 
             _stateManager = stateManager;
             _fileManager = fileManager;
@@ -46,18 +46,18 @@ namespace Injector.WPF.ViewModels
             }
         }
 
-        private string GetNotPatchedWithBackupMessage(string fileName)
+        private static string GetNotPatchedWithBackupMessage(string fileName)
         {
             return $"Warning: A backup for {fileName} exists, but current assembly doesn't appear to be patched. Patching without restoring backup is advised.";
         }
 
-        public DelegateCommand PatchCommand { get; private set; }
-        public DelegateCommand RestoreBackupCommand { get; private set; }
-        public DelegateCommand ExitCommand { get; private set; }
+        public DelegateCommand PatchCommand { get; }
+        public DelegateCommand RestoreBackupCommand { get; }
+        public DelegateCommand ExitCommand { get; }
 
         public string Status
         {
-            get => _status;
+            get { return _status; }
             set
             {
                 SetProperty(ref _status, $"{_status}\n{value}".Trim());
@@ -67,7 +67,7 @@ namespace Injector.WPF.ViewModels
 
         public InjectorState State
         {
-            get => _state;
+            get { return _state; }
             set
             {
                 SetProperty(ref _state, value);
@@ -77,10 +77,10 @@ namespace Injector.WPF.ViewModels
 
         private InjectorState _state;
 
-        private InjectorStateManager _stateManager;
-        private FileManager _fileManager;
-        private InjectionManager _injector;
-        private Logger _logger;
+        private readonly InjectorStateManager _stateManager;
+        private readonly FileManager _fileManager;
+        private readonly InjectionManager _injector;
+        private readonly Logger _logger;
 
         private string _status;
 
@@ -148,14 +148,9 @@ namespace Injector.WPF.ViewModels
 
             try
             {
-                if (_injector.InjectDefaultAndBackup(State))
-                {
-                    Status = "\tSome issues with injection appeared, check logs for more info\n\tOriginal backed up and patched.\n\tPatch complete.";
-                }
-                else
-                {
-                    Status = "\tOriginal backed up and patched.\n\tPatch successful.";
-                }
+                Status = _injector.InjectDefaultAndBackup(State) 
+                    ? "\tSome issues with injection appeared, check logs for more info\n\tOriginal backed up and patched.\n\tPatch complete."
+                    : "\tOriginal backed up and patched.\n\tPatch successful.";
             }
             catch (Exception e)
             {
@@ -200,31 +195,21 @@ namespace Injector.WPF.ViewModels
 
         public void RestoreCSharpBackup()
         {
-            if (TryRestoreCSharpBackup())
-            {
-                Status = $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp.dll backup restore successful.";
-            }
-            else
-            {
-                Status = $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp.dll backup restore failed.";
-            }
+            Status = TryRestoreCSharpBackup() 
+                ? $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp.dll backup restore successful." 
+                : $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp.dll backup restore failed.";
         }
 
         public void RestoreFirstpassBackup()
         {
-            if (TryRestoreFirstpassBackup())
-            {
-                Status = $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp-firstpass.dll backup restore successful.";
-            }
-            else
-            {
-                Status = $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp-firstpass.dll backup restore failed.";
-            }
+            Status = TryRestoreFirstpassBackup() 
+                ? $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp-firstpass.dll backup restore successful." 
+                : $"[{DateTime.Now.TimeOfDay}] Assembly-CSharp-firstpass.dll backup restore failed.";
         }
 
         public bool TryRestoreCSharpBackup()
         {
-            bool result = false;
+            bool result;
 
             try
             {
@@ -246,7 +231,7 @@ namespace Injector.WPF.ViewModels
 
         public bool TryRestoreFirstpassBackup()
         {
-            bool result = false;
+            bool result;
 
             try
             {
@@ -268,7 +253,7 @@ namespace Injector.WPF.ViewModels
         [Obsolete]
         public bool TryRestoreBackup()
         {
-            bool result = false;
+            bool result;
 
             try
             {
@@ -277,7 +262,7 @@ namespace Injector.WPF.ViewModels
             }
             catch (Exception e)
             {
-                Status = $"Can't restore backup.";
+                Status = "Can\'t restore backup.";
                 _logger.Log(e);
 
                 result = false;
